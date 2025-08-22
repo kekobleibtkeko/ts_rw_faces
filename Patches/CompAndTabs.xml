@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[race and race/intelligence and race/intelligence="Humanlike"]/comps</xpath>
+		<value>
+			<li Class="TS_Faces.Comps.CompProperties_TSFace" />
+		</value>
+	</Operation>
+</Patch>

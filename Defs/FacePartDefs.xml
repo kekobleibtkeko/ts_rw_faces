@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<TS_Faces.Data.FacePartDef Name="TSFacePartBase" Abstract="True">
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef Name="TSHighlightBase" ParentName="TSFacePartBase" Abstract="True">
+		<slotHint>Highlight</slotHint>
+		<hideSleep>true</hideSleep>
+		<hideDead>true</hideDead>
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef Name="TSScleraBase" ParentName="TSFacePartBase" Abstract="True">
+		<slotHint>Sclera</slotHint>
+		<color>Sclera</color>
+		<hideSleep>true</hideSleep>
+		<!--<graphicPath>Things/Pawn/Face/Sclera</graphicPath>-->
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef Name="TSIrisBase" ParentName="TSFacePartBase" Abstract="True">
+		<slotHint>Iris</slotHint>
+		<color>Eye</color>
+		<hideSleep>true</hideSleep>
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef Name="TSEyeBase" ParentName="TSFacePartBase" Abstract="True">
+		<slotHint>Eye</slotHint>
+		<color>Skin</color>
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef Name="TSMouthBase" ParentName="TSFacePartBase" Abstract="True">
+		<slotHint>Mouth</slotHint>
+		<color>Skin</color>
+	</TS_Faces.Data.FacePartDef>
+	
+	<!-- PARTS -->
+	
+	<TS_Faces.Data.FacePartDef ParentName="TSIrisBase">
+		<defName>DebugIris</defName>
+		<graphicPath>Things/Pawn/Face/DebugIris</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>DebugMouth</defName>
+		<graphicPath>Things/Pawn/Face/DebugMouth</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef ParentName="TSEyeBase">
+		<defName>DebugEye</defName>
+		<graphicPath>Things/Pawn/Face/DebugEye</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef ParentName="TSFacePartBase">
+		<defName>Empty</defName>
+		<graphicPath>Things/Pawn/Empty</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+	
+	<TS_Faces.Data.FacePartDef ParentName="TSScleraBase">
+		<defName>Sclera</defName>
+	</TS_Faces.Data.FacePartDef>
+</Defs>

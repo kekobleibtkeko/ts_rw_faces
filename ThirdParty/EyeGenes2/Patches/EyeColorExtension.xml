@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Gray"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(151,152,155)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Red"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(181 ,0,0)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Golden"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(255,194,13)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Silver"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(224,227,230)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Blue"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(0,0,170)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_BrightGreen"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(RGB(0,255,0)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_BrightYellow"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(252,255,17)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Brown"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(121,74,48)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Crimson"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(RGB(255,0,0)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Cyan"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(0,255,255)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DarkBrown"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(76,18,0)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DarkCyan"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(0,109,109)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DarkestGray"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(59,60,63)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DarkGray"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(120,121,124)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DarkGreen"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(0,87,37)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DarkPink"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(189,57,130)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DarkPurple"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(63,30,120)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DarkYellow"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(154,141,0)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DeepBlue"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(0,0,100)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_DeepRed"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(95,0,0)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Green"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(34,169,73)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_LightBlue"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(32,145,208)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_LightBrown"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(208,151,110)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_LightGray"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(200,200,200)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_LightPink"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(255,163,236)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_LightPurple"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(201,159,255)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_LimeGreen"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(158,209,103)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_OceanBlue"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(0,0,255)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Orange"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(255,141,11)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Pink"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(220,87,160)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Purple"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(109,67,166)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_SkyBlue"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(175,255,255)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_White"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(255,255,255)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/GeneDef[defName="Eyes_Yellow"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(193,179,17)</eyeColor>
+			</li>
+		</value>
+	</Operation>
+</Patch>

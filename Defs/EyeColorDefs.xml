@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <GeneDef Name="TSEyeColorBase" ParentName="GeneEyeColor" Abstract="True">
+    <label>eye color</label>
+    <description>Carriers of this gene have a particular eye color. With multiple eye color genes, one is randomly selected.</description>
+    <biostatCpx>0</biostatCpx>
+    <!-- <endogeneCategory>HairColor</endogeneCategory> -->
+    <iconPath>UI/Icons/Genes/Gene_HairColor</iconPath>
+    <canGenerateInGeneSet>false</canGenerateInGeneSet>
+	<randomChosen>true</randomChosen>
+    <!-- <displayCategory>Cosmetic_Hair</displayCategory> TODO: add -->
+    <!-- <randomBrightnessFactor>0.12</randomBrightnessFactor>  TODO: find out what this is -->
+    <passOnDirectly>false</passOnDirectly>
+  </GeneDef>
+  
+  <!--<GeneDef ParentName="TSEyeColorBase">
+	<defName>TSEyes_Blue</defName>
+	<label>blue eyes</label>
+	<labelShortAdj>blue-eyed</labelShortAdj>
+    <description>Carriers of this gene have blue eyes.</description>
+	<selectionWeight>0.02</selectionWeight>
+	<modExtensions>
+		<li Class="TS_Faces.Data.GeneEyeColor">
+			<eyeColor>RGB(0, 0, 170)</eyeColor>
+		</li>
+	</modExtensions>
+  </GeneDef>
+  
+  <GeneDef ParentName="TSEyeColorBase">
+	<defName>TSEyes_BrightGreen</defName>
+	<label>bright green eyes</label>
+	<labelShortAdj>bright green-eyed</labelShortAdj>
+    <description>Carriers of this gene have bright green eyes.</description>
+	<selectionWeight>0.02</selectionWeight>
+	<modExtensions>
+		<li Class="TS_Faces.Data.GeneEyeColor">
+			<eyeColor>RGB(0, 255, 0)</eyeColor>
+		</li>
+	</modExtensions>
+  </GeneDef>-->
+</Defs>

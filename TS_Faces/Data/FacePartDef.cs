@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RimWorld;
+using UnityEngine;
+using Verse;
+
+namespace TS_Faces.Data;
+
+[DefOf]
+public static class FacePartDefOf
+{
+    public static FacePartDef Empty = default!;
+    public static FacePartDef Sclera = default!;
+
+    public static FacePartDef DebugEye = default!;
+    public static FacePartDef DebugIris = default!;
+    public static FacePartDef DebugMouth = default!;
+
+    static FacePartDefOf()
+    {
+        DefOfHelper.EnsureInitializedInCtor(typeof(FacePartDefOf));
+    }
+}
+
+public class FacePartDef : Def, IGeneFiltered
+{
+    public enum SlotHint
+    {
+        None,
+        Eye,
+        Nose,
+        Mouth,
+        Brow,
+        Ear,
+        Iris,
+        Highlight,
+        Sclera,
+    }
+    public enum Color
+    {
+        None,
+        Eye,
+        Sclera,
+        Skin,
+        Hair,
+    }
+    public SlotHint slotHint = SlotHint.None;
+    public Gender gender = Gender.None;
+    public FloatRange? beautyRange;
+
+    public string? shader;
+    public Color color = Color.None;
+    public string graphicPath = "";
+
+    public string? graphicPathSleep;
+    public bool hideSleep = false;
+
+    public string? graphicPathDead;
+    public bool hideDead = false;
+
+    public Vector2 drawSize = new(0.1f, 0.1f);
+
+    public List<GeneDef> validGenes = [];
+    public List<GeneDef> neededGenes = [];
+    public List<GeneDef> disallowedGenes = [];
+
+    public IEnumerable<GeneDef> ValidGenes => validGenes;
+    public IEnumerable<GeneDef> NeededGenes => neededGenes;
+    public IEnumerable<GeneDef> DisallowedGenes => disallowedGenes;
+}

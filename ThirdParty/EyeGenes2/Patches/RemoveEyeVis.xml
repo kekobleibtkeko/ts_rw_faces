@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationRemove">
+		<xpath>Defs/GeneDef[@ParentName="EyeGenes2Cosmetical"]/renderNodeProperties</xpath>
+	</Operation>
+	
+	
+</Patch>

@@ -1,0 +1,10 @@
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\Assemblies\TS_Faces.dll
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\Assemblies\TS_Faces.pdb
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\TS_Faces\obj\Debug\TS_Faces.csproj.AssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\TS_Faces\obj\Debug\TS_Faces.GeneratedMSBuildEditorConfig.editorconfig
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\TS_Faces\obj\Debug\TS_Faces.AssemblyInfoInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\TS_Faces\obj\Debug\TS_Faces.AssemblyInfo.cs
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\TS_Faces\obj\Debug\TS_Faces.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\TS_Faces\obj\Debug\TS_Faces.sourcelink.json
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\TS_Faces\obj\Debug\TS_Faces.dll
+C:\Program Files (x86)\Steam\steamapps\common\Rimworld\Mods\ts_rw_faces\TS_Faces\obj\Debug\TS_Faces.pdb
