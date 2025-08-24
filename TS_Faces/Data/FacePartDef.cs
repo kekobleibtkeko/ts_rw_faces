@@ -39,20 +39,14 @@ public class FacePartDef : Def, IGeneFiltered
         Highlight,
         Sclera,
     }
-    public enum Color
-    {
-        None,
-        Eye,
-        Sclera,
-        Skin,
-        Hair,
-    }
+
     public SlotHint slotHint = SlotHint.None;
     public Gender gender = Gender.None;
     public FloatRange? beautyRange;
 
     public string? shader;
-    public Color color = Color.None;
+    public PartColor color = PartColor.None;
+    public Color? customColor;
     public string graphicPath = "";
 
     public string? graphicPathSleep;
@@ -61,7 +55,10 @@ public class FacePartDef : Def, IGeneFiltered
     public string? graphicPathDead;
     public bool hideDead = false;
 
-    public Vector2 drawSize = new(0.1f, 0.1f);
+    public bool noMirror = false;
+    public Vector2 drawSize = new(0.25f, 0.25f);
+
+    public float commonality = 0.1f;
 
     public List<GeneDef> validGenes = [];
     public List<GeneDef> neededGenes = [];

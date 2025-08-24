@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using LudeonTK;
@@ -55,7 +56,7 @@ public class TRFacePart : IExposable
 
 public class TSFacePersistentData() : IExposable
 {
-    public List<HeadDef> Heads = [HeadDefOf.Default];
+    public List<HeadDef> Heads = [HeadDefOf.AverageLong];
     public TRFacePart Mouth = new(FacePartDefOf.DebugMouth);
     public TRFacePart Nose = new();
     public TRFacePart EyeL = new(FacePartDefOf.DebugEye);
@@ -119,8 +120,8 @@ public class TSFacePersistentData() : IExposable
 
 public class Comp_TSFace : ThingComp
 {
-    public const float TSHeadBaseLayer = 40f;
-    private Pawn Pawn => parent as Pawn ?? throw new NullReferenceException("Comp_TSFace attached to non-pawn");
+    public const float TSHeadBaseLayer = 30f;
+    public Pawn Pawn => parent as Pawn ?? throw new NullReferenceException("Comp_TSFace attached to non-pawn");
 
     public TSFacePersistentData PersistentData = new();
 
@@ -140,19 +141,20 @@ public class Comp_TSFace : ThingComp
         }
         return Color.white;
     }
-    public Color GetScleraColor(Side side) => side switch
+    public Color GetScleraColor(FaceSide side) => side switch
     {
-        Side.Left => Color.white,
-        Side.Right => Color.white,
-        Side.None or _ => Color.white,
+        FaceSide.Left => Color.white,
+        FaceSide.Right => Color.white,
+        FaceSide.None or _ => Color.white,
     };
-    public Color GetEyeColor(Side side) => side switch
+    public Color GetEyeColor(FaceSide side) => side switch
     {
-        Side.Left => PersistentData.EyeLReplaceColor ?? GetBaseEyeColor(),
-        Side.Right => PersistentData.EyeRReplaceColor ?? GetBaseEyeColor(),
-        Side.None or _=> Color.white,
+        FaceSide.Left => PersistentData.EyeLReplaceColor ?? GetBaseEyeColor(),
+        FaceSide.Right => PersistentData.EyeRReplaceColor ?? GetBaseEyeColor(),
+        FaceSide.None or _=> Color.white,
     };
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PawnState GetPawnState()
     {
         var pawn = Pawn;
@@ -170,6 +172,7 @@ public class Comp_TSFace : ThingComp
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TRFacePart GetPartForSlot(FaceSlot slot) => slot switch
     {
         FaceSlot.EyeL => PersistentData.EyeL,
@@ -191,10 +194,11 @@ public class Comp_TSFace : ThingComp
 
     public override List<PawnRenderNode> CompRenderNodes()
     {
-        var tree = Pawn.Drawer.renderer.renderTree;
-        var root_node = new PawnRenderNode_TSFace(Pawn, this, tree);
-        var sub_nodes = root_node.GetSubNodes();
-        return [root_node, ..sub_nodes];
+        return [new PawnRenderNode_TSFace(
+            Pawn,
+            this,
+            Pawn.Drawer.renderer.renderTree
+        )];
     }
 
     public override void PostExposeData()

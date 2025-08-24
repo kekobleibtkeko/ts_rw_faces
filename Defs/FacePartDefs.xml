@@ -19,6 +19,7 @@
 	<TS_Faces.Data.FacePartDef Name="TSIrisBase" ParentName="TSFacePartBase" Abstract="True">
 		<slotHint>Iris</slotHint>
 		<color>Eye</color>
+		<!-- <shader>Map/Cutout</shader> -->
 		<hideSleep>true</hideSleep>
 	</TS_Faces.Data.FacePartDef>
 	
