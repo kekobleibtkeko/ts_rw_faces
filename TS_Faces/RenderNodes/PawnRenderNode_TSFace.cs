@@ -26,16 +26,16 @@ public class PawnRenderNode_TSFace : PawnRenderNode
         Comp_TSFace face,
         PawnRenderTree tree
     ) : base(
-            pawn,
-            new PawnRenderNodeProperties
-            {
-                workerClass = typeof(PawnRenderNodeWorker_TSFace),
-                parentTagDef = PawnRenderNodeTagDefOf.Head,
-                baseLayer = Comp_TSFace.TSHeadBaseLayer,
-                overlayLayer = PawnOverlayDrawer.OverlayLayer.Head,
-                colorType = AttachmentColorType.Skin,
-            },
-            tree
+        pawn,
+        new PawnRenderNodeProperties
+        {
+            workerClass = typeof(PawnRenderNodeWorker_TSFace),
+            parentTagDef = PawnRenderNodeTagDefOf.Head,
+            baseLayer = Comp_TSFace.TSHeadBaseLayer + PawnRenderNodeWorker_TSFace.ts_face_tweak,
+            //overlayLayer = PawnOverlayDrawer.OverlayLayer.Head,
+            //colorType = AttachmentColorType.Skin,
+        },
+        tree
     ) {
         Pawn = pawn;
         Face = face;
@@ -46,7 +46,7 @@ public class PawnRenderNode_TSFace : PawnRenderNode
     {
         return HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn(pawn);
     }
-    
+
     //public override Graphic GraphicFor(Pawn pawn)
     //{
     //    //return GraphicDatabase.Get<Graphic_Multi>(
@@ -65,17 +65,12 @@ public class PawnRenderNode_TSFace : PawnRenderNode
     //    );
     //}
 
-    public override Shader DefaultShader => base.DefaultShader;
-    public override string TexPathFor(Pawn pawn)
-    {
-        var head_def = Face.PersistentData.Heads.GetFilteredDef(pawn);
-        return head_def.graphicPath;
-    }
+    public override string TexPathFor(Pawn pawn) => FacePartDefOf.Empty.graphicPath;
 }
 
 public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
 {
-    [TweakValue("TS", -0.05f, 0.05f)]
+    [TweakValue("TS", -50f, 50f)]
     public static float ts_face_tweak;
     public static Shader DefaultShader => ShaderDatabase.CutoutSkin;
     public override void PostDraw(PawnRenderNode node, PawnDrawParms parms, Mesh mesh, Matrix4x4 matrix)
@@ -101,35 +96,33 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             ;
 
             color = parms.statueColor ?? custom_color ?? part_color switch
-                {
-                    PartColor.Eye => face.GetEyeColor(side),
-                    PartColor.Skin => pawn.story.SkinColor,
-                    PartColor.Hair => pawn.story.HairColor,
-                    PartColor.Sclera => face.GetScleraColor(side),
-                    PartColor.None or _ => Color.white,
-                };
+            {
+                PartColor.Eye => face.GetEyeColor(side),
+                PartColor.Skin => pawn.story.SkinColor,
+                PartColor.Hair => pawn.story.HairColor,
+                PartColor.Sclera => face.GetScleraColor(side),
+                PartColor.None or _ => Color.white,
+            };
         }
 
         //render head
         {
-            //var head_def = face.PersistentData.Heads.GetFilteredDef(pawn);
-            //get_shader_and_color(head_def.shader, head_def.color, FaceSide.None, null, out var shader, out var color);
-            //var head_graphic = GraphicDatabase.Get<Graphic_Multi>(
-            //    head_def.graphicPath,
-            //    shader,
-            //    Vector2.one,
-            //    color
-            //);
-            //Material head_material = head_graphic.NodeGetMat(parms);
-            //GenDraw.DrawMeshNowOrLater(
-            //    mesh,
-            //    matrix,
-            //    head_material,
-            //    parms.DrawNow
-            //);
+            var head_def = face.PersistentData.Heads.GetFilteredDef(pawn);
+            get_shader_and_color(head_def.shader, head_def.color, FaceSide.None, null, out var shader, out var color);
+            var head_graphic = GraphicDatabase.Get<Graphic_Multi>(
+                head_def.graphicPath,
+                shader,
+                Vector2.one,
+                color
+            );
+            Material head_material = head_graphic.NodeGetMat(parms);
+            GenDraw.DrawMeshNowOrLater(
+                mesh,
+                matrix,
+                head_material,
+                parms.DrawNow
+            );
         }
-
-        return;
 
         var face_layout = face.GetActiveFaceLayout().ForRot(parms.facing);
         var extra_eye_parts = face_layout
@@ -211,7 +204,7 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             var pos = part.pos
                 + transform.Offset
                 + TSUtil.GetUpVector(part.slot.ToLayerOffset())
-                + TSUtil.GetUpVector(ts_face_tweak)
+                //+ TSUtil.GetUpVector(ts_face_tweak)
             ;
             var draw_scale = def.drawSize.ToUpFacingVec3(1)
                 .MultipliedBy(transform.Scale.ToUpFacingVec3(1))
