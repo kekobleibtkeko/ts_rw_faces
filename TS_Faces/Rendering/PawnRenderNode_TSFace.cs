@@ -14,7 +14,7 @@ using UnityEngine;
 using Verse;
 using static Verse.PawnRenderNodeProperties;
 
-namespace TS_Faces.RenderNodes;
+namespace TS_Faces.Rendering;
 
 public class PawnRenderNode_TSFace : PawnRenderNode
 {
@@ -72,13 +72,24 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
 {
     [TweakValue("TS", -50f, 50f)]
     public static float ts_face_tweak;
-    public static Shader DefaultShader => ShaderDatabase.CutoutSkin;
+    public static Shader DefaultShader => ShaderDatabase.Cutout;
     public override void PostDraw(PawnRenderNode node, PawnDrawParms parms, Mesh mesh, Matrix4x4 matrix)
     {
+        if (parms.rotDrawMode == RotDrawMode.Dessicated)
+            return;
+
         if (node is not PawnRenderNode_TSFace face_node)
             return;
+
         var face = face_node.Face;
         var pawn = face.Pawn;
+        switch (face.RenderState)
+        {
+            case Comp_TSFace.ReRenderState.Needed:
+                FaceRenderer.RegenerateFaces(face);
+                break;
+        }
+        return;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void get_shader_and_color(
@@ -92,7 +103,7 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
                 ? ShaderDatabase.Cutout
                 : shader_path.NullOrEmpty()
                     ? DefaultShader
-                    : (ShaderDatabase.LoadShader(shader_path) ?? DefaultShader)
+                    : ShaderDatabase.LoadShader(shader_path) ?? DefaultShader
             ;
 
             color = parms.statueColor ?? custom_color ?? part_color switch
@@ -131,9 +142,9 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             {
                 var orig_side = x.slot.ToSide();
                 return Enumerable.Empty<FaceLayoutPart>()
-                    .Append(x.WithSlot(Data.FaceSlot.ScleraL.OnSide(orig_side)))
-                    .Append(x.WithSlot(Data.FaceSlot.IrisL.OnSide(orig_side)))
-                    .Append(x.WithSlot(Data.FaceSlot.HighlightL.OnSide(orig_side)))
+                    .Append(x.WithSlot(FaceSlot.ScleraL.OnSide(orig_side)))
+                    .Append(x.WithSlot(FaceSlot.IrisL.OnSide(orig_side)))
+                    .Append(x.WithSlot(FaceSlot.HighlightL.OnSide(orig_side)))
                 ;
             })
         ;
@@ -142,6 +153,7 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
         //    ",\n",
         //    all_parts.Select(x => $"{x.slot} on side {x.slot.ToSide()}")
         //));
+        
         foreach (var part in all_parts)
         {
             var actual_mesh = mesh;
@@ -216,7 +228,6 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
                 Quaternion.AngleAxis(rotation, Vector3.up),
                 draw_scale
             );
-
             //Log.Message($"drawing slot {part.slot} for {pawn}");
             GenDraw.DrawMeshNowOrLater(actual_mesh, matrix * loc_matrix, material, parms.DrawNow);
         }

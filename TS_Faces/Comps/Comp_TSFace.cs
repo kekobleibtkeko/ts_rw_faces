@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using LudeonTK;
 using RimWorld;
 using TS_Faces.Data;
-using TS_Faces.RenderNodes;
+using TS_Faces.Rendering;
 using TS_Lib.Transforms;
 using TS_Lib.Util;
 using UnityEngine;
@@ -120,10 +120,20 @@ public class TSFacePersistentData() : IExposable
 
 public class Comp_TSFace : ThingComp
 {
+    public enum ReRenderState
+    {
+        Needed,
+        InProgress,
+        UpToDate,
+    }
+
     public const float TSHeadBaseLayer = 30f;
     public Pawn Pawn => parent as Pawn ?? throw new NullReferenceException("Comp_TSFace attached to non-pawn");
 
     public TSFacePersistentData PersistentData = new();
+
+    public ReRenderState RenderState;
+    public Graphic_Multi? CachedGraphic;
 
     public HeadDef GetActiveHeadDef() => PersistentData.Heads.GetFilteredDef(Pawn);
     public FaceLayout GetActiveFaceLayout() => GetActiveHeadDef().faceLayout;

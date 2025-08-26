@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj": {}
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj": {}
   },
   "projects": {
-    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj": {
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj",
+        "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj",
         "projectName": "TS_Faces",
-        "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj",
+        "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj",
         "packagesPath": "C:\\Users\\Captiva\\.nuget\\packages\\",
         "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\ts_rw_faces\\TS_Faces\\obj\\",
         "projectStyle": "PackageReference",

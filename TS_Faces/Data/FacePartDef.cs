@@ -48,6 +48,7 @@ public class FacePartDef : Def, IGeneFiltered
     public PartColor color = PartColor.None;
     public Color? customColor;
     public string graphicPath = "";
+    public bool isOnHead = true;
 
     public string? graphicPathSleep;
     public bool hideSleep = false;
