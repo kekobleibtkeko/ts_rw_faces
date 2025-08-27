@@ -11,7 +11,7 @@
         "projectName": "TS_Faces",
         "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj",
         "packagesPath": "C:\\Users\\Captiva\\.nuget\\packages\\",
-        "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Rimworld\\Mods\\ts_rw_faces\\TS_Faces\\obj\\",
+        "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Users\\Captiva\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder",

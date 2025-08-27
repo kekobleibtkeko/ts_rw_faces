@@ -21,12 +21,14 @@ public static class FaceRenderer
     public const int RT_SIZE = 256;
     public static RenderTexture MainRT = new(RT_SIZE, RT_SIZE, 1);
     public static RenderTexture SecRT = new(RT_SIZE, RT_SIZE, 1);
-    public static Material BlitMat;
+
+    public static Shader EyeShader;
+
     static FaceRenderer()
     {
         MainRT.Create();
         SecRT.Create();
-        BlitMat = new(ShaderDatabase.Transparent);
+        EyeShader = ShaderDatabase.LoadShader("TSEye");
     }
 
     public static void RegenerateFaces(Comp_TSFace face)
@@ -38,7 +40,7 @@ public static class FaceRenderer
         Shader get_shader(string? shader_path)
         {
             if (shader_path.NullOrEmpty() || ShaderDatabase.LoadShader(shader_path) is not Shader res)
-                return ShaderDatabase.CutoutComplexBlend;
+                return ShaderDatabase.CutoutSkinOverlay;
             return res;
         }
 
@@ -68,21 +70,8 @@ public static class FaceRenderer
             Graphics.Blit(head_side_mat.mainTexture, MainRT, head_side_mat);
 
             var face_layout = head_def.faceLayout.ForRot(rot);
-            var extra_eye_parts = face_layout
-                .Where(x => x.slot.OnSide(FaceSide.Left) == FaceSlot.EyeL)
-                .SelectMany(x =>
-                {
-                    var orig_side = x.slot.ToSide();
-                    return Enumerable.Empty<FaceLayoutPart>()
-                        .Append(x.WithSlot(FaceSlot.ScleraL.OnSide(orig_side)))
-                        .Append(x.WithSlot(FaceSlot.IrisL.OnSide(orig_side)))
-                        .Append(x.WithSlot(FaceSlot.HighlightL.OnSide(orig_side)))
-                    ;
-                })
-            ;
             var all_parts = face_layout
-                .Concat(extra_eye_parts)
-                .OrderBy(x => x.pos.y)
+                .OrderBy(x => x.pos.y + x.slot.ToLayerOffset())
                 .ToList()
             ;
             foreach (var part in all_parts)
@@ -158,6 +147,12 @@ public static class FaceRenderer
 
                 float tex_x_mul = flip ? -1 : 1;
 
+                if (part.slot.OnSide(FaceSide.Left) == FaceSlot.EyeL)
+                {
+                    Log.Message("rendering an eye :3");
+                    part_mat.SetTexture("_EyeTex", part_mat.mainTexture);
+                }
+
                 SecRT.Clear();
                 Graphics.Blit(part_mat.mainTexture, SecRT, part_mat);
                 var temp_tex = SecRT.CreateTexture2D();
@@ -188,16 +183,31 @@ public static class FaceRenderer
                 }
                 //Graphics.Blit(SecRT, SecRT, head_side_mat);
 
-                //TSUtil.BlitUtils.BlitWithTransform(
-                //    MainRT,
-                //    part_mat
-                //    //source: part_mat.mainTexture,
-                //    //scale: def.drawSize * transform.Scale * new Vector2(tex_x_mul, 1),
-                //    //offset: part.pos.FromUpFacingVec3() + transform.Offset.FromUpFacingVec3(),
-                //    //rotation: rotation
-                //);
+                if (part.slot.OnSide(FaceSide.Left) == FaceSlot.EyeL)
+                {
+                    //var eyemat = new Material(EyeShader);
+                    //TSUtil.BlitUtils.BlitWithTransform(
+                    //    MainRT,
+                    //    part_mat,
+                    //    source: part_mat.mainTexture,
+                    //    scale: def.drawSize * transform.Scale * new Vector2(tex_x_mul, 1),
+                    //    offset: part.pos.FromUpFacingVec3() + transform.Offset.FromUpFacingVec3(),
+                    //    rotation: rotation
+                    //);
+                }
+                //else
+                //{
+                //    TSUtil.BlitUtils.BlitWithTransform(
+                //        MainRT,
+                //        part_mat,
+                //        source: part_mat.mainTexture,
+                //        scale: def.drawSize * transform.Scale * new Vector2(tex_x_mul, 1),
+                //        offset: part.pos.FromUpFacingVec3() + transform.Offset.FromUpFacingVec3(),
+                //        rotation: rotation
+                //    );
+                //}
 
-                Graphics.Blit(SecRT, MainRT, BlitMat);
+                Graphics.Blit(SecRT, MainRT, new(ShaderDatabase.CutoutComplexBlend));
                 //Graphics.Blit(SecRT, MainRT, draw_scale.FromUpFacingVec3(), pos.FromUpFacingVec3());
                 //using (new TSUtil.ActiveRT_D(MainRT))
                 //{

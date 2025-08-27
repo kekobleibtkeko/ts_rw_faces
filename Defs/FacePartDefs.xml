@@ -25,6 +25,7 @@
 	
 	<TS_Faces.Data.FacePartDef Name="TSEyeBase" ParentName="TSFacePartBase" Abstract="True">
 		<slotHint>Eye</slotHint>
+		<shader>TSEye</shader>
 		<color>Skin</color>
 	</TS_Faces.Data.FacePartDef>
 	
@@ -47,7 +48,7 @@
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSEyeBase">
 		<defName>DebugEye</defName>
-		<graphicPath>Things/Pawn/Face/DebugEye</graphicPath>
+		<graphicPath>Things/Pawn/Face/Eye1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSFacePartBase">

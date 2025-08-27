@@ -1,0 +1,25 @@
+ManifestFileVersion: 0
+CRC: 3575855808
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 68d5de1bc29194691d3961fb1bfa15ae
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 11fd817fef1f2e704711e3a1e0c8427a
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 68d5de1bc29194691d3961fb1bfa15ae
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Data/tsuyao.faces/Eye1_south.png
+- Assets/Data/tsuyao.faces/Materials/TSEye.shader
+Dependencies: []
