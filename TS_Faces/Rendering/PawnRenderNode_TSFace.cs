@@ -39,31 +39,7 @@ public class PawnRenderNode_TSFace : PawnRenderNode
     ) {
         Pawn = pawn;
         Face = face;
-        meshSet = MeshSetFor(pawn);
     }
-
-    public override GraphicMeshSet MeshSetFor(Pawn pawn)
-    {
-        return HumanlikeMeshPoolUtility.GetHumanlikeHeadSetForPawn(pawn);
-    }
-
-    //public override Graphic GraphicFor(Pawn pawn)
-    //{
-    //    //return GraphicDatabase.Get<Graphic_Multi>(
-    //    //    FacePartDefOf.Empty.graphicPath,
-    //    //    ShaderDatabase.Transparent,
-    //    //    Vector2.zero,
-    //    //    Color.clear
-    //    //);
-
-    //    var head_def = Face.PersistentData.Heads.GetFilteredDef(pawn);
-    //    return GraphicDatabase.Get<Graphic_Multi>(
-    //        head_def.graphicPath,
-    //        ShaderDatabase.CutoutSkin,
-    //        Vector2.one,
-    //        pawn.story.SkinColor
-    //    );
-    //}
 
     public override string TexPathFor(Pawn pawn) => FacePartDefOf.Empty.graphicPath;
 }
@@ -83,12 +59,6 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
 
         var face = face_node.Face;
         var pawn = face.Pawn;
-        switch (face.RenderState)
-        {
-            case Comp_TSFace.ReRenderState.Needed:
-                FaceRenderer.RegenerateFaces(face);
-                break;
-        }
         return;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HarmonyLib;
+using RimWorld;
 using TS_Faces.Comps;
 using TS_Faces.Rendering;
 using Verse;
@@ -16,10 +17,13 @@ public static class Patch_PawnHeadReplace
     public static void Postfix(Pawn pawn, ref Graphic __result)
     {
         if (__result is null
-            || !pawn.TryGetComp(out Comp_TSFace face))
+            || !pawn.TryGetComp(out Comp_TSFace face)
+            || pawn.IsDessicated())
             return;
 
-        if (face.CachedGraphic is not null)
-            __result = face.CachedGraphic;
+        if (face.IsRegenerationNeeded())
+            FaceRenderer.RegenerateFaces(face);
+
+        __result = face.CachedGraphic ?? __result;
     }
 }

@@ -32,6 +32,7 @@ public class AssetBundler
     [MenuItem("Assets/Bundle")]
     public static void BundleAssets()
     {
+        Debug.Log("starting bundling...");
         foreach (BuildTarget tar in new[] {
             BuildTarget.StandaloneWindows64,
             BuildTarget.StandaloneLinux64,
@@ -59,6 +60,8 @@ public class AssetBundler
                 Debug.LogError(e);
             }
         }
+
+        Debug.Log("Bundles bundled!!!");
     }
 #endif
 }

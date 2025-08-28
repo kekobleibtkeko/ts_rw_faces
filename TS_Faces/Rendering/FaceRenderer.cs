@@ -18,7 +18,7 @@ namespace TS_Faces.Rendering;
 [StaticConstructorOnStartup]
 public static class FaceRenderer
 {
-    public const int RT_SIZE = 256;
+    public const int RT_SIZE = 512;
     public static RenderTexture MainRT = new(RT_SIZE, RT_SIZE, 1);
     public static RenderTexture SecRT = new(RT_SIZE, RT_SIZE, 1);
 
@@ -34,6 +34,14 @@ public static class FaceRenderer
     public static void RegenerateFaces(Comp_TSFace face)
     {
         face.RenderState = Comp_TSFace.ReRenderState.InProgress;
+        var pawn_state = face.GetPawnState();
+
+        if (pawn_state == PawnState.Dessicated)
+        {
+            face.CachedGraphic = null;
+            return;
+        }
+
         var pawn = face.Pawn;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -77,14 +85,14 @@ public static class FaceRenderer
             foreach (var part in all_parts)
             {
                 var comp_part = face.GetPartForSlot(part.slot);
-                if (!comp_part.PartDef.isOnHead)
+                if (comp_part.PartDef.floating)
                     continue;
 
                 var side = part.slot.ToSide();
                 var def = comp_part.PartDef;
                 //Log.Message($"getting graphic for pawn {pawn}, node slot {slot.slot}");
                 string? path = null;
-                switch (face.GetPawnState())
+                switch (pawn_state)
                 {
                     case PawnState.Normal:
                         path = comp_part.PartDef.graphicPath;
@@ -147,10 +155,27 @@ public static class FaceRenderer
 
                 float tex_x_mul = flip ? -1 : 1;
 
-                if (part.slot.OnSide(FaceSide.Left) == FaceSlot.EyeL)
+                // handle part specific adjustments
+                switch (part.slot)
                 {
-                    Log.Message("rendering an eye :3");
-                    part_mat.SetTexture("_EyeTex", part_mat.mainTexture);
+                    case FaceSlot.EyeL:
+                    case FaceSlot.EyeR:
+                        //Log.Message($"rendering an eye :3  texture={part_mat.mainTexture}");
+                        var iris = face.GetPartForSlot(FaceSlot.IrisL.OnSide(side));
+                        var iris_graphic = GraphicDatabase.Get<Graphic_Multi>(iris.PartDef.graphicPath, ShaderDatabase.Cutout, Vector2.one, Color.white);
+                        var iris_side_mat = iris_graphic.MatAt(rot);
+
+                        part_mat.SetTexture("_EyeTex", part_mat.mainTexture);
+                        part_mat.SetTexture("_IrisTex", iris_side_mat.mainTexture);
+
+                        part_mat.SetColor("_SkinColor", pawn.story.SkinColor);
+                        part_mat.SetColor("_LashColor", pawn.story.hairColor);
+                        part_mat.SetColor("_ScleraColor", face.GetScleraColor(side));
+                        part_mat.SetColor("_IrisColor", face.GetEyeColor(side));
+
+                        part_mat.SetFloat("_Flipped", flip ? 1 : 0);
+                        flip = false; // the shader handles the flipping here
+                        break;
                 }
 
                 SecRT.Clear();
@@ -178,7 +203,11 @@ public static class FaceRenderer
                         * Matrix4x4.Translate(new Vector3(-0.5f, -0.5f, 0f))
                     ;
                     GL.MultMatrix(matrix);
-                    Graphics.DrawTexture(new(0, 1, 1, -1), temp_tex);
+                    Rect img_rect = flip
+                        ? new(1, 1, -1, -1)
+                        : new(0, 1, 1, -1)
+                    ;
+                    Graphics.DrawTexture(img_rect, temp_tex);
                     GL.PopMatrix();
                 }
                 //Graphics.Blit(SecRT, SecRT, head_side_mat);
@@ -207,7 +236,7 @@ public static class FaceRenderer
                 //    );
                 //}
 
-                Graphics.Blit(SecRT, MainRT, new(ShaderDatabase.CutoutComplexBlend));
+                Graphics.Blit(SecRT, MainRT, new(ShaderDatabase.Transparent));
                 //Graphics.Blit(SecRT, MainRT, draw_scale.FromUpFacingVec3(), pos.FromUpFacingVec3());
                 //using (new TSUtil.ActiveRT_D(MainRT))
                 //{

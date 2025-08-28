@@ -73,7 +73,8 @@ public enum PawnState
 {
     Normal,
     Sleeping,
-    Dead
+    Dead,
+    Dessicated
 }
 
 public enum FaceSide

@@ -13,7 +13,6 @@ namespace TS_Faces.Data;
 public static class FacePartDefOf
 {
     public static FacePartDef Empty = default!;
-    public static FacePartDef Sclera = default!;
 
     public static FacePartDef DebugEye = default!;
     public static FacePartDef DebugIris = default!;
@@ -37,7 +36,6 @@ public class FacePartDef : Def, IGeneFiltered
         Ear,
         Iris,
         Highlight,
-        Sclera,
     }
 
     public SlotHint slotHint = SlotHint.None;
@@ -48,7 +46,7 @@ public class FacePartDef : Def, IGeneFiltered
     public PartColor color = PartColor.None;
     public Color? customColor;
     public string graphicPath = "";
-    public bool isOnHead = true;
+    public bool floating = false;
 
     public string? graphicPathSleep;
     public bool hideSleep = false;
@@ -57,7 +55,7 @@ public class FacePartDef : Def, IGeneFiltered
     public bool hideDead = false;
 
     public bool noMirror = false;
-    public Vector2 drawSize = new(0.25f, 0.25f);
+    public Vector2 drawSize = Vector2.one;
 
     public float commonality = 0.1f;
 

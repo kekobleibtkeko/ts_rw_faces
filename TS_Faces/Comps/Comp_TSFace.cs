@@ -27,7 +27,6 @@ public class CompProperties_TSFace : CompProperties
 public class TRFacePart : IExposable
 {
     public static TRFacePart Empty = new(){ PartDef = FacePartDefOf.Empty, Transform = new() };
-    public static TRFacePart Sclera = new() { PartDef = FacePartDefOf.Sclera, Transform = new() };
     public FacePartDef PartDef = FacePartDefOf.Empty;
     public TSTransform4 Transform = new();
 
@@ -69,11 +68,12 @@ public class TSFacePersistentData() : IExposable
     public TRFacePart? BrowR;
     public TRFacePart EarL = new();
     public TRFacePart? EarR;
-    public TRFacePart? ScleraL;
-    public TRFacePart? ScleraR;
 
     public Color? EyeLReplaceColor;
     public Color? EyeRReplaceColor;
+
+    public Color? ScleraLReplaceColor;
+    public Color? ScleraRReplaceColor;
 
     public TSFacePersistentData CreateCopy()
     {
@@ -91,8 +91,6 @@ public class TSFacePersistentData() : IExposable
         copy.BrowR = BrowR?.CreateCopy();
         copy.EarL = EarL.CreateCopy();
         copy.EarR = EarR?.CreateCopy();
-        copy.ScleraL = ScleraL?.CreateCopy();
-        copy.ScleraR = ScleraR?.CreateCopy();
         return copy;
     }
 
@@ -111,10 +109,10 @@ public class TSFacePersistentData() : IExposable
         Scribe_Deep.Look(ref BrowR, "browR");
         Scribe_Deep.Look(ref EarL, "earL");
         Scribe_Deep.Look(ref EarR, "earR");
-        Scribe_Deep.Look(ref ScleraL, "sclL");
-        Scribe_Deep.Look(ref ScleraR, "sclR");
         Scribe_Values.Look(ref EyeLReplaceColor, "eyeCL");
         Scribe_Values.Look(ref EyeRReplaceColor, "eyeCR");
+        Scribe_Values.Look(ref ScleraLReplaceColor, "sclCL");
+        Scribe_Values.Look(ref ScleraRReplaceColor, "sclCR");
     }
 }
 
@@ -137,6 +135,8 @@ public class Comp_TSFace : ThingComp
 
     public HeadDef GetActiveHeadDef() => PersistentData.Heads.GetFilteredDef(Pawn);
     public FaceLayout GetActiveFaceLayout() => GetActiveHeadDef().faceLayout;
+    public bool IsRegenerationNeeded() => RenderState == ReRenderState.Needed;
+    public void RequestRegeneration() => RenderState = ReRenderState.Needed;
 
     public Color GetBaseEyeColor()
     {
@@ -153,8 +153,8 @@ public class Comp_TSFace : ThingComp
     }
     public Color GetScleraColor(FaceSide side) => side switch
     {
-        FaceSide.Left => Color.white,
-        FaceSide.Right => Color.white,
+        FaceSide.Left => PersistentData.ScleraLReplaceColor ?? Color.white,
+        FaceSide.Right => PersistentData.ScleraLReplaceColor ?? Color.white,
         FaceSide.None or _ => Color.white,
     };
     public Color GetEyeColor(FaceSide side) => side switch
@@ -171,6 +171,10 @@ public class Comp_TSFace : ThingComp
         if (pawn.Awake())
         {
             return PawnState.Normal;
+        }
+        else if (pawn.Corpse?.IsDessicated() == true)
+        {
+            return PawnState.Dessicated;
         }
         else if (pawn.Dead)
         {
@@ -197,8 +201,6 @@ public class Comp_TSFace : ThingComp
         FaceSlot.IrisR => PersistentData.IrisR ?? PersistentData.IrisL,
         FaceSlot.HighlightL => PersistentData.HighlightL,
         FaceSlot.HighlightR => PersistentData.HighlightR ?? PersistentData.HighlightL,
-        FaceSlot.ScleraL => PersistentData.ScleraL ?? TRFacePart.Sclera,
-        FaceSlot.ScleraR => PersistentData.ScleraR ?? PersistentData.ScleraL ?? TRFacePart.Sclera,
         FaceSlot.None or _ => TRFacePart.Empty,
     };
 
@@ -214,5 +216,11 @@ public class Comp_TSFace : ThingComp
     public override void PostExposeData()
     {
         Scribe_Deep.Look(ref PersistentData, "tsfacedata");
+    }
+
+    public override void Notify_WearerDied()
+    {
+        base.Notify_WearerDied();
+        RequestRegeneration();
     }
 }

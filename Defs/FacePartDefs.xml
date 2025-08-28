@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+	<!-- BASE PARTS -->
+
 	<TS_Faces.Data.FacePartDef Name="TSFacePartBase" Abstract="True">
 	</TS_Faces.Data.FacePartDef>
 	
@@ -9,24 +11,15 @@
 		<hideDead>true</hideDead>
 	</TS_Faces.Data.FacePartDef>
 	
-	<TS_Faces.Data.FacePartDef Name="TSScleraBase" ParentName="TSFacePartBase" Abstract="True">
-		<slotHint>Sclera</slotHint>
-		<color>Sclera</color>
-		<hideSleep>true</hideSleep>
-		<!--<graphicPath>Things/Pawn/Face/Sclera</graphicPath>-->
-	</TS_Faces.Data.FacePartDef>
-	
 	<TS_Faces.Data.FacePartDef Name="TSIrisBase" ParentName="TSFacePartBase" Abstract="True">
 		<slotHint>Iris</slotHint>
 		<color>Eye</color>
-		<!-- <shader>Map/Cutout</shader> -->
-		<hideSleep>true</hideSleep>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSEyeBase" ParentName="TSFacePartBase" Abstract="True">
 		<slotHint>Eye</slotHint>
 		<shader>TSEye</shader>
-		<color>Skin</color>
+		<color>None</color>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSMouthBase" ParentName="TSFacePartBase" Abstract="True">
@@ -56,7 +49,4 @@
 		<graphicPath>Things/Pawn/Empty</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 	
-	<TS_Faces.Data.FacePartDef ParentName="TSScleraBase">
-		<defName>Sclera</defName>
-	</TS_Faces.Data.FacePartDef>
 </Defs>
