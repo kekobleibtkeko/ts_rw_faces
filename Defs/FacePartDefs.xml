@@ -3,6 +3,8 @@
 	<!-- BASE PARTS -->
 
 	<TS_Faces.Data.FacePartDef Name="TSFacePartBase" Abstract="True">
+		<drawSize>(0.3, 0.3)</drawSize>
+		<shader>TSSkin</shader>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSHighlightBase" ParentName="TSFacePartBase" Abstract="True">
@@ -27,7 +29,17 @@
 		<color>Skin</color>
 	</TS_Faces.Data.FacePartDef>
 	
+	<TS_Faces.Data.FacePartDef Name="TSNoseBase" ParentName="TSFacePartBase" Abstract="True">
+		<slotHint>Nose</slotHint>
+		<color>Skin</color>
+	</TS_Faces.Data.FacePartDef>
+
 	<!-- PARTS -->
+	
+	<TS_Faces.Data.FacePartDef ParentName="TSFacePartBase">
+		<defName>Empty</defName>
+		<graphicPath>Things/Pawn/Empty</graphicPath>
+	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSIrisBase">
 		<defName>DebugIris</defName>
@@ -44,9 +56,10 @@
 		<graphicPath>Things/Pawn/Face/Eye1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 	
-	<TS_Faces.Data.FacePartDef ParentName="TSFacePartBase">
-		<defName>Empty</defName>
-		<graphicPath>Things/Pawn/Empty</graphicPath>
+	<TS_Faces.Data.FacePartDef ParentName="TSNoseBase">
+		<defName>DebugNose</defName>
+		<graphicPath>Things/Pawn/Face/Nose1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
+
 	
 </Defs>

@@ -59,7 +59,6 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
 
         var face = face_node.Face;
         var pawn = face.Pawn;
-        return;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void get_shader_and_color(
@@ -86,39 +85,11 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             };
         }
 
-        //render head
-        {
-            var head_def = face.PersistentData.Heads.GetFilteredDef(pawn);
-            get_shader_and_color(head_def.shader, head_def.color, FaceSide.None, null, out var shader, out var color);
-            var head_graphic = GraphicDatabase.Get<Graphic_Multi>(
-                head_def.graphicPath,
-                shader,
-                Vector2.one,
-                color
-            );
-            Material head_material = head_graphic.NodeGetMat(parms);
-            GenDraw.DrawMeshNowOrLater(
-                mesh,
-                matrix,
-                head_material,
-                parms.DrawNow
-            );
-        }
 
         var face_layout = face.GetActiveFaceLayout().ForRot(parms.facing);
-        var extra_eye_parts = face_layout
-            .Where(x => x.slot.OnSide(FaceSide.Left) == FaceSlot.EyeL)
-            .SelectMany(x =>
-            {
-                var orig_side = x.slot.ToSide();
-                return Enumerable.Empty<FaceLayoutPart>()
-                    .Append(x.WithSlot(FaceSlot.ScleraL.OnSide(orig_side)))
-                    .Append(x.WithSlot(FaceSlot.IrisL.OnSide(orig_side)))
-                    .Append(x.WithSlot(FaceSlot.HighlightL.OnSide(orig_side)))
-                ;
-            })
-        ;
-        var all_parts = face_layout.Concat(extra_eye_parts).ToList();
+        var all_parts = face_layout
+            //.Where(x => x.)
+            .ToList();
         //Log.Message(string.Join(
         //    ",\n",
         //    all_parts.Select(x => $"{x.slot} on side {x.slot.ToSide()}")
@@ -130,22 +101,10 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             var comp_part = face.GetPartForSlot(part.slot);
             var side = part.slot.ToSide();
             var def = comp_part.PartDef;
+            if (!def.floating)
+                continue;
             //Log.Message($"getting graphic for pawn {pawn}, node slot {slot.slot}");
-            string? path = null;
-            switch (face.GetPawnState())
-            {
-                case PawnState.Normal:
-                    path = comp_part.PartDef.graphicPath;
-                    break;
-                case PawnState.Sleeping:
-                    if (!comp_part.PartDef.hideSleep)
-                        path = comp_part.PartDef.graphicPathSleep ?? comp_part.PartDef.graphicPath;
-                    break;
-                case PawnState.Dead:
-                    if (!comp_part.PartDef.hideDead)
-                        path = comp_part.PartDef.graphicPathDead ?? comp_part.PartDef.graphicPath;
-                    break;
-            }
+            string? path = comp_part.GetGraphicPath(face.GetPawnState());
             
             if (path.NullOrEmpty())
                 continue; // this is fine, part may not have a graphic for this state
@@ -186,6 +145,7 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             var pos = part.pos
                 + transform.Offset
                 + TSUtil.GetUpVector(part.slot.ToLayerOffset())
+                + def.offset.ToUpFacingVec3()
                 //+ TSUtil.GetUpVector(ts_face_tweak)
             ;
             var draw_scale = def.drawSize.ToUpFacingVec3(1)

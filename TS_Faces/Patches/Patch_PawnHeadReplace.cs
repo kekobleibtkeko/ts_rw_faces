@@ -17,8 +17,7 @@ public static class Patch_PawnHeadReplace
     public static void Postfix(Pawn pawn, ref Graphic __result)
     {
         if (__result is null
-            || !pawn.TryGetComp(out Comp_TSFace face)
-            || pawn.IsDessicated())
+            || !pawn.TryGetComp(out Comp_TSFace face))
             return;
 
         if (face.IsRegenerationNeeded())

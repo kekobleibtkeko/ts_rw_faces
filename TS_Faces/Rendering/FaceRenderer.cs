@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using RimWorld;
 using TS_Faces.Comps;
 using TS_Faces.Data;
 using TS_Lib.Util;
@@ -23,12 +24,15 @@ public static class FaceRenderer
     public static RenderTexture SecRT = new(RT_SIZE, RT_SIZE, 1);
 
     public static Shader EyeShader;
-
+    public static Shader TransparentShader;
+    public static Material BlitMat;
     static FaceRenderer()
     {
         MainRT.Create();
         SecRT.Create();
         EyeShader = ShaderDatabase.LoadShader("TSEye");
+        TransparentShader = ShaderDatabase.LoadShader("TSTransparent");
+        BlitMat = new(TransparentShader);
     }
 
     public static void RegenerateFaces(Comp_TSFace face)
@@ -39,6 +43,7 @@ public static class FaceRenderer
         if (pawn_state == PawnState.Dessicated)
         {
             face.CachedGraphic = null;
+            face.RenderState = Comp_TSFace.ReRenderState.UpToDate;
             return;
         }
 
@@ -48,7 +53,7 @@ public static class FaceRenderer
         Shader get_shader(string? shader_path)
         {
             if (shader_path.NullOrEmpty() || ShaderDatabase.LoadShader(shader_path) is not Shader res)
-                return ShaderDatabase.CutoutSkinOverlay;
+                return TransparentShader;
             return res;
         }
 
@@ -91,21 +96,7 @@ public static class FaceRenderer
                 var side = part.slot.ToSide();
                 var def = comp_part.PartDef;
                 //Log.Message($"getting graphic for pawn {pawn}, node slot {slot.slot}");
-                string? path = null;
-                switch (pawn_state)
-                {
-                    case PawnState.Normal:
-                        path = comp_part.PartDef.graphicPath;
-                        break;
-                    case PawnState.Sleeping:
-                        if (!comp_part.PartDef.hideSleep)
-                            path = comp_part.PartDef.graphicPathSleep ?? comp_part.PartDef.graphicPath;
-                        break;
-                    case PawnState.Dead:
-                        if (!comp_part.PartDef.hideDead)
-                            path = comp_part.PartDef.graphicPathDead ?? comp_part.PartDef.graphicPath;
-                        break;
-                }
+                string? path = comp_part.GetGraphicPath(pawn_state);
 
                 if (path.NullOrEmpty())
                     continue; // this is fine, part may not have a graphic for this state
@@ -178,19 +169,19 @@ public static class FaceRenderer
                         break;
                 }
 
-                SecRT.Clear();
-                Graphics.Blit(part_mat.mainTexture, SecRT, part_mat);
-                var temp_tex = SecRT.CreateTexture2D();
-                using (new TSUtil.ActiveRT_D(SecRT))
+                //SecRT.Clear();
+                //Graphics.Blit(part_mat.mainTexture, SecRT, part_mat);
+                //var temp_tex = SecRT.CreateTexture2D();
+                using (new TSUtil.ActiveRT_D(MainRT))
                 {
-                    GL.Clear(true, true, Color.clear);
+                    //GL.Clear(true, true, Color.clear);
                     GL.PushMatrix();
                     GL.LoadOrtho();
                     Matrix4x4 matrix =
                         Matrix4x4.TRS(
                             new Vector3(
-                                0.5f + (pos.x),
-                                0.5f + (pos.z),
+                                0.5f + pos.x + def.offset.x,
+                                0.5f + pos.z + def.offset.y,
                                 0.5f
                             ),
                             Quaternion.Euler(0f, 0f, rotation),
@@ -207,24 +198,10 @@ public static class FaceRenderer
                         ? new(1, 1, -1, -1)
                         : new(0, 1, 1, -1)
                     ;
-                    Graphics.DrawTexture(img_rect, temp_tex);
+                    Graphics.DrawTexture(img_rect, part_mat.mainTexture, part_mat, 0);
                     GL.PopMatrix();
                 }
-                //Graphics.Blit(SecRT, SecRT, head_side_mat);
 
-                if (part.slot.OnSide(FaceSide.Left) == FaceSlot.EyeL)
-                {
-                    //var eyemat = new Material(EyeShader);
-                    //TSUtil.BlitUtils.BlitWithTransform(
-                    //    MainRT,
-                    //    part_mat,
-                    //    source: part_mat.mainTexture,
-                    //    scale: def.drawSize * transform.Scale * new Vector2(tex_x_mul, 1),
-                    //    offset: part.pos.FromUpFacingVec3() + transform.Offset.FromUpFacingVec3(),
-                    //    rotation: rotation
-                    //);
-                }
-                //else
                 //{
                 //    TSUtil.BlitUtils.BlitWithTransform(
                 //        MainRT,
@@ -236,20 +213,7 @@ public static class FaceRenderer
                 //    );
                 //}
 
-                Graphics.Blit(SecRT, MainRT, new(ShaderDatabase.Transparent));
-                //Graphics.Blit(SecRT, MainRT, draw_scale.FromUpFacingVec3(), pos.FromUpFacingVec3());
-                //using (new TSUtil.ActiveRT_D(MainRT))
-                //{
-
-                //    //GL.PushMatrix();
-                //    //GL.LoadOrtho();
-                //    //GL.MultMatrix(loc_matrix);
-                //    //////Graphics.Blit(tex, MainRT, material);
-                //    //Graphics.DrawTexture(new(0, 1, 1, -1), part_mat.mainTexture);
-
-                //    //GL.PopMatrix();
-                //    //TSUtil.ScreenQuadDrawer.DrawScreenQuad(head_side_mat);
-                //}
+                //Graphics.Blit(SecRT, MainRT, BlitMat);
             }
 
             new_graphic.mats[rot.AsInt] = new Material(ShaderDatabase.Cutout)

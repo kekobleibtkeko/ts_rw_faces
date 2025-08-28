@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -46,6 +47,26 @@ public class TRFacePart : IExposable
         return copy;
     }
 
+    public string? GetGraphicPath(PawnState state)
+    {
+        string? path = null;
+        switch (state)
+        {
+            case PawnState.Normal:
+                path = PartDef.graphicPath;
+                break;
+            case PawnState.Sleeping:
+                if (!PartDef.hideSleep)
+                    path = PartDef.graphicPathSleep ?? PartDef.graphicPath;
+                break;
+            case PawnState.Dead:
+                if (!PartDef.hideDead)
+                    path = PartDef.graphicPathDead ?? PartDef.graphicPath;
+                break;
+        }
+        return path;
+    }
+
     public void ExposeData()
     {
         Scribe_Defs.Look(ref PartDef, "part");
@@ -57,7 +78,7 @@ public class TSFacePersistentData() : IExposable
 {
     public List<HeadDef> Heads = [HeadDefOf.AverageLong];
     public TRFacePart Mouth = new(FacePartDefOf.DebugMouth);
-    public TRFacePart Nose = new();
+    public TRFacePart Nose = new(FacePartDefOf.DebugNose);
     public TRFacePart EyeL = new(FacePartDefOf.DebugEye);
     public TRFacePart? EyeR;
     public TRFacePart IrisL = new(FacePartDefOf.DebugIris);
@@ -218,9 +239,9 @@ public class Comp_TSFace : ThingComp
         Scribe_Deep.Look(ref PersistentData, "tsfacedata");
     }
 
-    public override void Notify_WearerDied()
+    public override void Notify_Killed(Map prevMap, DamageInfo? dinfo = null)
     {
-        base.Notify_WearerDied();
+        base.Notify_Killed(prevMap, dinfo);
         RequestRegeneration();
     }
 }

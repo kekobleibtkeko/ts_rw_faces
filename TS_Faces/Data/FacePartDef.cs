@@ -17,6 +17,7 @@ public static class FacePartDefOf
     public static FacePartDef DebugEye = default!;
     public static FacePartDef DebugIris = default!;
     public static FacePartDef DebugMouth = default!;
+    public static FacePartDef DebugNose = default!;
 
     static FacePartDefOf()
     {
@@ -45,8 +46,9 @@ public class FacePartDef : Def, IGeneFiltered
     public string? shader;
     public PartColor color = PartColor.None;
     public Color? customColor;
-    public string graphicPath = "";
     public bool floating = false;
+    public string graphicPath = "";
+    public string? graphicPathMissing;
 
     public string? graphicPathSleep;
     public bool hideSleep = false;
@@ -56,6 +58,7 @@ public class FacePartDef : Def, IGeneFiltered
 
     public bool noMirror = false;
     public Vector2 drawSize = Vector2.one;
+    public Vector2 offset = Vector2.zero;
 
     public float commonality = 0.1f;
 

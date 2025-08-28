@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 1040516934
+CRC: 1233425827
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1a74c4a2a6b95a78a08ad911876abfd1
+    Hash: 3d86408312b398a53c1d3d7566adeb86
   TypeTreeHash:
     serializedVersion: 2
     Hash: 11fd817fef1f2e704711e3a1e0c8427a
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 1a74c4a2a6b95a78a08ad911876abfd1
+    Hash: 3d86408312b398a53c1d3d7566adeb86
 HashAppended: 0
 ClassTypes:
 - Class: 28
@@ -20,6 +20,44 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Data/tsuyao.faces/Eye1_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugEye_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugMouth_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageLong_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugEye_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Average_south.png
+- Assets/Data/tsuyao.faces/Materials/TSSkin.shader
+- Assets/Data/tsuyao.faces/Materials/TSTransparent.shader
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Empty_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Empty_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Male_Average_Normal_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Nose1_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Nose1_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageLong_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Average_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugMouth_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugIris_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Female_Average_Another_Normal_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Empty_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Average_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageShort_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugIris_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Empty_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageLong_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Empty_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Female_Average_Another_Normal_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Male_Average_Normal_east.png
+- Assets/Data/tsuyao.faces/Textures/empty.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Eye1_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageShort_south.png
 - Assets/Data/tsuyao.faces/Materials/TSEye.shader
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageShort_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Female_Average_Another_Normal_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Eye1_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Empty_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugIris_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugEye_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Male_Average_Normal_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugMouth_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Nose1_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Eye1_north.png
 Dependencies: []
