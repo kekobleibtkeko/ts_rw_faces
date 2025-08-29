@@ -117,6 +117,7 @@ Shader "Unlit/TSEye"
                 // blend sclera on
                 combinedRgb = lerp(combinedRgb, scleraColor, min(1 - iris_col.a, eye_col.r));
                 float finalAlpha = eye_col.a;
+                // combinedRgb.rgb *= eye_col.a;
                 // clip(finalAlpha - 0.4);
 
                 return

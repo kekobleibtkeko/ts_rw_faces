@@ -43,7 +43,7 @@
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSIrisBase">
 		<defName>DebugIris</defName>
-		<graphicPath>Things/Pawn/Face/DebugIris</graphicPath>
+		<graphicPath>Things/Pawn/Face/Iris1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
@@ -58,6 +58,7 @@
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSNoseBase">
 		<defName>DebugNose</defName>
+		<drawSize>(0.4, 0.4)</drawSize>
 		<graphicPath>Things/Pawn/Face/Nose1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 

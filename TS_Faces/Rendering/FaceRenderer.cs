@@ -70,6 +70,13 @@ public static class FaceRenderer
             };
         }
 
+        var eyes = pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.SightSource);
+        foreach (var eye in eyes)
+        {
+            var groups = string.Join(", ", eye.groups.Select(x => x.label));
+            Log.Message($"eye for {pawn}: {eye}({eye.Label}), groups={groups}");
+        }
+
         var head_def = face.GetActiveHeadDef();
         var head_shader = get_shader(head_def.shader);
         var head_color = get_color(head_def.color);

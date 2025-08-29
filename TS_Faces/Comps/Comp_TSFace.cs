@@ -47,6 +47,7 @@ public class TRFacePart : IExposable
         return copy;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string? GetGraphicPath(PawnState state)
     {
         string? path = null;
@@ -65,6 +66,23 @@ public class TRFacePart : IExposable
                 break;
         }
         return path;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsPartMissing(HediffSet hediffs, FaceSide side)
+    {
+        //hediffs.pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.)
+        return PartDef.slotHint switch
+        {
+            FacePartDef.SlotHint.Eye => hediffs.PartIsMissing(hediffs.GetBodyPartRecord(BodyPartDefOf.Eye)),
+            FacePartDef.SlotHint.Nose => throw new NotImplementedException(),
+            FacePartDef.SlotHint.Mouth => throw new NotImplementedException(),
+            FacePartDef.SlotHint.Brow => throw new NotImplementedException(),
+            FacePartDef.SlotHint.Ear => throw new NotImplementedException(),
+            FacePartDef.SlotHint.Iris => throw new NotImplementedException(),
+            FacePartDef.SlotHint.Highlight => throw new NotImplementedException(),
+            FacePartDef.SlotHint.None or _ => false
+        };
     }
 
     public void ExposeData()
@@ -158,7 +176,8 @@ public class Comp_TSFace : ThingComp
     public FaceLayout GetActiveFaceLayout() => GetActiveHeadDef().faceLayout;
     public bool IsRegenerationNeeded() => RenderState == ReRenderState.Needed;
     public void RequestRegeneration() => RenderState = ReRenderState.Needed;
-
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Color GetBaseEyeColor()
     {
         foreach (var gene in Pawn.genes.GenesListForReading)
@@ -172,12 +191,14 @@ public class Comp_TSFace : ThingComp
         }
         return Color.white;
     }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Color GetScleraColor(FaceSide side) => side switch
     {
         FaceSide.Left => PersistentData.ScleraLReplaceColor ?? Color.white,
         FaceSide.Right => PersistentData.ScleraLReplaceColor ?? Color.white,
         FaceSide.None or _ => Color.white,
     };
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Color GetEyeColor(FaceSide side) => side switch
     {
         FaceSide.Left => PersistentData.EyeLReplaceColor ?? GetBaseEyeColor(),

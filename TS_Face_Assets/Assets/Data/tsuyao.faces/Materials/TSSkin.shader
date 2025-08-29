@@ -4,7 +4,7 @@ Shader "Unlit/TSSkin"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1, 1, 1, 1)
-        _SkinTint ("Skin Tint", Color) = (1, 0.5, 0.5, 1)
+        _ShadowColor ("Skin Shadow Color", Color) = (1, .5, .5, 1)
     }
     SubShader
     {
@@ -38,7 +38,7 @@ Shader "Unlit/TSSkin"
             float4 _MainTex_ST;
 
             float4 _Color;
-            float4 _SkinTint;
+            float4 _ShadowColor;
 
             v2f vert (appdata v)
             {
@@ -51,12 +51,26 @@ Shader "Unlit/TSSkin"
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
-                fixed4 tinted = saturate(col * _Color);
+                // then, if alpha less than 0.01, discard (pixel is invisible)
+                if (col.a < 0.01) {
+                  discard;
+                }
+                // tmp1.x = col.r * (1 - col.r)
+                // this bit creates a parabolic curve based on the red channel of the main texture (not where our red tint comes from yet)
+                float innerShadowyOutlineFactor = col.r * (1.0 - col.r);
 
-                float sum = tinted.r + tinted.g + tinted.b;
-                float tint_power = max(0.000001, 1 - (sum / 3.0));
-                tint_power = pow(tint_power, 4.5);
-                tinted.rgb = lerp(tinted.rgb, _SkinTint.rgb, tint_power);
+                // clamp shadow factor so it never exceeds 0.11
+                innerShadowyOutlineFactor = (innerShadowyOutlineFactor > 0.11) ? 0.11 : innerShadowyOutlineFactor;
+
+                // multiply that shadow factor into _ShadowColor (where our red tint actually comes from)
+                float3 shadow = innerShadowyOutlineFactor * _ShadowColor.rgb;
+
+                // final tint color (excluding the shadows, think about what that would look like if we also multiplied by `shadow` here. lol
+                float4 tinted = col * _Color;
+
+                // finally, we multiply that tint color by the vertex color and then add our shadow contribution
+                tinted.rgb = (tinted.rgb + shadow);
+                tinted.a = col.a;
 
                 // unfuck grey borders
                 tinted.rgb *= col.a;
