@@ -25,14 +25,12 @@ public static class FaceRenderer
 
     public static Shader EyeShader;
     public static Shader TransparentShader;
-    public static Material BlitMat;
     static FaceRenderer()
     {
         MainRT.Create();
         SecRT.Create();
         EyeShader = ShaderDatabase.LoadShader("TSEye");
         TransparentShader = ShaderDatabase.LoadShader("TSTransparent");
-        BlitMat = new(TransparentShader);
     }
 
     public static void RegenerateFaces(Comp_TSFace face)
@@ -70,13 +68,6 @@ public static class FaceRenderer
             };
         }
 
-        var eyes = pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.SightSource);
-        foreach (var eye in eyes)
-        {
-            var groups = string.Join(", ", eye.groups.Select(x => x.label));
-            Log.Message($"eye for {pawn}: {eye}({eye.Label}), groups={groups}");
-        }
-
         var head_def = face.GetActiveHeadDef();
         var head_shader = get_shader(head_def.shader);
         var head_color = get_color(head_def.color);
@@ -103,7 +94,7 @@ public static class FaceRenderer
                 var side = part.slot.ToSide();
                 var def = comp_part.PartDef;
                 //Log.Message($"getting graphic for pawn {pawn}, node slot {slot.slot}");
-                string? path = comp_part.GetGraphicPath(pawn_state);
+                string? path = comp_part.GetGraphicPath(face, side);
 
                 if (path.NullOrEmpty())
                     continue; // this is fine, part may not have a graphic for this state
@@ -137,19 +128,13 @@ public static class FaceRenderer
                 var transform = comp_part.Transform.ForRot(rot);
                 var pos = part.pos
                     + transform.Offset
+                    + def.offset.ToUpFacingVec3()
                     + TSUtil.GetUpVector(part.slot.ToLayerOffset())
-                //+ TSUtil.GetUpVector(ts_face_tweak)
                 ;
                 var draw_scale = def.drawSize.ToUpFacingVec3(1)
                     .MultipliedBy(transform.Scale.ToUpFacingVec3(1))
                 ;
                 var rotation = transform.RotationOffset;
-
-                var loc_matrix = Matrix4x4.TRS(
-                    pos,
-                    Quaternion.AngleAxis(rotation, Vector3.up),
-                    draw_scale
-                );
 
                 float tex_x_mul = flip ? -1 : 1;
 
@@ -176,12 +161,9 @@ public static class FaceRenderer
                         break;
                 }
 
-                //SecRT.Clear();
-                //Graphics.Blit(part_mat.mainTexture, SecRT, part_mat);
-                //var temp_tex = SecRT.CreateTexture2D();
+                /*
                 using (new TSUtil.ActiveRT_D(MainRT))
                 {
-                    //GL.Clear(true, true, Color.clear);
                     GL.PushMatrix();
                     GL.LoadOrtho();
                     Matrix4x4 matrix =
@@ -207,20 +189,17 @@ public static class FaceRenderer
                     ;
                     Graphics.DrawTexture(img_rect, part_mat.mainTexture, part_mat, 0);
                     GL.PopMatrix();
-                }
+                }*/
 
-                //{
-                //    TSUtil.BlitUtils.BlitWithTransform(
-                //        MainRT,
-                //        part_mat,
-                //        source: part_mat.mainTexture,
-                //        scale: def.drawSize * transform.Scale * new Vector2(tex_x_mul, 1),
-                //        offset: part.pos.FromUpFacingVec3() + transform.Offset.FromUpFacingVec3(),
-                //        rotation: rotation
-                //    );
-                //}
-
-                //Graphics.Blit(SecRT, MainRT, BlitMat);
+                TSUtil.BlitUtils.BlitWithTransform(
+                    MainRT,
+                    part_mat,
+                    source: part_mat.mainTexture,
+                    scale: draw_scale.FromUpFacingVec3(),
+                    offset: pos.FromUpFacingVec3(),
+                    rotation: rotation,
+                    flip_x: flip
+                );
             }
 
             new_graphic.mats[rot.AsInt] = new Material(ShaderDatabase.Cutout)

@@ -85,7 +85,6 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             };
         }
 
-
         var face_layout = face.GetActiveFaceLayout().ForRot(parms.facing);
         var all_parts = face_layout
             //.Where(x => x.)
@@ -104,7 +103,7 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             if (!def.floating)
                 continue;
             //Log.Message($"getting graphic for pawn {pawn}, node slot {slot.slot}");
-            string? path = comp_part.GetGraphicPath(face.GetPawnState());
+            string? path = comp_part.GetGraphicPath(face, side);
             
             if (path.NullOrEmpty())
                 continue; // this is fine, part may not have a graphic for this state

@@ -48,10 +48,13 @@ public class TRFacePart : IExposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string? GetGraphicPath(PawnState state)
+    public string? GetGraphicPath(Comp_TSFace face, FaceSide side)
     {
+        Pawn pawn = face.Pawn;
         string? path = null;
-        switch (state)
+        if (!PartDef.graphicPathMissing.NullOrEmpty() && IsPartMissing(pawn, side))
+            return PartDef.graphicPathMissing;
+        switch (face.GetPawnState())
         {
             case PawnState.Normal:
                 path = PartDef.graphicPath;
@@ -69,20 +72,22 @@ public class TRFacePart : IExposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsPartMissing(HediffSet hediffs, FaceSide side)
+    public bool IsPartMissing(Pawn pawn, FaceSide side)
     {
-        //hediffs.pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.)
-        return PartDef.slotHint switch
+        var part = PartDef.slotHint switch
         {
-            FacePartDef.SlotHint.Eye => hediffs.PartIsMissing(hediffs.GetBodyPartRecord(BodyPartDefOf.Eye)),
-            FacePartDef.SlotHint.Nose => throw new NotImplementedException(),
-            FacePartDef.SlotHint.Mouth => throw new NotImplementedException(),
-            FacePartDef.SlotHint.Brow => throw new NotImplementedException(),
-            FacePartDef.SlotHint.Ear => throw new NotImplementedException(),
-            FacePartDef.SlotHint.Iris => throw new NotImplementedException(),
-            FacePartDef.SlotHint.Highlight => throw new NotImplementedException(),
-            FacePartDef.SlotHint.None or _ => false
+            FacePartDef.SlotHint.Eye => pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.SightSource).First(x => x.Label.ContainsLowerInvariant(side)),
+            FacePartDef.SlotHint.Nose => pawn.RaceProps.body.AllParts.First(x => x.def.label == "nose"),
+            FacePartDef.SlotHint.Mouth => pawn.RaceProps.body.AllParts.First(x => x.Label == "jaw"),
+            FacePartDef.SlotHint.Brow => null,
+            FacePartDef.SlotHint.Ear => pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.HearingSource).First(x => x.Label.ContainsLowerInvariant(side)),
+            FacePartDef.SlotHint.Iris
+                or FacePartDef.SlotHint.Highlight
+                or FacePartDef.SlotHint.None
+                or _ => null
         };
+
+        return pawn.health.hediffSet.PartIsMissing(part);
     }
 
     public void ExposeData()
