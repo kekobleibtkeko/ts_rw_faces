@@ -23,6 +23,15 @@ public static class Patch_PawnHeadReplace
         if (face.IsRegenerationNeeded())
             FaceRenderer.RegenerateFaces(face);
 
-        __result = face.CachedGraphic ?? __result;
+        if (face.CachedGraphic is not null)
+        {
+            var statue_color = pawn.Drawer.renderer.StatueColor;
+            if (statue_color.HasValue)
+            {
+                FaceRenderer.MakeStatueColored(face, statue_color.Value);
+            }
+            //Log.Message($"aaaaa: {pawn}({pawn.thingIDNumber})  statue color: {statue_color}");
+            __result = face.CachedGraphic;
+        }
     }
 }

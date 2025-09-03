@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TS_Faces")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+883f1858e3f379773ec19be04bca2d224c13d1c8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7082bba2952a5e307aa8e448b08cd0073ddb327f")]
 [assembly: System.Reflection.AssemblyProductAttribute("TS_Faces")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TS_Faces")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

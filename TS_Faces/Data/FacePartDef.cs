@@ -25,7 +25,7 @@ public static class FacePartDefOf
     }
 }
 
-public class FacePartDef : Def, IGeneFiltered
+public class FacePartDef : Def, IPartFilter
 {
     public enum SlotHint
     {
@@ -40,8 +40,6 @@ public class FacePartDef : Def, IGeneFiltered
     }
 
     public SlotHint slotHint = SlotHint.None;
-    public Gender gender = Gender.None;
-    public FloatRange? beautyRange;
 
     public string? shader;
     public PartColor color = PartColor.None;
@@ -61,12 +59,8 @@ public class FacePartDef : Def, IGeneFiltered
     public Vector2 offset = Vector2.zero;
 
     public float commonality = 0.1f;
+    public List<PartFilterEntry> filters = [];
 
-    public List<GeneDef> validGenes = [];
-    public List<GeneDef> neededGenes = [];
-    public List<GeneDef> disallowedGenes = [];
-
-    public IEnumerable<GeneDef> ValidGenes => validGenes;
-    public IEnumerable<GeneDef> NeededGenes => neededGenes;
-    public IEnumerable<GeneDef> DisallowedGenes => disallowedGenes;
+    IEnumerable<PartFilterEntry> IPartFilter.FilterEntries => filters;
+    float IPartFilter.Commonality => commonality;
 }

@@ -170,12 +170,13 @@ public class Comp_TSFace : ThingComp
     }
 
     public const float TSHeadBaseLayer = 30f;
-    public Pawn Pawn => parent as Pawn ?? throw new NullReferenceException("Comp_TSFace attached to non-pawn");
+    public Pawn Pawn => parent as Pawn ?? throw new Exception("Comp_TSFace attached to non-pawn");
 
     public TSFacePersistentData PersistentData = new();
 
     public ReRenderState RenderState;
     public Graphic_Multi? CachedGraphic;
+    public Color? OverriddenColor;
 
     public HeadDef GetActiveHeadDef() => PersistentData.Heads.GetFilteredDef(Pawn);
     public FaceLayout GetActiveFaceLayout() => GetActiveHeadDef().faceLayout;

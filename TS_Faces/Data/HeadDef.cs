@@ -19,28 +19,18 @@ public static class HeadDefOf
     }
 }
 
-public class HeadDef : Def, IGeneFiltered
+public class HeadDef : Def, IPartFilter
 {
     [NoTranslate]
     public string graphicPath = "";
-
-    public Gender gender = Gender.None;
-
-    public FloatRange? beautyRange;
 
     public FaceLayout faceLayout = new();
     public string? shader;
     public PartColor color = PartColor.Skin;
 
     public float commonality = 0.1f;
+    public List<PartFilterEntry> filters = [];
 
-    public List<GeneDef> validGenes = [];
-    public List<GeneDef> neededGenes = [];
-    public List<GeneDef> disallowedGenes = [];
-
-    public bool forGhoul = false;
-
-    public IEnumerable<GeneDef> ValidGenes => validGenes;
-    public IEnumerable<GeneDef> NeededGenes => neededGenes;
-    public IEnumerable<GeneDef> DisallowedGenes => disallowedGenes;
+    IEnumerable<PartFilterEntry> IPartFilter.FilterEntries => filters;
+    float IPartFilter.Commonality => commonality;
 }

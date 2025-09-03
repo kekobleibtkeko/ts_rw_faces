@@ -23,14 +23,47 @@ public static class FaceRenderer
     public static RenderTexture MainRT = new(RT_SIZE, RT_SIZE, 1);
     public static RenderTexture SecRT = new(RT_SIZE, RT_SIZE, 1);
 
+    public static Shader SkinShader;
     public static Shader EyeShader;
     public static Shader TransparentShader;
+    public static Shader ColorOverrideShader;
     static FaceRenderer()
     {
         MainRT.Create();
         SecRT.Create();
+        SkinShader = ShaderDatabase.LoadShader("TSSkin");
         EyeShader = ShaderDatabase.LoadShader("TSEye");
         TransparentShader = ShaderDatabase.LoadShader("TSTransparent");
+        ColorOverrideShader = ShaderDatabase.LoadShader("TSColorOverride");
+    }
+
+    public static void MakeStatueColored(Comp_TSFace face, Color statue_color)
+    {
+        //Log.Message("making face statue colored");
+        if (face.IsRegenerationNeeded())
+            RegenerateFaces(face);
+
+        if (face.OverriddenColor == statue_color)
+            return;
+
+        face.OverriddenColor = statue_color;
+        //Log.Message("making face statue colored!!!!!!!!!! frfr");
+
+        var override_mat = new Material(ColorOverrideShader)
+        {
+            //color = statue_color,
+        };
+
+        var graphic = face.CachedGraphic!;
+        
+        for (int i = 0; i < 4; i++)
+        {
+            MainRT.Clear();
+            var side_mat = graphic.mats[i];
+
+            Graphics.Blit(side_mat.mainTexture, MainRT, override_mat);
+            side_mat.mainTexture = MainRT.CreateTexture2D();
+        }
     }
 
     public static void RegenerateFaces(Comp_TSFace face)
@@ -51,7 +84,7 @@ public static class FaceRenderer
         Shader get_shader(string? shader_path)
         {
             if (shader_path.NullOrEmpty() || ShaderDatabase.LoadShader(shader_path) is not Shader res)
-                return TransparentShader;
+                return SkinShader;
             return res;
         }
 
@@ -117,7 +150,6 @@ public static class FaceRenderer
                     _ => false,
                 };
 
-                //Log.Message($"Slot {part.slot}({side}) flipped on side {parms.facing.ToStringHuman()}: {flip}");
                 Material part_mat = graphic.MatAt(rot);
                 if (part_mat is null)
                 {
@@ -135,8 +167,6 @@ public static class FaceRenderer
                     .MultipliedBy(transform.Scale.ToUpFacingVec3(1))
                 ;
                 var rotation = transform.RotationOffset;
-
-                float tex_x_mul = flip ? -1 : 1;
 
                 // handle part specific adjustments
                 switch (part.slot)
@@ -160,36 +190,6 @@ public static class FaceRenderer
                         flip = false; // the shader handles the flipping here
                         break;
                 }
-
-                /*
-                using (new TSUtil.ActiveRT_D(MainRT))
-                {
-                    GL.PushMatrix();
-                    GL.LoadOrtho();
-                    Matrix4x4 matrix =
-                        Matrix4x4.TRS(
-                            new Vector3(
-                                0.5f + pos.x + def.offset.x,
-                                0.5f + pos.z + def.offset.y,
-                                0.5f
-                            ),
-                            Quaternion.Euler(0f, 0f, rotation),
-                            new Vector3(
-                                draw_scale.x,
-                                draw_scale.z,
-                                1f
-                            )
-                        )
-                        * Matrix4x4.Translate(new Vector3(-0.5f, -0.5f, 0f))
-                    ;
-                    GL.MultMatrix(matrix);
-                    Rect img_rect = flip
-                        ? new(1, 1, -1, -1)
-                        : new(0, 1, 1, -1)
-                    ;
-                    Graphics.DrawTexture(img_rect, part_mat.mainTexture, part_mat, 0);
-                    GL.PopMatrix();
-                }*/
 
                 TSUtil.BlitUtils.BlitWithTransform(
                     MainRT,

@@ -11,6 +11,7 @@
 		<slotHint>Highlight</slotHint>
 		<hideSleep>true</hideSleep>
 		<hideDead>true</hideDead>
+		<shader>TSTransparent</shader>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSIrisBase" ParentName="TSFacePartBase" Abstract="True">
@@ -22,6 +23,7 @@
 		<slotHint>Eye</slotHint>
 		<shader>TSEye</shader>
 		<color>None</color>
+		<drawSize>(0.29, 0.29)</drawSize>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSMouthBase" ParentName="TSFacePartBase" Abstract="True">
