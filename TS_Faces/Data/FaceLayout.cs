@@ -13,23 +13,18 @@ namespace TS_Faces.Data;
 
 public class FaceLayoutPart
 {
-    public FaceSlot slot;
-    public Vector3 pos;
+    public SlotDef slot = SlotDefOf.Eye;
+	public FaceSide side;
+    public Vector2 pos;
     public float rotation;
-
-    public FaceLayoutPart WithSlot(FaceSlot slot)
-    {
-        var copy = this.DirtyClone() ?? throw new Exception("unable to clone FaceLayoutPart?");
-        copy.slot = slot;
-        return copy;
-    }
 
     public static FaceLayoutPart Mirrored(FaceLayoutPart part)
     {
         return new FaceLayoutPart
         {
-            slot = part.slot.Mirror(),
-            pos = part.pos.ScaledBy(new Vector3(-1, 1, 1)),
+            slot = part.slot,
+			side = part.side.Mirror(),
+            pos = part.pos * new Vector2(-1, 1),
             rotation = 360 - part.rotation
         };
     }
@@ -52,7 +47,7 @@ public class FaceLayout
         0 => north ?? Enumerable.Empty<FaceLayoutPart>(),
         1 => east,
         2 => south,
-        3 => (west ??= MirrorSide(east)),
+        3 => west ??= MirrorSide(east),
         _ => south,
     };
 }

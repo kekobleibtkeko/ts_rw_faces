@@ -98,7 +98,7 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
         {
             var actual_mesh = mesh;
             var comp_part = face.GetPartForSlot(part.slot);
-            var side = part.slot.ToSide();
+			var side = part.side;
             var def = comp_part.PartDef;
             if (!def.floating)
                 continue;
@@ -141,9 +141,9 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
             }
 
             var transform = comp_part.Transform.ForRot(parms.facing);
-            var pos = part.pos
+            var pos = part.pos.ToUpFacingVec3()
                 + transform.Offset
-                + TSUtil.GetUpVector(part.slot.ToLayerOffset())
+                + TSUtil.GetUpVector(part.slot.layerOffset)
                 + def.offset.ToUpFacingVec3()
                 //+ TSUtil.GetUpVector(ts_face_tweak)
             ;

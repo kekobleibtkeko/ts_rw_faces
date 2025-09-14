@@ -110,6 +110,14 @@ public static class FaceSlotExtensions
     public const float EPSILON_3 = EPSILON * 3;
     public const float EPSILON_4 = EPSILON * 4;
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static FaceSide Mirror(this FaceSide side) => side switch
+	{
+		FaceSide.Left => FaceSide.Right,
+		FaceSide.Right => FaceSide.Left,
+		FaceSide.None or _ => FaceSide.None,
+	};
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static FaceSlot Mirror(this FaceSlot slot) => slot switch
     {
@@ -130,7 +138,7 @@ public static class FaceSlotExtensions
         FaceSlot.None or _ => FaceSlot.None,
     };
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Obsolete]
     public static float ToLayerOffset(this FaceSlot slot) => slot switch
     {
         FaceSlot.EyeL or FaceSlot.EyeR => EPSILON_4,
@@ -144,29 +152,29 @@ public static class FaceSlotExtensions
         FaceSlot.None or _ => 0f,
     };
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	[Obsolete]
     public static FaceSide ToSide(this FaceSlot slot) => slot switch
-    {
-        FaceSlot.EyeL => FaceSide.Left,
-        FaceSlot.EyeR => FaceSide.Right,
-        FaceSlot.BrowL => FaceSide.Left,
-        FaceSlot.BrowR => FaceSide.Right,
-        FaceSlot.EarL => FaceSide.Left,
-        FaceSlot.EarR => FaceSide.Right,
-        FaceSlot.IrisL => FaceSide.Left,
-        FaceSlot.IrisR => FaceSide.Right,
-        FaceSlot.HighlightL => FaceSide.Left,
-        FaceSlot.HighlightR => FaceSide.Right,
-        FaceSlot.ScleraL => FaceSide.Left,
-        FaceSlot.ScleraR => FaceSide.Right,
-        FaceSlot.None
-                    or FaceSlot.Nose
-                    or FaceSlot.Mouth
-                    or _
-                    => FaceSide.None,
-    };
+	{
+		FaceSlot.EyeL => FaceSide.Left,
+		FaceSlot.EyeR => FaceSide.Right,
+		FaceSlot.BrowL => FaceSide.Left,
+		FaceSlot.BrowR => FaceSide.Right,
+		FaceSlot.EarL => FaceSide.Left,
+		FaceSlot.EarR => FaceSide.Right,
+		FaceSlot.IrisL => FaceSide.Left,
+		FaceSlot.IrisR => FaceSide.Right,
+		FaceSlot.HighlightL => FaceSide.Left,
+		FaceSlot.HighlightR => FaceSide.Right,
+		FaceSlot.ScleraL => FaceSide.Left,
+		FaceSlot.ScleraR => FaceSide.Right,
+		FaceSlot.None
+					or FaceSlot.Nose
+					or FaceSlot.Mouth
+					or _
+					=> FaceSide.None,
+	};
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Obsolete]
     public static FaceSlot OnSide(this FaceSlot slot, FaceSide side) => slot switch
     {
         FaceSlot.EyeL or FaceSlot.EyeR => side == FaceSide.Left ? FaceSlot.EyeL : FaceSlot.EyeR,

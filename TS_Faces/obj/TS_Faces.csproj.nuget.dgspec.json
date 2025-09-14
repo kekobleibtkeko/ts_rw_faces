@@ -1,33 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj": {}
+    "/home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/TS_Faces.csproj": {}
   },
   "projects": {
-    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj": {
+    "/home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/TS_Faces.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj",
+        "projectUniqueName": "/home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/TS_Faces.csproj",
         "projectName": "TS_Faces",
-        "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\TS_Faces.csproj",
-        "packagesPath": "C:\\Users\\Captiva\\.nuget\\packages\\",
-        "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\ts_rw_faces\\TS_Faces\\obj\\",
+        "projectPath": "/home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/TS_Faces.csproj",
+        "packagesPath": "/home/alex/.nuget/packages/",
+        "outputPath": "/home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Users\\Captiva\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder",
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Captiva\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Users\\Captiva\\AppData\\Roaming\\NuGet\\config\\Godot.Offline.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/alex/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net4.8"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -46,12 +38,20 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net48": {
           "targetAlias": "net4.8",
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304\\RuntimeIdentifierGraph.json"
+          "dependencies": {
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.109/RuntimeIdentifierGraph.json"
         }
       }
     }

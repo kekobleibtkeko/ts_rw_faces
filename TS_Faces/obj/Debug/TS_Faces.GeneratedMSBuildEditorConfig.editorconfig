@@ -1,6 +1,6 @@
 is_global = true
 build_property.RootNamespace = TS_Faces
-build_property.ProjectDir = C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\ts_rw_faces\TS_Faces\
+build_property.ProjectDir = /home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTUseWindowsUIXamlProjections = false

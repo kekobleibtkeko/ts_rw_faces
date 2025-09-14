@@ -53,8 +53,18 @@ public class PartFilterEntry
     }
 }
 
-public interface IPartFilter
+public interface IPartFiltered
 {
     IEnumerable<PartFilterEntry> FilterEntries { get; }
     float Commonality { get; }
+}
+
+public static class PartFilterExtensions
+{
+	public static T GetActiveFromFilters<T>(this IEnumerable<T> parts, Pawn pawn)
+		where
+			T: IPartFiltered
+	{
+		throw new NotImplementedException();
+	}
 }

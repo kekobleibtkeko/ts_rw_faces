@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<TS_Faces.Data.SlotDef>
+		<defName>SkinDecor</defName>
+		<order>-40</order>
+		<layerOffset>0.0002</layerOffset>
+	</TS_Faces.Data.SlotDef>
+
+	<TS_Faces.Data.SlotDef>
+		<defName>Eye</defName>
+		<order>40</order>
+		<layerOffset>0.0016</layerOffset>
+		<props Class="TS_Faces.Data.PartTagSlotWorkerProps">
+			<tag>SightSource</tag>
+		</props>
+	</TS_Faces.Data.SlotDef>
+
+	<TS_Faces.Data.SlotDef>
+		<defName>Nose</defName>
+		<order>0</order>
+		<layerOffset>0.0004</layerOffset>
+		<props Class="TS_Faces.Data.PartNameSlotWorkerProps">
+			<name>nose</name>
+		</props>
+	</TS_Faces.Data.SlotDef>
+
+	<TS_Faces.Data.SlotDef>
+		<defName>Mouth</defName>
+		<order>0</order>
+		<layerOffset>0.0004</layerOffset>
+		<props Class="TS_Faces.Data.PartNameSlotWorkerProps">
+			<name>jaw</name>
+		</props>
+	</TS_Faces.Data.SlotDef>
+
+	<TS_Faces.Data.SlotDef>
+		<defName>Brow</defName>
+		<order>70</order>
+		<layerOffset>0.0018</layerOffset>
+		<!-- TODO: add worker (Damaged when eye missing) -->
+	</TS_Faces.Data.SlotDef>
+
+	<TS_Faces.Data.SlotDef>
+		<defName>Ear</defName>
+		<order>-70</order>
+		<layerOffset>0.0004</layerOffset>
+		<props Class="TS_Faces.Data.PartTagSlotWorkerProps">
+			<tag>HearingSource</tag>
+		</props>
+	</TS_Faces.Data.SlotDef>
+
+	<TS_Faces.Data.SlotDef>
+		<defName>Iris</defName>
+		<!-- Handled by shader, no need for order or offset -->
+	</TS_Faces.Data.SlotDef>
+
+	<TS_Faces.Data.SlotDef>
+		<defName>Highlight</defName>
+		<!-- Handled by shader, no need for order or offset -->
+	</TS_Faces.Data.SlotDef>
+</Defs>

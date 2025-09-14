@@ -25,7 +25,7 @@ public static class FacePartDefOf
     }
 }
 
-public class FacePartDef : Def, IPartFilter
+public class FacePartDef : Def, IPartFiltered
 {
     public enum SlotHint
     {
@@ -39,7 +39,7 @@ public class FacePartDef : Def, IPartFilter
         Highlight,
     }
 
-    public SlotHint slotHint = SlotHint.None;
+    public SlotDef slot = SlotDefOf.Eye;
 
     public string? shader;
     public PartColor color = PartColor.None;
@@ -61,6 +61,6 @@ public class FacePartDef : Def, IPartFilter
     public float commonality = 0.1f;
     public List<PartFilterEntry> filters = [];
 
-    IEnumerable<PartFilterEntry> IPartFilter.FilterEntries => filters;
-    float IPartFilter.Commonality => commonality;
+    IEnumerable<PartFilterEntry> IPartFiltered.FilterEntries => filters;
+    float IPartFiltered.Commonality => commonality;
 }

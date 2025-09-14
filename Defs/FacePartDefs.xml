@@ -8,31 +8,31 @@
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSHighlightBase" ParentName="TSFacePartBase" Abstract="True">
-		<slotHint>Highlight</slotHint>
+		<slot>Highlight</slot>
 		<hideSleep>true</hideSleep>
 		<hideDead>true</hideDead>
 		<shader>TSTransparent</shader>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSIrisBase" ParentName="TSFacePartBase" Abstract="True">
-		<slotHint>Iris</slotHint>
+		<slot>Iris</slot>
 		<color>Eye</color>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSEyeBase" ParentName="TSFacePartBase" Abstract="True">
-		<slotHint>Eye</slotHint>
+		<slot>Eye</slot>
 		<shader>TSEye</shader>
 		<color>None</color>
 		<drawSize>(0.29, 0.29)</drawSize>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSMouthBase" ParentName="TSFacePartBase" Abstract="True">
-		<slotHint>Mouth</slotHint>
+		<slot>Mouth</slot>
 		<color>Skin</color>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSNoseBase" ParentName="TSFacePartBase" Abstract="True">
-		<slotHint>Nose</slotHint>
+		<slot>Nose</slot>
 		<color>Skin</color>
 	</TS_Faces.Data.FacePartDef>
 

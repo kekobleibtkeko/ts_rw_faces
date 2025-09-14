@@ -19,7 +19,7 @@ public static class HeadDefOf
     }
 }
 
-public class HeadDef : Def, IPartFilter
+public class HeadDef : Def, IPartFiltered
 {
     [NoTranslate]
     public string graphicPath = "";
@@ -31,6 +31,6 @@ public class HeadDef : Def, IPartFilter
     public float commonality = 0.1f;
     public List<PartFilterEntry> filters = [];
 
-    IEnumerable<PartFilterEntry> IPartFilter.FilterEntries => filters;
-    float IPartFilter.Commonality => commonality;
+    IEnumerable<PartFilterEntry> IPartFiltered.FilterEntries => filters;
+    float IPartFiltered.Commonality => commonality;
 }
