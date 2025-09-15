@@ -9,7 +9,7 @@ using TS_Faces.Comps;
 using TS_Faces.Rendering;
 using Verse;
 
-namespace TS_Faces.Patches;
+namespace TS_Faces.Harmony;
 
 [HarmonyPatch(typeof(PawnRenderNode_Head), nameof(PawnRenderNode_Head.GraphicFor))]
 public static class Patch_PawnHeadReplace

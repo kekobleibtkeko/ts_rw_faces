@@ -15,3 +15,6 @@ C:/Program Files (x86)/Steam/steamapps/common/Rimworld/Mods/ts_rw_faces/TS_Faces
 /home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/obj/Debug/TS_Faces.csproj.CoreCompileInputs.cache
 /home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/obj/Debug/TS_Faces.sourcelink.json
 /home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/obj/Debug/TS_Faces.dll
+/home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/Assemblies/TS_Faces.dll
+/home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/Assemblies/TS_Faces.pdb
+/home/alex/.local/share/Steam/steamapps/common/RimWorld/Mods/ts_rw_faces/TS_Faces/obj/Debug/TS_Faces.pdb

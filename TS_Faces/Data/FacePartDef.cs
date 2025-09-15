@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RimWorld;
+using TS_Faces.Comps;
 using UnityEngine;
 using Verse;
 
@@ -12,55 +13,77 @@ namespace TS_Faces.Data;
 [DefOf]
 public static class FacePartDefOf
 {
-    public static FacePartDef Empty = default!;
+	public static FacePartDef Empty = default!;
 
-    public static FacePartDef DebugEye = default!;
-    public static FacePartDef DebugIris = default!;
-    public static FacePartDef DebugMouth = default!;
-    public static FacePartDef DebugNose = default!;
+	public static FacePartDef DebugEye = default!;
+	public static FacePartDef DebugIris = default!;
+	public static FacePartDef DebugMouth = default!;
+	public static FacePartDef DebugNose = default!;
 
-    static FacePartDefOf()
-    {
-        DefOfHelper.EnsureInitializedInCtor(typeof(FacePartDefOf));
-    }
+	static FacePartDefOf()
+	{
+		DefOfHelper.EnsureInitializedInCtor(typeof(FacePartDefOf));
+	}
 }
 
-public class FacePartDef : Def, IPartFiltered
+public class FacePartDef : Def, IPawnFilterable, IComparable<FacePartDef>
 {
-    public enum SlotHint
-    {
-        None,
-        Eye,
-        Nose,
-        Mouth,
-        Brow,
-        Ear,
-        Iris,
-        Highlight,
-    }
+	public SlotDef slot = default!;
 
-    public SlotDef slot = SlotDefOf.Eye;
+	public string? shader;
+	public PartColor color = PartColor.None;
+	public Color? customColor;
+	public bool floating = false;
+	// base graphic path, changable by workers below
+	public string graphicPath = "";
+	public List<FacePartWorkerPropsBase> stateProps = [];
+	
+	public bool noMirror = false;
+	public Vector2 drawSize = Vector2.one;
+	public Vector2 offset = Vector2.zero;
 
-    public string? shader;
-    public PartColor color = PartColor.None;
-    public Color? customColor;
-    public bool floating = false;
-    public string graphicPath = "";
-    public string? graphicPathMissing;
+	public int commonality = 10;
+	public List<PawnFilterEntry> filters = [];
 
-    public string? graphicPathSleep;
-    public bool hideSleep = false;
+	IEnumerable<PawnFilterEntry> IPawnFilterable.FilterEntries => filters;
+	float IPawnFilterable.Commonality => commonality;
 
-    public string? graphicPathDead;
-    public bool hideDead = false;
+	private Lazy<List<IFacePartStateWorker>> _Workers = default!;
+	public List<IFacePartStateWorker> Workers => _Workers.Value;
+	
 
-    public bool noMirror = false;
-    public Vector2 drawSize = Vector2.one;
-    public Vector2 offset = Vector2.zero;
+	public override void ResolveReferences()
+	{
+		slot ??= SlotDefOf.Eye;
+		_Workers = new(() => [..stateProps
+			.Select(prop => Activator.CreateInstance(prop.WorkerType, prop))
+			.Cast<IFacePartStateWorker>()
+		]);
+		base.ResolveReferences();
+	}
 
-    public float commonality = 0.1f;
-    public List<PartFilterEntry> filters = [];
+	public override IEnumerable<string> ConfigErrors()
+	{
+		foreach (var er in base.ConfigErrors())
+			yield return er;
 
-    IEnumerable<PartFilterEntry> IPartFiltered.FilterEntries => filters;
-    float IPartFiltered.Commonality => commonality;
+		foreach (var er in filters.SelectMany(x => x.GetConfigErrors()))
+			yield return er;
+	}
+
+	public string? GetGraphicPath(Comp_TSFace face, FaceSide side)
+	{
+		var worker = Workers
+			.Where(x => x.IsActive(face, this, side))
+			.OrderByDescending(x => x.Properties.priority)
+			.FirstOrDefault()
+		;
+
+		if (worker?.Properties.hide == true)
+			return null;
+
+		return worker?.Properties.path ?? graphicPath;
+	}
+
+	public int CompareTo(FacePartDef other) => string.Compare(defName, other.defName);
 }

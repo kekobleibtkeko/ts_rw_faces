@@ -9,8 +9,6 @@
 	
 	<TS_Faces.Data.FacePartDef Name="TSHighlightBase" ParentName="TSFacePartBase" Abstract="True">
 		<slot>Highlight</slot>
-		<hideSleep>true</hideSleep>
-		<hideDead>true</hideDead>
 		<shader>TSTransparent</shader>
 	</TS_Faces.Data.FacePartDef>
 	

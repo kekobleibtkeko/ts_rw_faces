@@ -10,6 +10,7 @@ using LudeonTK;
 using RimWorld;
 using TS_Faces.Data;
 using TS_Faces.Rendering;
+using TS_Lib.Save;
 using TS_Lib.Transforms;
 using TS_Lib.Util;
 using UnityEngine;
@@ -24,80 +25,35 @@ public class CompProperties_TSFace : CompProperties
 		compClass = typeof(Comp_TSFace);
 	}
 }
-
-public class TRFacePart : IExposable
+public class SidedTRFaceParts(FacePartDef part, TSTransform4 transform) : IExposable
 {
-	public static TRFacePart Empty = new(){ PartDef = FacePartDefOf.Empty, Transform = new() };
-	public FacePartDef PartDef = FacePartDefOf.Empty;
-	public TSTransform4 Transform = new();
-
-	public TRFacePart() { }
-	public TRFacePart(FacePartDef def)
-	{
-		PartDef = def;
-	}
-
-	public TRFacePart CreateCopy()
-	{
-		TRFacePart copy = new()
-		{
-			PartDef = PartDef,
-			Transform = Transform.CreateCopy()
-		};
-		return copy;
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public string? GetGraphicPath(Comp_TSFace face, FaceSide side)
-	{
-		Pawn pawn = face.Pawn;
-		string? path = null;
-
-		PartDef.slot.Worker.GetPartHealth(pawn, side);
-		// TODO: make this better, more dynamic
-		// if (!PartDef.graphicPathMissing.NullOrEmpty() && IsPartMissing(pawn, side))
-		// 	return PartDef.graphicPathMissing;
-
-		// TODO: make this more dynamic, less shit
-		switch (face.GetPawnState())
-		{
-			case PawnState.Normal:
-				path = PartDef.graphicPath;
-				break;
-			case PawnState.Sleeping:
-				if (!PartDef.hideSleep)
-					path = PartDef.graphicPathSleep ?? PartDef.graphicPath;
-				break;
-			case PawnState.Dead:
-				if (!PartDef.hideDead)
-					path = PartDef.graphicPathDead ?? PartDef.graphicPath;
-				break;
-		}
-		return path;
-	}
-
+	public List<SidedDef<FacePartDef>> FaceParts = [new(part)];
+	public SidedDeep<TSTransform4> Transform = new(transform);
+	public bool Mirrored = true;
 	public void ExposeData()
 	{
-		Scribe_Defs.Look(ref PartDef, "part");
+		Scribe_Collections.Look(ref FaceParts, "parts");
 		Scribe_Deep.Look(ref Transform, "tr");
+	}
+}
+
+public readonly struct FacePartWithTransform
+{
+	public readonly FacePartDef Def;
+	public readonly TSTransform4 Transform;
+
+	public FacePartWithTransform(FacePartDef def, TSTransform4 transform) : this()
+	{
+		Def = def;
+		Transform = transform;
 	}
 }
 
 public class TSFacePersistentData() : IExposable
 {
 	public List<HeadDef> Heads = [HeadDefOf.AverageLong];
-	public TRFacePart Mouth = new(FacePartDefOf.DebugMouth);
-	public TRFacePart Nose = new(FacePartDefOf.DebugNose);
-	public TRFacePart EyeL = new(FacePartDefOf.DebugEye);
-	public TRFacePart? EyeR;
-	public TRFacePart IrisL = new(FacePartDefOf.DebugIris);
-	public TRFacePart? IrisR;
-	public TRFacePart HighlightL = new();
-	public TRFacePart? HighlightR;
-	public TRFacePart BrowL = new();
-	public TRFacePart? BrowR;
-	public TRFacePart EarL = new();
-	public TRFacePart? EarR;
+	public Dictionary<SlotDef, SidedTRFaceParts> PartsForSlots = [];
+	public List<SidedTRFaceParts> ExtraParts = [];
 
 	public Color? EyeLReplaceColor;
 	public Color? EyeRReplaceColor;
@@ -108,37 +64,14 @@ public class TSFacePersistentData() : IExposable
 	public TSFacePersistentData CreateCopy()
 	{
 		TSFacePersistentData copy = this.DirtyClone() ?? throw new Exception("unable to clone ts face data?");
-		copy.Heads = [..Heads];
-		copy.Mouth = Mouth.CreateCopy();
-		copy.Nose = Nose.CreateCopy();
-		copy.EyeL = EyeL.CreateCopy();
-		copy.EyeR = EyeR?.CreateCopy();
-		copy.IrisL = IrisL.CreateCopy();
-		copy.IrisR = IrisR?.CreateCopy();
-		copy.HighlightL = HighlightL.CreateCopy();
-		copy.HighlightR = HighlightR?.CreateCopy();
-		copy.BrowL = BrowL.CreateCopy();
-		copy.BrowR = BrowR?.CreateCopy();
-		copy.EarL = EarL.CreateCopy();
-		copy.EarR = EarR?.CreateCopy();
+
 		return copy;
 	}
 
 	public void ExposeData()
 	{
-		Scribe_Collections.Look(ref Heads, "head");
-		Scribe_Deep.Look(ref Mouth, "mouth");
-		Scribe_Deep.Look(ref Nose, "Nose");
-		Scribe_Deep.Look(ref EyeL, "eyeL");
-		Scribe_Deep.Look(ref EyeR, "eyeR");
-		Scribe_Deep.Look(ref IrisL, "irisL");
-		Scribe_Deep.Look(ref IrisR, "irisR");
-		Scribe_Deep.Look(ref HighlightL, "hlL");
-		Scribe_Deep.Look(ref HighlightR, "hlR");
-		Scribe_Deep.Look(ref BrowL, "browL");
-		Scribe_Deep.Look(ref BrowR, "browR");
-		Scribe_Deep.Look(ref EarL, "earL");
-		Scribe_Deep.Look(ref EarR, "earR");
+		TSSaveUtility.LookDict(ref PartsForSlots, "mainparts");
+		Scribe_Collections.Look(ref ExtraParts, "extraparts");
 		Scribe_Values.Look(ref EyeLReplaceColor, "eyeCL");
 		Scribe_Values.Look(ref EyeRReplaceColor, "eyeCR");
 		Scribe_Values.Look(ref ScleraLReplaceColor, "sclCL");
@@ -158,13 +91,15 @@ public class Comp_TSFace : ThingComp
 	public const float TSHeadBaseLayer = 30f;
 	public Pawn Pawn => parent as Pawn ?? throw new Exception("Comp_TSFace attached to non-pawn");
 
+	// Saved variables
 	public TSFacePersistentData PersistentData = new();
 
+	// Non-Saved variables
 	public ReRenderState RenderState;
 	public Graphic_Multi? CachedGraphic;
 	public Color? OverriddenColor;
 
-	public HeadDef GetActiveHeadDef() => PersistentData.Heads.GetActiveFromFilters(Pawn);
+	public HeadDef GetActiveHeadDef() => PersistentData.Heads.GetActiveFromFilters(Pawn) ?? HeadDefOf.AverageLong;
 	public FaceLayout GetActiveFaceLayout() => GetActiveHeadDef().faceLayout;
 	public bool IsRegenerationNeeded() => RenderState == ReRenderState.Needed;
 	public void RequestRegeneration() => RenderState = ReRenderState.Needed;
@@ -181,7 +116,7 @@ public class Comp_TSFace : ThingComp
 				continue;
 			return color.eyeColor;
 		}
-		return Color.white;
+		return Color.gray;
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Color GetScleraColor(FaceSide side) => side switch
@@ -198,31 +133,58 @@ public class Comp_TSFace : ThingComp
 		FaceSide.None or _ => Color.white,
 	};
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public PawnState GetPawnState()
 	{
+		if (TickCache<Comp_TSFace, PawnState>.TryGetCached(this, out var state))
+			return state;
+
 		var pawn = Pawn;
 		if (pawn.Awake())
 		{
-			return PawnState.Normal;
+			state = PawnState.Normal;
 		}
 		else if (pawn.Corpse?.IsDessicated() == true)
 		{
-			return PawnState.Dessicated;
+			state = PawnState.Dessicated;
 		}
 		else if (pawn.Dead)
 		{
-			return PawnState.Dead;
+			state = PawnState.Dead;
 		}
 		else
 		{
-			return PawnState.Sleeping;
+			state = PawnState.Sleeping;
 		}
+
+		TickCache<Comp_TSFace, PawnState>.Cache(this, state);
+		return state;
 	}
 
-	public TRFacePart GetPartForSlot(SlotDef slot)
+	public SidedTRFaceParts GenerateForSlot(SlotDef slot)
 	{
+		var part = slot.GetRandomPartFor(Pawn);
+		if (part is null)
+			TSFacesMod.Logger.Warning($"unable to generate part for slot '{slot}', pawn: {Pawn}", (Pawn, slot).GetHashCode());
 
+		return new(part ?? FacePartDefOf.Empty, new());
+	}
+
+	public FacePartWithTransform? GetPartForSlot(SlotDef slot, FaceSide side)
+	{
+		var slot_parts = PersistentData.PartsForSlots.Ensure(slot, GenerateForSlot);
+		var def = slot_parts.FaceParts
+			.Select(x => x.ForSide(side))
+			.GetActiveFromFilters(Pawn)
+		;
+		if (def is null)
+			return null;
+		return new(def, slot_parts.Transform.ForSide(side));
+	}
+	public bool TryGetPartForSlot(SlotDef slot, FaceSide side, out FacePartWithTransform part)
+	{
+		var found = GetPartForSlot(slot, side);
+		part = found ?? new();
+		return found.HasValue;
 	}
 
 	public override List<PawnRenderNode> CompRenderNodes()

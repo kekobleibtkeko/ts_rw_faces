@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using TS_Lib.Util;
@@ -19,18 +20,31 @@ public interface IFaceSlotPartWorker
 
 public abstract class FaceSlotPartWorkerBase(FaceSlotWorkerPropsBase props) : IFaceSlotPartWorker
 {
+	public static Dictionary<(string, int), (int, IFaceSlotPartWorker.PartHealth)> HealthPartCache = [];
 	public FaceSlotWorkerPropsBase Props = props;
 
 	protected IFaceSlotPartWorker.PartHealth HandleRecord(Pawn pawn, BodyPartRecord? record)
 	{
+		IFaceSlotPartWorker.PartHealth part_health;
 		if (record is null)
 			return IFaceSlotPartWorker.PartHealth.Ok;
+
+		var id = (pawn.ThingID, record.Index);
+		if (TickCache<(string, int), IFaceSlotPartWorker.PartHealth>.TryGetCached(id, out var cache_health))
+		{
+			return cache_health;
+		}
+
 		var health = pawn.health.hediffSet.GetPartHealth(record);
 		if (health == 0)
-			return IFaceSlotPartWorker.PartHealth.Missing;
-		if (health >= record.def.GetMaxHealth(pawn))
-			return IFaceSlotPartWorker.PartHealth.Ok;
-		return IFaceSlotPartWorker.PartHealth.Damaged;
+			part_health = IFaceSlotPartWorker.PartHealth.Missing;
+		else if (health >= record.def.GetMaxHealth(pawn))
+			part_health = IFaceSlotPartWorker.PartHealth.Ok;
+		else
+			part_health = IFaceSlotPartWorker.PartHealth.Damaged;
+
+		TickCache<(string, int), IFaceSlotPartWorker.PartHealth>.Cache(id, part_health);
+		return part_health;
 	}
 
 	public abstract IFaceSlotPartWorker.PartHealth GetPartHealth(Pawn pawn, FaceSide side);
@@ -78,12 +92,13 @@ public abstract class PartSlotRecordWorker<TProps>(TProps props) : FaceSlotPartW
 
 public class PartTagSlotWorkerProps : FaceSlotWorkerProps<PartTagSlotWorkerProps.Worker>
 {
-	public BodyPartTagDef tag = BodyPartTagDefOf.SightSource;
+	public BodyPartTagDef tag = default!;
 
 	public class Worker(PartTagSlotWorkerProps props) : PartSlotRecordWorker<PartTagSlotWorkerProps>(props)
 	{
 		protected override BodyPartRecord? GetBodyPartRecord(Pawn pawn, FaceSide side)
 		{
+			Props.tag ??= BodyPartTagDefOf.SightSource;
 			var parts = pawn.RaceProps.body.GetPartsWithTag(Props.tag).AsEnumerable();
 			if (side != FaceSide.None)
 			{

@@ -19,18 +19,24 @@ public static class HeadDefOf
     }
 }
 
-public class HeadDef : Def, IPartFiltered
+public class HeadDef : Def, IPawnFilterable
 {
-    [NoTranslate]
-    public string graphicPath = "";
+	[NoTranslate]
+	public string graphicPath = "";
 
-    public FaceLayout faceLayout = new();
-    public string? shader;
-    public PartColor color = PartColor.Skin;
+	public FaceLayout faceLayout = new();
+	public string? shader;
+	public PartColor color = PartColor.Skin;
 
-    public float commonality = 0.1f;
-    public List<PartFilterEntry> filters = [];
+	public int commonality = 10;
+	public List<PawnFilterEntry> filters = [];
 
-    IEnumerable<PartFilterEntry> IPartFiltered.FilterEntries => filters;
-    float IPartFiltered.Commonality => commonality;
+	IEnumerable<PawnFilterEntry> IPawnFilterable.FilterEntries => filters;
+	float IPawnFilterable.Commonality => commonality;
+
+	public override void ResolveReferences()
+	{
+		base.ResolveReferences();
+		faceLayout.ResolveReferences();
+	}
 }
