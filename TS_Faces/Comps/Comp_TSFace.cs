@@ -10,6 +10,7 @@ using HarmonyLib;
 using LudeonTK;
 using RimWorld;
 using TS_Faces.Data;
+using TS_Faces.Mod;
 using TS_Faces.Rendering;
 using TS_Faces.Util;
 using TS_Lib.Save;
@@ -178,7 +179,7 @@ public class Comp_TSFace : ThingComp
 		UpToDate,
 	}
 
-	public const float TSHeadBaseLayer = 30f;
+	public const float TSHeadBaseLayer = 50f;
 	public Pawn Pawn => parent as Pawn ?? throw new Exception("Comp_TSFace attached to non-pawn");
 
 	// Saved variables

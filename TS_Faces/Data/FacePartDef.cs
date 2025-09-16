@@ -43,6 +43,8 @@ public class FacePartDef : Def, IPawnFilterable, IComparable<FacePartDef>
 	public bool noMirror = false;
 	public Vector2 drawSize = Vector2.one;
 	public Vector2 offset = Vector2.zero;
+	public float layerOffset = 0;
+	public bool undoSlotOffset = false;
 
 	public int commonality = 10;
 	public List<PawnFilterEntry> filters = [];
@@ -57,12 +59,18 @@ public class FacePartDef : Def, IPawnFilterable, IComparable<FacePartDef>
 
 	public override void ResolveReferences()
 	{
+		base.ResolveReferences();
+		
 		slot ??= SlotDefOf.Eye;
 		_Workers = new(() => [..stateProps
 			.Select(prop => Activator.CreateInstance(prop.WorkerType, prop))
 			.Cast<IFacePartStateWorker>()
 		]);
-		base.ResolveReferences();
+
+		if (undoSlotOffset)
+		{
+			layerOffset -= slot.layerOffset;
+		}
 	}
 
 	public override IEnumerable<string> ConfigErrors()

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RimWorld;
 using TS_Faces.Comps;
+using TS_Faces.Data;
 using TS_Faces.Util;
 using TS_Lib.Util;
 using UnityEngine;
@@ -26,6 +27,7 @@ public static class FaceRenderer
 	public static Shader EyeShader;
 	public static Shader TransparentShader;
 	public static Shader ColorOverrideShader;
+	public static Color TattooColor;
 	static FaceRenderer()
 	{
 		MainRT.Create();
@@ -33,6 +35,8 @@ public static class FaceRenderer
 		EyeShader = ShaderDatabase.LoadShader("TSEye");
 		TransparentShader = ShaderDatabase.LoadShader("TSTransparent");
 		ColorOverrideShader = ShaderDatabase.LoadShader("TSColorOverride");
+		TattooColor = Color.white;
+		TattooColor.a *= 0.8f;
 	}
 
 	public static void MakeStatueColored(Comp_TSFace face, Color statue_color)
@@ -92,8 +96,27 @@ public static class FaceRenderer
 			Graphics.Blit(head_side_mat.mainTexture, MainRT, head_side_mat);
 
 			var renderables = head_def.faceLayout.CollectAllRenderables(face, rot, def => !def.IsFloating);
+			if (pawn.style?.FaceTattoo is TattooDef tattoo
+				&& !tattoo.noGraphic
+				&& tattoo.GraphicFor(pawn, TattooColor).MatAt(rot).mainTexture is Texture2D texture
+			)
+			{
+				renderables = renderables.Append(new(
+					face,
+					mat: new(TransparentShader),
+					col: TattooColor,
+					offset: default,
+					scale: Vector3.one,
+					rotation: 0,
+					flip_x: false,
+					order: SlotDefOf.SkinDecor.order + 1
+				) {
+					TextureOverride = texture
+				});
+			}
 			// ugly hack because the transforms that are passed are reversed in the west side
 			//   for some reason
+			// TODO: find out why the FUCK this is necessary
 			render_target.ReverseX = rot == Rot4.West;
 			render_target.ApplyAll(renderables);
 

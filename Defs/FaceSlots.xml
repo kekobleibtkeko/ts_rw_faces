@@ -8,13 +8,13 @@
 
 	<TS_Faces.Data.SlotDef>
 		<defName>SkinDecor</defName>
-		<order>-40</order>
+		<order>30</order>
 		<layerOffset>0.0002</layerOffset>
 	</TS_Faces.Data.SlotDef>
 
 	<TS_Faces.Data.SlotDef>
 		<defName>Eye</defName>
-		<order>40</order>
+		<order>80</order>
 		<layerOffset>0.0016</layerOffset>
 		<props Class="TS_Faces.Data.PartTagSlotWorkerProps">
 			<tag>SightSource</tag>
@@ -32,7 +32,7 @@
 
 	<TS_Faces.Data.SlotDef>
 		<defName>Mouth</defName>
-		<order>0</order>
+		<order>20</order>
 		<layerOffset>0.0004</layerOffset>
 		<props Class="TS_Faces.Data.PartNameSlotWorkerProps">
 			<name>jaw</name>
@@ -42,7 +42,7 @@
 	<TS_Faces.Data.SlotDef>
 		<defName>Brow</defName>
 		<order>70</order>
-		<layerOffset>0.0018</layerOffset>
+		<layerOffset>2.0</layerOffset>
 		<!-- TODO: add worker (Damaged when eye missing) -->
 	</TS_Faces.Data.SlotDef>
 

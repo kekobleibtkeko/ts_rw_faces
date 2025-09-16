@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RimWorld;
+using TS_Faces.Mod;
 using TS_Lib.Util;
 using Verse;
 

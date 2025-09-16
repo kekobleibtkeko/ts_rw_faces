@@ -32,37 +32,3 @@ public class TSFacesMod : Verse.Mod
 	public override string SettingsCategory() => ID;
 	public override void DoSettingsWindowContents(Rect inRect) => FacesSettings.Instance.DrawSettings(inRect);
 }
-
-public class FacesSettings : ModSettings
-{
-	private static Lazy<FacesSettings> _Instance = new(TSFacesMod.Instance.GetSettings<FacesSettings>);
-	public static FacesSettings Instance => _Instance.Value;
-
-
-	// Saved variables
-	public bool StrictGender = false;
-	public bool StrictBeauty = false;
-	public List<SlotDef> ForcedFloatingSlots = [];
-
-	public override void ExposeData()
-	{
-		Scribe_Values.Look(ref StrictGender, "strictgender");
-		Scribe_Values.Look(ref StrictBeauty, "strictbeauty");
-		Scribe_Collections.Look(ref ForcedFloatingSlots, "forcedfloat");
-	}
-
-	public void DrawSettings(Rect rect)
-	{
-		using var list = new TSUtil.Listing_D(rect);
-		list.Listing.GapLine();
-
-		list.Listing.CheckboxLabeled("strict gender".ModTranslate(), ref StrictGender);
-		list.Listing.CheckboxLabeled("strict beauty".ModTranslate(), ref StrictBeauty);
-
-		list.Listing.GapLine();
-
-		{ // handle eyebrow floating
-			var floating = ForcedFloatingSlots.Contains(SlotDefOf.B)
-		}
-	}
-}

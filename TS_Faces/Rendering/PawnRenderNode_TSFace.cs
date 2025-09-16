@@ -31,7 +31,7 @@ public class PawnRenderNode_TSFace : PawnRenderNode
         {
             workerClass = typeof(PawnRenderNodeWorker_TSFace),
             parentTagDef = PawnRenderNodeTagDefOf.Head,
-            // baseLayer = Comp_TSFace.TSHeadBaseLayer + PawnRenderNodeWorker_TSFace.ts_face_tweak,
+            baseLayer = Comp_TSFace.TSHeadBaseLayer + PawnRenderNodeWorker_TSFace.ts_base_height,
             //overlayLayer = PawnOverlayDrawer.OverlayLayer.Head,
             //colorType = AttachmentColorType.Skin,
         },
@@ -46,8 +46,12 @@ public class PawnRenderNode_TSFace : PawnRenderNode
 
 public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
 {
+	[TweakValue("TS", -50f, 50f)]
+    public static float ts_base_height = 0;
     [TweakValue("TS", -50f, 50f)]
-    public static float ts_face_tweak;
+    public static float ts_face_tweak = 0;
+	[TweakValue("TS", 1f, 2f)]
+	public static float ts_face_project_bonus = 1.5f;
     public static Shader DefaultShader => ShaderDatabase.Cutout;
     public override void PostDraw(PawnRenderNode node, PawnDrawParms parms, Mesh mesh, Matrix4x4 matrix)
     {

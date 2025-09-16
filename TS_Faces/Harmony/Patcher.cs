@@ -14,7 +14,8 @@ namespace TS_Faces.Harmony
 	    {
 	        var harmony = new HarmonyLib.Harmony("tsuyao.faces");
 	        List<PatchClassProcessor> patches = [
-	            harmony.CreateClassProcessor(typeof(Patch_PawnHeadReplace)),
+				harmony.CreateClassProcessor(typeof(Patch_PawnHeadReplace)),
+				harmony.CreateClassProcessor(typeof(Patch_RemovePawnHeadTattoo)),
 	        ];
 
 	        foreach (var processor in patches)

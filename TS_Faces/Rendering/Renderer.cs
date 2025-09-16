@@ -35,6 +35,7 @@ public class FaceRTTarget(RenderTexture rt) : IFaceRenderTarget<FacePartRenderab
 		renderable = renderable.ModifyFunction?.Invoke(renderable) ?? renderable;
 		if (ReverseX)
 		{
+			 // TODO: figure out why this hack is needed
 			renderable = renderable with { Offset = renderable.Offset.ScaledBy(new(-1, 1, 1)) };
 		}
 		// TSFacesMod.Logger.Verbose($"Drawing:: Rotation {renderable.Rot.ToStringHuman()}: {(renderable.Side == FaceSide.None ? "" : renderable.Side.ToString())} {renderable.Slot}, Part '{renderable.Part}' | Offset: {renderable.Offset},  Scale: {renderable.Scale},  Rotation: {renderable.Rotation},  Flipped: {renderable.FlipX}");
@@ -53,22 +54,36 @@ public class FaceRTTarget(RenderTexture rt) : IFaceRenderTarget<FacePartRenderab
 
 public class FaceMeshTarget(Mesh mesh, Matrix4x4 mat, PawnDrawParms parms) : IFaceRenderTarget<FacePartRenderable>
 {
+	public Mesh Mesh { get; } = mesh;
+	public Matrix4x4 Mat { get; } = mat;
+	public PawnDrawParms Parms { get; } = parms;
+
 	public bool Apply(FacePartRenderable renderable)
 	{
 		renderable = renderable.ModifyFunction?.Invoke(renderable) ?? renderable;
+		// TSFacesMod.Logger.Verbose(
+		// 	$"Drawing {renderable.Face.Pawn}: Rotation {renderable.Rot.ToStringHuman()}: {(renderable.Side == FaceSide.None ? "" : renderable.Side.ToString())} {renderable.Slot}, Part '{renderable.Part}' | Offset: {renderable.Offset},  Scale: {renderable.Scale},  Rotation: {renderable.Rotation},  Flipped: {renderable.FlipX}",
+		// 	(renderable.FlipX, renderable.Face, renderable.Side, renderable.Rot, renderable.Slot).GetHashCode()
+		// );
+		var use_mesh = Mesh;
 		if (renderable.FlipX)
 		{
-			mesh = mesh.GetFlippedMesh();
+			use_mesh = use_mesh.GetFlippedMesh();
+			// TSFacesMod.Logger.Verbose(
+			// 	$"fleeping",
+			// 	(renderable.FlipX, renderable.Face, renderable.Side, renderable.Rot, renderable.Slot).GetHashCode()
+			// );
 		}
+		renderable = renderable with { Offset = renderable.Offset.ScaledBy(new(PawnRenderNodeWorker_TSFace.ts_face_project_bonus, 1, PawnRenderNodeWorker_TSFace.ts_face_project_bonus)) };
 		GenDraw.DrawMeshNowOrLater(
-			mesh,
-			mat * Matrix4x4.TRS(
+			use_mesh,
+			Mat * Matrix4x4.TRS(
 				renderable.Offset,
 				Quaternion.AngleAxis(renderable.Rotation, Vector3.up),
 				renderable.Scale
 			),
 			renderable.Material,
-			parms.DrawNow
+			Parms.DrawNow
 		);
 		return true;
 	}
@@ -94,9 +109,11 @@ public struct FacePartRenderable : IFaceRenderable
 	// diagnostic
 	public Rot4 Rot;
 	public FaceSide Side;
+	public Comp_TSFace Face;
 
-	public FacePartRenderable(Material mat, Color col, Vector3 offset, Vector3 scale, float rotation, bool flip_x, float? order = null) : this()
+	public FacePartRenderable(Comp_TSFace face, Material mat, Color col, Vector3 offset, Vector3 scale, float rotation, bool flip_x, float? order = null) : this()
 	{
+		Face = face;
 		Offset = offset;
 		Scale = scale;
 		Rotation = rotation;
@@ -155,8 +172,8 @@ public static class RendererExtensions
 	{
 		res = default;
 		var pawn = face.Pawn;
-		var def = comp_part.Def;
-		if (part_predicate?.Invoke(def) == false)
+		var part_def = comp_part.Def;
+		if (part_predicate?.Invoke(part_def) == false)
 			return false;
 
 		string? path = comp_part.Def.GetGraphicPath(face, side);
@@ -164,8 +181,8 @@ public static class RendererExtensions
 		if (path.NullOrEmpty())
 			return false; // this is fine, part may not have a graphic for this state
 
-		var color = def.color.GetColorFor(face, side, def.customColor);
-		var shader = GetShader(def.shader);
+		var color = part_def.color.GetColorFor(face, side, part_def.customColor);
+		var shader = GetShader(part_def.shader);
 		var graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, Vector2.one, color);
 		if (graphic is null)
 		{
@@ -173,7 +190,7 @@ public static class RendererExtensions
 			return false;
 		}
 
-		bool flip = !def.noMirror && rot.AsInt switch
+		bool flip = !part_def.noMirror && rot.AsInt switch
 		{
 			//north
 			0 => side == FaceSide.Left,
@@ -192,17 +209,26 @@ public static class RendererExtensions
 		var transform = comp_part.Transform.ForRot(rot);
 		var pos = extra_offset
 			+ transform.Offset
-			+ def.offset.ToUpFacingVec3(slot.layerOffset)
+			+ part_def.offset.ToUpFacingVec3(slot.layerOffset + part_def.layerOffset + PawnRenderNodeWorker_TSFace.ts_face_tweak)
 		;
-		var draw_scale = def.drawSize.ToUpFacingVec3(1)
+		var draw_scale = part_def.drawSize.ToUpFacingVec3(1)
 			.MultipliedBy(transform.Scale.ToUpFacingVec3(1))
 		;
 		var rotation = transform.RotationOffset;
 
-		res = new(part_mat, color, pos, draw_scale, rotation, flip, slot.order)
+		res = new(
+			face,
+			mat: part_mat,
+			col: color,
+			offset: pos,
+			scale: draw_scale,
+			rotation: rotation,
+			flip_x: flip,
+			order: slot.order
+		)
 		{
 			Slot = slot,
-			Part = def,
+			Part = part_def,
 			Rot = rot,
 			Side = side,
 			ModifyFunction = args_in =>
