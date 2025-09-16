@@ -5,6 +5,7 @@
 	<TS_Faces.Data.FacePartDef Name="TSFacePartBase" Abstract="True">
 		<drawSize>(0.3, 0.3)</drawSize>
 		<shader>TSSkin</shader>
+		<slot>None</slot> <!-- Needs to be overridden -->
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSHighlightBase" ParentName="TSFacePartBase" Abstract="True">

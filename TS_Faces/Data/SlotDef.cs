@@ -11,6 +11,7 @@ namespace TS_Faces.Data;
 [DefOf]
 public static class SlotDefOf
 {
+	public static SlotDef None = default!;
 	public static SlotDef SkinDecor = default!;
 	public static SlotDef Eye = default!;
 	public static SlotDef Iris = default!;

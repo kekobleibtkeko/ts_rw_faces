@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 	<TS_Faces.Data.SlotDef>
+		<defName>None</defName>
+		<order>-99999</order>
+		<layerOffset>0</layerOffset>
+	</TS_Faces.Data.SlotDef>
+
+	<TS_Faces.Data.SlotDef>
 		<defName>SkinDecor</defName>
 		<order>-40</order>
 		<layerOffset>0.0002</layerOffset>

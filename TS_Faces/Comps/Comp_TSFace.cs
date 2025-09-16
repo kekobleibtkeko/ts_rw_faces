@@ -29,10 +29,26 @@ public class SidedTRFaceParts(FacePartDef part, TSTransform4 transform) : IExpos
 {
 	public List<SidedDef<FacePartDef>> FaceParts = [new(part)];
 	public SidedDeep<TSTransform4> Transform = new(transform);
-	public bool Mirrored = true;
 	public void ExposeData()
 	{
 		Scribe_Collections.Look(ref FaceParts, "parts");
+		Scribe_Deep.Look(ref Transform, "tr");
+	}
+}
+
+public class ExtraFacePart(FacePartDef def, SlotDef? anchor) : IExposable
+{
+	public SlotDef Anchor = anchor ?? SlotDefOf.None;
+	public FaceSide AnchorSide;
+
+	public SidedDef<FacePartDef> SidedDef = new(def);
+	public TSTransform4 Transform = new();
+
+	public void ExposeData()
+	{
+		Scribe_Defs.Look(ref Anchor, "anchor");
+		Scribe_Values.Look(ref AnchorSide, "anchside");
+		Scribe_Deep.Look(ref SidedDef, "def");
 		Scribe_Deep.Look(ref Transform, "tr");
 	}
 }
@@ -53,7 +69,7 @@ public class TSFacePersistentData() : IExposable
 {
 	public List<HeadDef> Heads = [HeadDefOf.AverageLong];
 	public Dictionary<SlotDef, SidedTRFaceParts> PartsForSlots = [];
-	public List<SidedTRFaceParts> ExtraParts = [];
+	public List<ExtraFacePart> ExtraParts = [];
 
 	public Color? EyeLReplaceColor;
 	public Color? EyeRReplaceColor;
@@ -99,7 +115,14 @@ public class Comp_TSFace : ThingComp
 	public Graphic_Multi? CachedGraphic;
 	public Color? OverriddenColor;
 
-	public HeadDef GetActiveHeadDef() => PersistentData.Heads.GetActiveFromFilters(Pawn) ?? HeadDefOf.AverageLong;
+	public HeadDef GetActiveHeadDef()
+	{
+		if (TickCache<Comp_TSFace, HeadDef>.TryGetCached(this, out var def))
+			return def;
+		def = PersistentData.Heads.GetActiveFromFilters(Pawn) ?? HeadDefOf.AverageLong;
+		TickCache<Comp_TSFace, HeadDef>.Cache(this, def);
+		return def;
+	}
 	public FaceLayout GetActiveFaceLayout() => GetActiveHeadDef().faceLayout;
 	public bool IsRegenerationNeeded() => RenderState == ReRenderState.Needed;
 	public void RequestRegeneration() => RenderState = ReRenderState.Needed;

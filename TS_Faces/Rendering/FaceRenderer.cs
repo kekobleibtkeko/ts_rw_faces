@@ -78,33 +78,13 @@ public static class FaceRenderer
 
 		var pawn = face.Pawn;
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		Shader get_shader(string? shader_path)
-		{
-			if (shader_path.NullOrEmpty() || ShaderDatabase.LoadShader(shader_path) is not Shader res)
-				return SkinShader;
-			return res;
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		Color get_color(PartColor part_color, FaceSide side = FaceSide.None, Color? custom_color = null)
-		{
-			return custom_color ?? part_color switch
-			{
-				PartColor.Eye => face.GetEyeColor(side),
-				PartColor.Skin => pawn.story.SkinColor,
-				PartColor.Hair => pawn.story.HairColor,
-				PartColor.Sclera => face.GetScleraColor(side),
-				PartColor.None or _ => Color.white,
-			};
-		}
-
 		var head_def = face.GetActiveHeadDef();
-		var head_shader = get_shader(head_def.shader);
-		var head_color = get_color(head_def.color);
+		var head_shader = RendererExtensions.GetShader(head_def.shader);
+		var head_color = RendererExtensions.GetColorFor(head_def.color, face);
 		var head_graphic = GraphicDatabase.Get<Graphic_Multi>(head_def.graphicPath, head_shader, Vector2.one, head_color);
 		var new_graphic = new Graphic_Multi();
 
+		var render_target = new FaceRTTarget(MainRT);
 		foreach (var rot in Rot4.AllRotations)
 		{
 			MainRT.Clear();
@@ -113,96 +93,12 @@ public static class FaceRenderer
 
 			var face_layout = head_def.faceLayout.ForRot(rot);
 			var all_parts = face_layout
-				.OrderBy(x => x.pos.y + x.slot?.layerOffset)
+				.OrderBy(x => x.pos.y + x.slot.layerOffset)
 				.ToList()
 			;
-			foreach (var part in all_parts)
-			{
-				var side = part.side;
-				if (!face.TryGetPartForSlot(part.slot, part.side, out var comp_part))
-				{
-					TSFacesMod.Logger.Warning($"FaceRenderer unable to get part for slot '{part.slot.defName}' for pawn {pawn}", (pawn, part, part.side).GetHashCode());
-					continue;
-				}
 
-				var def = comp_part.Def;
-				if (def.floating)
-					continue;
-
-				//Log.Message($"getting graphic for pawn {pawn}, node slot {slot.slot}");
-				string? path = comp_part.Def.GetGraphicPath(face, side);
-
-				if (path.NullOrEmpty())
-					continue; // this is fine, part may not have a graphic for this state
-
-				var color = get_color(def.color, side, def.customColor);
-				var shader = get_shader(def.shader);
-				var graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, Vector2.one, color);
-				if (graphic is null)
-				{
-					Log.Warning($"Unable to get graphic to draw slot {part.slot} for {pawn}");
-					continue;
-				}
-
-				bool flip = !def.noMirror && rot.AsInt switch
-				{
-					//north
-					0 => side == FaceSide.Left,
-					//south
-					2 => side == FaceSide.Right,
-					_ => false,
-				};
-
-				Material part_mat = graphic.MatAt(rot);
-				if (part_mat is null)
-				{
-					Log.Warning($"Unable to get material to draw slot {part.slot} for {pawn}");
-					continue;
-				}
-
-				var transform = comp_part.Transform.ForRot(rot);
-				var pos = part.pos.ToUpFacingVec3()
-					+ transform.Offset
-					+ def.offset.ToUpFacingVec3()
-					+ TSUtil.GetUpVector(part.slot.layerOffset)
-				;
-				var draw_scale = def.drawSize.ToUpFacingVec3(1)
-					.MultipliedBy(transform.Scale.ToUpFacingVec3(1))
-				;
-				var rotation = transform.RotationOffset;
-
-				// handle part specific adjustments
-				if (part.slot == SlotDefOf.Eye)
-				{
-					// Log.Message($"rendering an eye :3  texture={part_mat.mainTexture}");
-					if (face.TryGetPartForSlot(SlotDefOf.Iris, side, out var iris))
-					{
-						var iris_graphic = GraphicDatabase.Get<Graphic_Multi>(iris.Def.graphicPath, ShaderDatabase.Cutout, Vector2.one, Color.white);
-						var iris_side_mat = iris_graphic.MatAt(rot);
-						part_mat.SetTexture("_IrisTex", iris_side_mat.mainTexture);
-					}
-
-					part_mat.SetTexture("_EyeTex", part_mat.mainTexture);
-
-					part_mat.SetColor("_SkinColor", pawn.story.SkinColor);
-					part_mat.SetColor("_LashColor", pawn.story.hairColor);
-					part_mat.SetColor("_ScleraColor", face.GetScleraColor(side));
-					part_mat.SetColor("_IrisColor", face.GetEyeColor(side));
-
-					part_mat.SetFloat("_Flipped", flip ? 1 : 0);
-					flip = false; // the shader handles the flipping here
-				}
-
-				TSUtil.BlitUtils.BlitWithTransform(
-					MainRT,
-					part_mat,
-					source: part_mat.mainTexture,
-					scale: draw_scale.FromUpFacingVec3(),
-					offset: pos.FromUpFacingVec3(),
-					rotation: rotation,
-					flip_x: flip
-				);
-			}
+			var renderables = head_def.faceLayout.CollectRenderables(face, rot, def => !def.floating);
+			render_target.ApplyAll(renderables);
 
 			new_graphic.mats[rot.AsInt] = new Material(ShaderDatabase.Cutout)
 			{
