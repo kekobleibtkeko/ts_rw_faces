@@ -35,6 +35,16 @@
 		<color>Skin</color>
 	</TS_Faces.Data.FacePartDef>
 
+	<TS_Faces.Data.FacePartDef Name="TSEarBase" ParentName="TSFacePartBase" Abstract="True">
+		<slot>Ear</slot>
+		<color>Skin</color>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef Name="TSBrowBase" ParentName="TSFacePartBase" Abstract="True">
+		<slot>Brow</slot>
+		<color>Hair</color>
+	</TS_Faces.Data.FacePartDef>
+
 	<!-- PARTS -->
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSFacePartBase">
@@ -61,6 +71,16 @@
 		<defName>DebugNose</defName>
 		<drawSize>(0.4, 0.4)</drawSize>
 		<graphicPath>Things/Pawn/Face/Nose1</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSEarBase">
+		<defName>DebugEar</defName>
+		<graphicPath>Things/Pawn/Face/Eye1</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSBrowBase">
+		<defName>DebugBrow</defName>
+		<graphicPath>Things/Pawn/Face/Eye1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 
 	

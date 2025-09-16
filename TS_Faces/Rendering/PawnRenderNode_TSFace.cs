@@ -31,7 +31,7 @@ public class PawnRenderNode_TSFace : PawnRenderNode
         {
             workerClass = typeof(PawnRenderNodeWorker_TSFace),
             parentTagDef = PawnRenderNodeTagDefOf.Head,
-            baseLayer = Comp_TSFace.TSHeadBaseLayer + PawnRenderNodeWorker_TSFace.ts_face_tweak,
+            // baseLayer = Comp_TSFace.TSHeadBaseLayer + PawnRenderNodeWorker_TSFace.ts_face_tweak,
             //overlayLayer = PawnOverlayDrawer.OverlayLayer.Head,
             //colorType = AttachmentColorType.Skin,
         },
@@ -63,7 +63,7 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
 		var render_target = new FaceMeshTarget(mesh, matrix, parms);
 		var renderables = face
 			.GetActiveFaceLayout()
-			.CollectRenderables(face, parms.facing, def => def.floating)
+			.CollectAllRenderables(face, parms.facing, def => def.IsFloating)
 		;
 		render_target.ApplyAll(renderables);
 

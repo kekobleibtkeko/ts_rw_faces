@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HarmonyLib;
 using RimWorld;
+using TS_Faces.Util;
 using Verse;
 
 namespace TS_Faces.Data;
@@ -38,5 +40,15 @@ public class HeadDef : Def, IPawnFilterable
 	{
 		base.ResolveReferences();
 		faceLayout.ResolveReferences();
+
+		// Log.Message($"slots for {this}:");
+		// foreach (var rot in Rot4.AllRotations)
+		// {
+		// 	Log.Message($"   {rot.ToStringHuman()}:");
+		// 	faceLayout.ForRot(rot).Parts.Do(part =>
+		// 	{
+		// 		Log.Message($"      slot: {part.slot},  side: {part.side},  pos: {part.pos},  rotation: {part.rotation}");
+		// 	});
+		// }
 	}
 }

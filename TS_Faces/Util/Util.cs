@@ -6,35 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using TS_Faces.Comps;
+using TS_Faces.Data;
 using UnityEngine;
 using Verse;
 using static Verse.PawnRenderNodeProperties;
 
-namespace TS_Faces.Data;
-
-public enum PartColor
-{
-    None,
-    Eye,
-    Sclera,
-    Skin,
-    Hair,
-}
-
-public enum PawnState
-{
-    Normal,
-    Sleeping,
-    Dead,
-    Dessicated
-}
-
-public enum FaceSide
-{
-    None,
-    Left,
-    Right,
-}
+namespace TS_Faces.Util;
 
 public static class FacesUtil
 {
@@ -58,14 +35,6 @@ public static class FacesUtil
 	public static Dictionary<SlotDef, List<FacePartDef>> RandomParts => _RandomParts.Value;
 
 	public static TaggedString ModTranslate(this string str) => $"Faces.{str.Replace(' ', '_')}".Translate();
-}
-
-public static class FaceSlotExtensions
-{
-	public const float EPSILON = 0.0004f;
-	public const float EPSILON_2 = EPSILON * 2;
-	public const float EPSILON_3 = EPSILON * 3;
-	public const float EPSILON_4 = EPSILON * 4;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static FaceSide Mirror(this FaceSide side) => side switch

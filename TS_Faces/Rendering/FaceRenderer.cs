@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RimWorld;
 using TS_Faces.Comps;
-using TS_Faces.Data;
+using TS_Faces.Util;
 using TS_Lib.Util;
 using UnityEngine;
 using Verse;
@@ -91,13 +91,10 @@ public static class FaceRenderer
 			var head_side_mat = head_graphic.MatAt(rot);
 			Graphics.Blit(head_side_mat.mainTexture, MainRT, head_side_mat);
 
-			var face_layout = head_def.faceLayout.ForRot(rot);
-			var all_parts = face_layout
-				.OrderBy(x => x.pos.y + x.slot.layerOffset)
-				.ToList()
-			;
-
-			var renderables = head_def.faceLayout.CollectRenderables(face, rot, def => !def.floating);
+			var renderables = head_def.faceLayout.CollectAllRenderables(face, rot, def => !def.IsFloating);
+			// ugly hack because the transforms that are passed are reversed in the west side
+			//   for some reason
+			render_target.ReverseX = rot == Rot4.West;
 			render_target.ApplyAll(renderables);
 
 			new_graphic.mats[rot.AsInt] = new Material(ShaderDatabase.Cutout)

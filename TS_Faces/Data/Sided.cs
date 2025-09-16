@@ -1,4 +1,7 @@
 using RimWorld;
+using TS_Faces.Util;
+using TS_Lib.Transforms;
+using TS_Lib.Util;
 using Verse;
 
 namespace TS_Faces.Data;
@@ -40,6 +43,17 @@ public class SidedDeep<T>(T main) : Sided<T>(main)
 		T : IExposable
 {
 	public override void ExposeData() => this.SaveDeep();
+}
+
+public class SidedMirror<T>(T main) : SidedDeep<T>(main)
+	where
+		T : IExposable, IMirrorable<T>
+{
+	public override T ForSide(SidedSide side) => side switch
+	{
+		SidedSide.Other => Other ?? Main.Mirror(),
+		SidedSide.Main or _ => Main,
+	};
 }
 
 public static class SidedExtensions

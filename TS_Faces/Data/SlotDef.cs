@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Text;
 using RimWorld;
+using TS_Faces.Mod;
+using TS_Faces.Util;
 using TS_Lib.Util;
 using Verse;
 using static TS_Lib.Util.TSUtil;
@@ -12,10 +14,17 @@ namespace TS_Faces.Data;
 public static class SlotDefOf
 {
 	public static SlotDef None = default!;
+
 	public static SlotDef SkinDecor = default!;
+
 	public static SlotDef Eye = default!;
 	public static SlotDef Iris = default!;
 	public static SlotDef Highlight = default!;
+
+	public static SlotDef Nose = default!;
+	public static SlotDef Mouth = default!;
+	public static SlotDef Brow = default!;
+	public static SlotDef Ear = default!;
 
 	static SlotDefOf()
 	{
@@ -63,20 +72,19 @@ public class SlotDef : Def
 		});
 	}
 
-	public FacePartDef? GetRandomPartFor(Pawn pawn)
+	public FacePartDef? GetRandomPartFor(Pawn pawn, StringBuilder? reasons = null)
 	{
 		var parts = FacesUtil.RandomParts.Ensure(this);
 		var fitting_parts = parts
 			.Select(part =>
 			{
-				var reasons = new StringBuilder();
 				if (part.FilterFits(pawn, out var _, reasons))
 					return (FacePartDef?)part;
 
 				if (reasons is not null)
 				{
-					TSFacesMod.Logger.Verbose($"Random: part {part} doesn't fit, Reasons:");
-					TSFacesMod.Logger.Verbose(reasons.ToString());
+					// TSFacesMod.Logger.Verbose($"Random: part {part} doesn't fit, Reasons:");
+					// TSFacesMod.Logger.Verbose(reasons.ToString());
 				}
 				return null;
 			})

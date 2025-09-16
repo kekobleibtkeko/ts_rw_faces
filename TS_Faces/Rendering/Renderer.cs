@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using TS_Faces.Comps;
 using TS_Faces.Data;
+using TS_Faces.Mod;
+using TS_Faces.Util;
 using TS_Lib.Util;
 using UnityEngine;
 using Verse;
@@ -26,10 +28,16 @@ public interface IFaceRenderable
 public class FaceRTTarget(RenderTexture rt) : IFaceRenderTarget<FacePartRenderable>
 {
 	public RenderTexture RT = rt;
+	public bool ReverseX = false;
 
 	public bool Apply(FacePartRenderable renderable)
 	{
 		renderable = renderable.ModifyFunction?.Invoke(renderable) ?? renderable;
+		if (ReverseX)
+		{
+			renderable = renderable with { Offset = renderable.Offset.ScaledBy(new(-1, 1, 1)) };
+		}
+		// TSFacesMod.Logger.Verbose($"Drawing:: Rotation {renderable.Rot.ToStringHuman()}: {(renderable.Side == FaceSide.None ? "" : renderable.Side.ToString())} {renderable.Slot}, Part '{renderable.Part}' | Offset: {renderable.Offset},  Scale: {renderable.Scale},  Rotation: {renderable.Rotation},  Flipped: {renderable.FlipX}");
 		TSUtil.BlitUtils.BlitWithTransform(
 			RT,
 			renderable.Material,
@@ -69,17 +77,23 @@ public class FaceMeshTarget(Mesh mesh, Matrix4x4 mat, PawnDrawParms parms) : IFa
 public struct FacePartRenderable : IFaceRenderable
 {
 	public Material Material { get; }
-	public Color Color { get; }
-	public Vector3 Scale { get; }
-	public Vector3 Offset { get; }
-	public float Rotation { get; }
 	public float Order { get; }
+
+	public Color Color;
+	public Vector3 Scale;
+	public Vector3 Offset;
+	public float Rotation;
 
 	public bool FlipX;
 	public SlotDef? Slot;
 	public FacePartDef? Part;
 	public Texture2D? TextureOverride;
+
 	public Func<FacePartRenderable, FacePartRenderable>? ModifyFunction;
+
+	// diagnostic
+	public Rot4 Rot;
+	public FaceSide Side;
 
 	public FacePartRenderable(Material mat, Color col, Vector3 offset, Vector3 scale, float rotation, bool flip_x, float? order = null) : this()
 	{
@@ -127,18 +141,6 @@ public static class RendererExtensions
 			PartColor.Sclera => face.GetScleraColor(side),
 			PartColor.None or _ => Color.white,
 		};
-
-	public static IEnumerable<FacePartRenderable> CollectAdditional(
-		this Comp_TSFace face,
-		Rot4 rot,
-		Predicate<FacePartDef>? part_predicate = null
-	)
-	{
-		foreach (var part in face.PersistentData.ExtraParts)
-		{
-
-		}
-	}
 
 	public static bool TryCreateFaceRenderable(
 		Comp_TSFace face,
@@ -201,6 +203,8 @@ public static class RendererExtensions
 		{
 			Slot = slot,
 			Part = def,
+			Rot = rot,
+			Side = side,
 			ModifyFunction = args_in =>
 			{
 				if (args_in.Slot is null || args_in.Slot != SlotDefOf.Eye)
@@ -233,7 +237,43 @@ public static class RendererExtensions
 		return res is not null;
 	}
 
-	public static IEnumerable<FacePartRenderable> CollectRenderables(
+	public static IEnumerable<FacePartRenderable> CollectAllRenderables(
+		this FaceLayout layout,
+		Comp_TSFace face,
+		Rot4 rot,
+		Predicate<FacePartDef>? part_predicate = null
+	)
+	{
+		return Enumerable.Empty<FacePartRenderable>()
+			.Concat(CollectExtraRenderables(face, rot, part_predicate))
+			.Concat(CollectLayoutRenderables(face.GetActiveFaceLayout(), face, rot, part_predicate))
+		;
+	}
+	
+	public static IEnumerable<FacePartRenderable> CollectExtraRenderables(
+		this Comp_TSFace face,
+		Rot4 rot,
+		Predicate<FacePartDef>? part_predicate = null
+	)
+	{
+		foreach (var part in face.PersistentData.ExtraParts.SelectMany(p => p.GetFor(face)))
+		{
+			if (TryCreateFaceRenderable(
+					face,
+					part,
+					part.Slot ?? part.Def.slot,
+					part.Side,
+					rot,
+					out var renderable,
+					default,
+					part_predicate
+				))
+				yield return renderable.Value;
+		}
+	}
+
+
+	public static IEnumerable<FacePartRenderable> CollectLayoutRenderables(
 		this FaceLayout layout,
 		Comp_TSFace face,
 		Rot4 rot,
@@ -241,9 +281,10 @@ public static class RendererExtensions
 	)
 	{
 		var pawn = face.Pawn;
+		// TSFacesMod.Logger.Verbose($"collecting layout renderables for {pawn}, rot: {rot.ToStringHuman()}");
 		var side_layout = layout.ForRot(rot);
 
-		foreach (var layout_part in side_layout)
+		foreach (var layout_part in side_layout.Parts)
 		{
 			var side = layout_part.side;
 			if (!face.TryGetPartForSlot(layout_part.slot, layout_part.side, out var comp_part))
@@ -251,84 +292,20 @@ public static class RendererExtensions
 				TSFacesMod.Logger.Warning($"FaceRenderer unable to get part for slot '{layout_part.slot.defName}' for pawn {pawn}", (pawn, layout_part, layout_part.side).GetHashCode());
 				continue;
 			}
+			// TSFacesMod.Logger.Verbose($"part for slot {layout_part.slot}: {comp_part.Def}");
+			// TSFacesMod.Logger.Verbose($"transform: ({layout_part.pos} : {layout_part.rotation})");
 
-			var def = comp_part.Def;
-			if (part_predicate?.Invoke(def) == false)
-				continue;
-
-			string? path = comp_part.Def.GetGraphicPath(face, side);
-
-			if (path.NullOrEmpty())
-				continue; // this is fine, part may not have a graphic for this state
-
-			var color = def.color.GetColorFor(face, side, def.customColor);
-			var shader = GetShader(def.shader);
-			var graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, Vector2.one, color);
-			if (graphic is null)
-			{
-				TSFacesMod.Logger.Warning($"Unable to get graphic to draw slot {layout_part.slot} for {pawn}", (layout_part, pawn, path).GetHashCode());
-				continue;
-			}
-
-			bool flip = !def.noMirror && rot.AsInt switch
-			{
-				//north
-				0 => side == FaceSide.Left,
-				//south
-				2 => side == FaceSide.Right,
-				_ => false,
-			};
-
-			Material part_mat = graphic.MatAt(rot);
-			if (part_mat is null)
-			{
-				TSFacesMod.Logger.Warning($"Unable to get material to draw slot {layout_part.slot} for {pawn}", (graphic, pawn).GetHashCode());
-				continue;
-			}
-
-			var transform = comp_part.Transform.ForRot(rot);
-			var pos = layout_part.pos.ToUpFacingVec3()
-				+ transform.Offset
-				+ def.offset.ToUpFacingVec3(layout_part.slot.layerOffset)
-			;
-			var draw_scale = def.drawSize.ToUpFacingVec3(1)
-				.MultipliedBy(transform.Scale.ToUpFacingVec3(1))
-			;
-			var rotation = transform.RotationOffset;
-
-			yield return new(part_mat, color, pos, draw_scale, rotation, flip, layout_part.slot.order)
-			{
-				Slot = layout_part.slot,
-				Part = def,
-				ModifyFunction = args_in =>
-				{
-					if (args_in.Slot is null || args_in.Slot != SlotDefOf.Eye)
-						return args_in;
-
-					var edit_mat = args_in.Material;
-					// TSFacesMod.Logger.Info($"Drawing an eye for '{pawn}',   side: '{rot.ToStringHuman()}',  part: '{args_in.Part}',   tex: '{edit_mat.mainTexture}'");
-
-					if (face.TryGetPartForSlot(SlotDefOf.Iris, side, out var iris))
-					{
-						var iris_graphic = GraphicDatabase.Get<Graphic_Multi>(iris.Def.graphicPath, ShaderDatabase.Cutout, Vector2.one, Color.white);
-						var iris_side_mat = iris_graphic.MatAt(rot);
-						edit_mat.SetTexture("_IrisTex", iris_side_mat.mainTexture);
-					}
-
-					edit_mat.SetTexture("_EyeTex", edit_mat.mainTexture);
-
-					edit_mat.SetColor("_SkinColor", pawn.story.SkinColor);
-					edit_mat.SetColor("_LashColor", pawn.story.hairColor);
-					edit_mat.SetColor("_ScleraColor", face.GetScleraColor(side));
-					edit_mat.SetColor("_IrisColor", face.GetEyeColor(side));
-
-					edit_mat.SetFloat("_Flipped", flip ? 1 : 0);
-					return args_in with
-					{
-						FlipX = false, // the shader handles the flipping here
-					};
-				},
-			};
+			if (TryCreateFaceRenderable(
+					face,
+					comp_part,
+					layout_part.slot,
+					layout_part.side,
+					rot,
+					out var renderable,
+					layout_part.pos.ToUpFacingVec3(),
+					part_predicate
+				))
+				yield return renderable.Value;
 		}
 	}
 }

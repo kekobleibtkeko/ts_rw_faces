@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TS_Faces.Comps;
+using TS_Faces.Util;
 using Verse;
 
 namespace TS_Faces.Data;

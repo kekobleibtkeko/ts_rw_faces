@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using RimWorld;
 using TS_Faces.Comps;
+using TS_Faces.Mod;
+using TS_Faces.Util;
 using UnityEngine;
 using Verse;
 
@@ -50,7 +52,8 @@ public class FacePartDef : Def, IPawnFilterable, IComparable<FacePartDef>
 
 	private Lazy<List<IFacePartStateWorker>> _Workers = default!;
 	public List<IFacePartStateWorker> Workers => _Workers.Value;
-	
+
+	public bool IsFloating => floating || FacesSettings.Instance.ForcedFloatingSlots.Contains(slot);
 
 	public override void ResolveReferences()
 	{
