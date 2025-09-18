@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using RimWorld;
 using TS_Faces.Comps;
 using TS_Faces.Data;
 using TS_Faces.Mod;
@@ -35,8 +36,12 @@ public class FaceRTTarget(RenderTexture rt) : IFaceRenderTarget<FacePartRenderab
 		renderable = renderable.ModifyFunction?.Invoke(renderable) ?? renderable;
 		if (ReverseX)
 		{
-			 // TODO: figure out why this hack is needed
-			renderable = renderable with { Offset = renderable.Offset.ScaledBy(new(-1, 1, 1)) };
+			// TODO: figure out why this hack is needed
+			renderable = renderable with
+			{
+				Offset = renderable.Offset.ScaledBy(new(-1, 1, 1)),
+				Rotation = 360 - renderable.Rotation,
+			};
 		}
 		// TSFacesMod.Logger.Verbose($"Drawing:: Rotation {renderable.Rot.ToStringHuman()}: {(renderable.Side == FaceSide.None ? "" : renderable.Side.ToString())} {renderable.Slot}, Part '{renderable.Part}' | Offset: {renderable.Offset},  Scale: {renderable.Scale},  Rotation: {renderable.Rotation},  Flipped: {renderable.FlipX}");
 		TSUtil.BlitUtils.BlitWithTransform(
@@ -74,7 +79,11 @@ public class FaceMeshTarget(Mesh mesh, Matrix4x4 mat, PawnDrawParms parms) : IFa
 			// 	(renderable.FlipX, renderable.Face, renderable.Side, renderable.Rot, renderable.Slot).GetHashCode()
 			// );
 		}
-		renderable = renderable with { Offset = renderable.Offset.ScaledBy(new(PawnRenderNodeWorker_TSFace.ts_face_project_bonus, 1, PawnRenderNodeWorker_TSFace.ts_face_project_bonus)) };
+		renderable = renderable with
+		{
+			// The projection seems to have a scale offset of 1.5 from orth -> map
+			Offset = renderable.Offset.ScaledBy(new(PawnRenderNodeWorker_TSFace.ts_face_project_bonus, 1, PawnRenderNodeWorker_TSFace.ts_face_project_bonus))
+		};
 		GenDraw.DrawMeshNowOrLater(
 			use_mesh,
 			Mat * Matrix4x4.TRS(
@@ -106,7 +115,6 @@ public struct FacePartRenderable : IFaceRenderable
 
 	public Func<FacePartRenderable, FacePartRenderable>? ModifyFunction;
 
-	// diagnostic
 	public Rot4 Rot;
 	public FaceSide Side;
 	public Comp_TSFace Face;
@@ -129,6 +137,7 @@ public static class RendererExtensions
 {
 	public static Shader DefaultShader => FaceRenderer.SkinShader;
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool ApplyAll<TRenderable>(this IFaceRenderTarget<TRenderable> render_target, IEnumerable<TRenderable> renderables)
 		where
 			TRenderable : IFaceRenderable
@@ -159,7 +168,8 @@ public static class RendererExtensions
 			PartColor.None or _ => Color.white,
 		};
 
-	public static bool TryCreateFaceRenderable(
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool TryCreateFaceRenderableFromPart(
 		Comp_TSFace face,
 		FacePartWithTransform comp_part,
 		SlotDef slot,
@@ -167,6 +177,7 @@ public static class RendererExtensions
 		Rot4 rot,
 		[NotNullWhen(true)] out FacePartRenderable? res,
 		Vector3 extra_offset = default,
+		float? extra_rotation = default,
 		Predicate<FacePartDef>? part_predicate = null
 	)
 	{
@@ -214,7 +225,9 @@ public static class RendererExtensions
 		var draw_scale = part_def.drawSize.ToUpFacingVec3(1)
 			.MultipliedBy(transform.Scale.ToUpFacingVec3(1))
 		;
-		var rotation = transform.RotationOffset;
+		var rotation = transform.RotationOffset
+			+ extra_rotation ?? 0
+		;
 
 		res = new(
 			face,
@@ -263,8 +276,38 @@ public static class RendererExtensions
 		return res is not null;
 	}
 
-	public static IEnumerable<FacePartRenderable> CollectAllRenderables(
-		this FaceLayout layout,
+	public static IEnumerable<FacePartRenderable> CollectOnFaceRenderables(
+		this Comp_TSFace face,
+		Rot4 rot
+	)
+	{
+		var pawn = face.Pawn;
+		if (pawn.style?.FaceTattoo is TattooDef tattoo
+			&& !tattoo.noGraphic
+			&& tattoo.GraphicFor(pawn, FaceRenderer.TattooColor).MatAt(rot).mainTexture is Texture2D texture
+		)
+		{
+			yield return new(
+				face,
+				mat: new(FaceRenderer.TransparentShader),
+				col: FaceRenderer.TattooColor,
+				offset: default,
+				scale: Vector3.one,
+				rotation: 0,
+				flip_x: false,
+				order: SlotDefOf.SkinDecor.order + 1
+			)
+			{
+				TextureOverride = texture
+			};
+		}
+
+
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static IEnumerable<FacePartRenderable> CollectNeededAndExtraRenderables(
+		this FaceLayoutDef layout,
 		Comp_TSFace face,
 		Rot4 rot,
 		Predicate<FacePartDef>? part_predicate = null
@@ -276,31 +319,37 @@ public static class RendererExtensions
 		;
 	}
 	
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static IEnumerable<FacePartRenderable> CollectExtraRenderables(
 		this Comp_TSFace face,
 		Rot4 rot,
 		Predicate<FacePartDef>? part_predicate = null
 	)
 	{
-		foreach (var part in face.PersistentData.ExtraParts.SelectMany(p => p.GetFor(face)))
+		var fitting_parts = face.PersistentData.ExtraParts
+			.Where(p => p.Force || p.SidedDef.Main.FilterFits(face.Pawn, out _))
+			.SelectMany(p => p.GetFor(face))
+		;
+		foreach (var part in fitting_parts)
 		{
-			if (TryCreateFaceRenderable(
+			if (TryCreateFaceRenderableFromPart(
 					face,
-					part,
-					part.Slot ?? part.Def.slot,
-					part.Side,
-					rot,
+					comp_part: part,
+					slot: part.Slot ?? part.Def.slot,
+					side: part.Side,
+					rot: rot,
 					out var renderable,
-					default,
+					extra_offset: default,
+					extra_rotation: default,
 					part_predicate
 				))
 				yield return renderable.Value;
 		}
 	}
 
-
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static IEnumerable<FacePartRenderable> CollectLayoutRenderables(
-		this FaceLayout layout,
+		this FaceLayoutDef layout,
 		Comp_TSFace face,
 		Rot4 rot,
 		Predicate<FacePartDef>? part_predicate = null
@@ -321,14 +370,15 @@ public static class RendererExtensions
 			// TSFacesMod.Logger.Verbose($"part for slot {layout_part.slot}: {comp_part.Def}");
 			// TSFacesMod.Logger.Verbose($"transform: ({layout_part.pos} : {layout_part.rotation})");
 
-			if (TryCreateFaceRenderable(
+			if (TryCreateFaceRenderableFromPart(
 					face,
-					comp_part,
-					layout_part.slot,
-					layout_part.side,
-					rot,
+					comp_part: comp_part,
+					slot: layout_part.slot,
+					side: layout_part.side,
+					rot: rot,
 					out var renderable,
-					layout_part.pos.ToUpFacingVec3(),
+					extra_offset: layout_part.pos.ToUpFacingVec3(),
+					extra_rotation: layout_part.rotation,
 					part_predicate
 				))
 				yield return renderable.Value;

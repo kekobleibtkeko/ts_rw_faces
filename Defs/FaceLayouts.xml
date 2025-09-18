@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<TS_Faces.Data.FaceLayoutDef>
+		<defName>Long</defName>
+		<south>
+			<li>
+				<slot>Nose</slot>
+				<pos>(0, -0.11)</pos>
+			</li>
+			<li>
+				<slot>Mouth</slot>
+				<pos>(0, -0.135)</pos>
+			</li>
+			<li>
+				<slot>Eye</slot>
+				<side>Right</side>
+				<pos>(-0.065, -0.065)</pos>
+			</li>
+			<li>
+				<slot>Eye</slot>
+				<side>Left</side>
+				<pos>(0.065, -0.065)</pos>
+			</li>
+			<li>
+				<slot>Brow</slot>
+				<side>Right</side>
+				<pos>(-0.064, -0.01)</pos>
+			</li>
+			<li>
+				<slot>Brow</slot>
+				<side>Left</side>
+				<pos>(0.064, -0.01)</pos>
+			</li>
+			<li>
+				<slot>Ear</slot>
+				<side>Right</side>
+				<pos>(-0.14, -0.065)</pos>
+				<rotation>16</rotation>
+			</li>
+			<li>
+				<slot>Ear</slot>
+				<side>Left</side>
+				<pos>(0.14, -0.065)</pos>
+				<rotation>-16</rotation>
+			</li>
+		</south>
+		<east>
+			<li>
+				<slot>Nose</slot>
+				<pos>(0.05, -0.11)</pos>
+			</li>
+			<li>
+				<slot>Ear</slot>
+				<side>Right</side>
+				<pos>(-0.032, -0.06)</pos>
+				<rotation>7</rotation>
+			</li>
+			<li>
+				<slot>Eye</slot>
+				<side>Right</side>
+				<pos>(0.076, -0.048)</pos>
+			</li>
+			<li>
+				<slot>Brow</slot>
+				<side>Right</side>
+				<pos>(0.077, 0.005)</pos>
+			</li>
+			<li>
+				<slot>Mouth</slot>
+				<pos>(0.125, -0.1)</pos>
+			</li>
+		</east>
+		<north>
+			<li>
+				<slot>Ear</slot>
+				<side>Left</side>
+				<pos>(-0.14, -0.065)</pos>
+				<rotation>13</rotation>
+			</li>
+			<li>
+				<slot>Ear</slot>
+				<side>Right</side>
+				<pos>(0.14, -0.065)</pos>
+				<rotation>-13</rotation>
+			</li>
+		</north>
+	</TS_Faces.Data.FaceLayoutDef>
+
+</Defs>

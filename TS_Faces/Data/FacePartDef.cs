@@ -7,6 +7,7 @@ using RimWorld;
 using TS_Faces.Comps;
 using TS_Faces.Mod;
 using TS_Faces.Util;
+using TS_Lib.Util;
 using UnityEngine;
 using Verse;
 
@@ -28,7 +29,10 @@ public static class FacePartDefOf
 	}
 }
 
-public class FacePartDef : Def, IPawnFilterable, IComparable<FacePartDef>
+public class FacePartDef : Def,
+	IPawnFilterable,
+	IComparable<FacePartDef>,
+	ICreateCopy<FacePartDef> // needed to clone sideables, doesn't actually create a copy
 {
 	public SlotDef slot = default!;
 
@@ -50,7 +54,7 @@ public class FacePartDef : Def, IPawnFilterable, IComparable<FacePartDef>
 	public List<PawnFilterEntry> filters = [];
 
 	IEnumerable<PawnFilterEntry> IPawnFilterable.FilterEntries => filters;
-	float IPawnFilterable.Commonality => commonality;
+	int IPawnFilterable.Commonality => commonality;
 
 	private Lazy<List<IFacePartStateWorker>> _Workers = default!;
 	public List<IFacePartStateWorker> Workers => _Workers.Value;
@@ -60,7 +64,7 @@ public class FacePartDef : Def, IPawnFilterable, IComparable<FacePartDef>
 	public override void ResolveReferences()
 	{
 		base.ResolveReferences();
-		
+
 		slot ??= SlotDefOf.Eye;
 		_Workers = new(() => [..stateProps
 			.Select(prop => Activator.CreateInstance(prop.WorkerType, prop))
@@ -97,4 +101,6 @@ public class FacePartDef : Def, IPawnFilterable, IComparable<FacePartDef>
 	}
 
 	public int CompareTo(FacePartDef other) => string.Compare(defName, other.defName);
+
+	public FacePartDef CreateCopy() => this;
 }

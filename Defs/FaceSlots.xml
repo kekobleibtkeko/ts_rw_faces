@@ -41,9 +41,18 @@
 
 	<TS_Faces.Data.SlotDef>
 		<defName>Brow</defName>
-		<order>70</order>
+		<order>100</order>
 		<layerOffset>2.0</layerOffset>
-		<!-- TODO: add worker (Damaged when eye missing) -->
+		<!-- Treats brows as damaged only if the eye is entirely missing
+		 	probably not needed actually-->
+		<!-- <props Class="TS_Faces.Data.PartTagSlotWorkerProps">
+			<tag>SightSource</tag>
+			<damagedOverride>Ok</damagedOverride>
+			<missingOverride>Damaged</missingOverride>
+		</props> -->
+		<props Class="TS_Faces.Data.PartTagSlotWorkerProps">
+			<tag>SightSource</tag>
+		</props>
 	</TS_Faces.Data.SlotDef>
 
 	<TS_Faces.Data.SlotDef>

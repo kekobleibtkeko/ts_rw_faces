@@ -24,7 +24,7 @@ public abstract class FaceSlotPartWorkerBase(FaceSlotWorkerPropsBase props) : IF
 	public static Dictionary<(string, int), (int, IFaceSlotPartWorker.PartHealth)> HealthPartCache = [];
 	public FaceSlotWorkerPropsBase Props = props;
 
-	protected IFaceSlotPartWorker.PartHealth HandleRecord(Pawn pawn, BodyPartRecord? record)
+	protected virtual IFaceSlotPartWorker.PartHealth HandleRecord(Pawn pawn, BodyPartRecord? record)
 	{
 		IFaceSlotPartWorker.PartHealth part_health;
 		if (record is null)
@@ -53,7 +53,7 @@ public abstract class FaceSlotPartWorkerBase(FaceSlotWorkerPropsBase props) : IF
 
 public abstract class FaceSlotPartWorker<TProps>(TProps props) : FaceSlotPartWorkerBase(props)
 	where
-		TProps : FaceSlotWorkerPropsBase
+		TProps: FaceSlotWorkerPropsBase
 {
 	public new TProps Props => base.Props as TProps ?? throw new Exception($"Invalid props for FaceSlotPartWorker '{GetType()}'");
 }
@@ -66,7 +66,7 @@ public abstract class FaceSlotWorkerPropsBase
 
 public abstract class FaceSlotWorkerProps<TWorker> : FaceSlotWorkerPropsBase
 	where
-		TWorker : FaceSlotPartWorkerBase
+		TWorker: FaceSlotPartWorkerBase
 {
 	public override Type WorkerType => typeof(TWorker);
 }
@@ -91,11 +91,39 @@ public abstract class PartSlotRecordWorker<TProps>(TProps props) : FaceSlotPartW
 	}
 }
 
-public class PartTagSlotWorkerProps : FaceSlotWorkerProps<PartTagSlotWorkerProps.Worker>
+public abstract class FaceSlotRecordWorkerProps<TProps, TWorker> : FaceSlotWorkerProps<TWorker>
+	where
+		TProps: FaceSlotWorkerProps<TWorker>
+	where
+		TWorker: PartSlotRecordWorker<TProps>
+{
+	public IFaceSlotPartWorker.PartHealth okOverride = IFaceSlotPartWorker.PartHealth.Ok;
+	public IFaceSlotPartWorker.PartHealth damagedOverride = IFaceSlotPartWorker.PartHealth.Damaged;
+	public IFaceSlotPartWorker.PartHealth missingOverride = IFaceSlotPartWorker.PartHealth.Missing;
+}
+
+public abstract class PartSlotRecordOverrideWorker<TProps, TWorker>(TProps props) : PartSlotRecordWorker<TProps>(props)
+	where
+		TProps : FaceSlotRecordWorkerProps<TProps, TWorker>
+	where
+		TWorker : PartSlotRecordWorker<TProps>
+{
+	protected override IFaceSlotPartWorker.PartHealth HandleRecord(Pawn pawn, BodyPartRecord? record)
+	{
+		return base.HandleRecord(pawn, record) switch
+		{
+			IFaceSlotPartWorker.PartHealth.Damaged => Props.damagedOverride,
+			IFaceSlotPartWorker.PartHealth.Missing => Props.missingOverride,
+			IFaceSlotPartWorker.PartHealth.Ok or _ => Props.okOverride,
+		};
+	}
+}
+
+public class PartTagSlotWorkerProps : FaceSlotRecordWorkerProps<PartTagSlotWorkerProps, PartTagSlotWorkerProps.Worker>
 {
 	public BodyPartTagDef tag = default!;
 
-	public class Worker(PartTagSlotWorkerProps props) : PartSlotRecordWorker<PartTagSlotWorkerProps>(props)
+	public class Worker(PartTagSlotWorkerProps props) : PartSlotRecordOverrideWorker<PartTagSlotWorkerProps, Worker>(props)
 	{
 		protected override BodyPartRecord? GetBodyPartRecord(Pawn pawn, FaceSide side)
 		{
@@ -110,10 +138,11 @@ public class PartTagSlotWorkerProps : FaceSlotWorkerProps<PartTagSlotWorkerProps
 	}
 }
 
-public class PartNameSlotWorkerProps : FaceSlotWorkerProps<PartNameSlotWorkerProps.Worker>
+public class PartNameSlotWorkerProps : FaceSlotRecordWorkerProps<PartNameSlotWorkerProps, PartNameSlotWorkerProps.Worker>
 {
 	public string name = string.Empty;
-	public class Worker(PartNameSlotWorkerProps props) : PartSlotRecordWorker<PartNameSlotWorkerProps>(props)
+
+	public class Worker(PartNameSlotWorkerProps props) : PartSlotRecordOverrideWorker<PartNameSlotWorkerProps, Worker>(props)
 	{
 		protected override BodyPartRecord? GetBodyPartRecord(Pawn pawn, FaceSide side)
 		{

@@ -10,23 +10,23 @@ using Verse;
 
 namespace TS_Faces.Data;
 
-[DefOf]    
+[DefOf]
 public static class HeadDefOf
 {
-    public static HeadDef AverageLong = default!;
-    
-    static HeadDefOf()
-    {
-        DefOfHelper.EnsureInitializedInCtor(typeof(HeadDefOf));
-    }
+	public static HeadDef AverageLong = default!;
+	
+	static HeadDefOf()
+	{
+		DefOfHelper.EnsureInitializedInCtor(typeof(HeadDefOf));
+	}
 }
 
-public class HeadDef : Def, IPawnFilterable
+public class HeadDef : Def, IPawnFilterable, IComparable<HeadDef>
 {
 	[NoTranslate]
 	public string graphicPath = "";
 
-	public FaceLayout faceLayout = new();
+	public FaceLayoutDef faceLayout = default!;
 	public string? shader;
 	public PartColor color = PartColor.Skin;
 
@@ -34,12 +34,17 @@ public class HeadDef : Def, IPawnFilterable
 	public List<PawnFilterEntry> filters = [];
 
 	IEnumerable<PawnFilterEntry> IPawnFilterable.FilterEntries => filters;
-	float IPawnFilterable.Commonality => commonality;
+	int IPawnFilterable.Commonality => commonality;
+
+	public int CompareTo(HeadDef other) => string.Compare(defName, other.defName);
 
 	public override void ResolveReferences()
 	{
 		base.ResolveReferences();
-		faceLayout.ResolveReferences();
+		faceLayout ??= FaceLayoutDefOf.Long;
+
+		// Log.Message($"filters for head {this}:");
+		// Log.Message(string.Join("\n", filters)); 
 
 		// Log.Message($"slots for {this}:");
 		// foreach (var rot in Rot4.AllRotations)

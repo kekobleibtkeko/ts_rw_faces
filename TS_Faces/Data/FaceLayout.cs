@@ -45,7 +45,20 @@ public struct FaceLayoutSide(IEnumerable<FaceLayoutPart> parts) : IMirrorable<Fa
 	public readonly FaceLayoutSide Mirror() => new(Parts.Select(FaceLayoutPart.Mirrored));
 }
 
-public class FaceLayout
+
+[DefOf]
+public static class FaceLayoutDefOf
+{
+    public static FaceLayoutDef Long = default!;
+    
+    static FaceLayoutDefOf()
+    {
+        DefOfHelper.EnsureInitializedInCtor(typeof(FaceLayoutDefOf));
+    }
+}
+
+
+public class FaceLayoutDef : Def
 {
 	public List<FaceLayoutPart> east = [];
 	public List<FaceLayoutPart> south = [];
@@ -66,7 +79,7 @@ public class FaceLayout
 		_ => default,
 	};
 
-	public void ResolveReferences()
+	public override void ResolveReferences()
 	{
 		EastLayout = new(east);
 		SouthLayout = new(south);

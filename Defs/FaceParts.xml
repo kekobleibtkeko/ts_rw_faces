@@ -23,6 +23,13 @@
 		<shader>TSEye</shader>
 		<color>None</color>
 		<drawSize>(0.29, 0.29)</drawSize>
+		<stateProps>
+			<li Class="TS_Faces.Data.FacePartHealthProps">
+				<health>Missing</health>
+				<path>Things/Pawn/Empty</path>
+				<priority>-100</priority>
+			</li>
+		</stateProps>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSMouthBase" ParentName="TSFacePartBase" Abstract="True">
@@ -38,6 +45,7 @@
 	<TS_Faces.Data.FacePartDef Name="TSEarBase" ParentName="TSFacePartBase" Abstract="True">
 		<slot>Ear</slot>
 		<color>Skin</color>
+		<drawSize>(0.4, 0.4)</drawSize>
 	</TS_Faces.Data.FacePartDef>
 
 	<TS_Faces.Data.FacePartDef Name="TSBrowBase" ParentName="TSFacePartBase" Abstract="True">
@@ -75,12 +83,13 @@
 
 	<TS_Faces.Data.FacePartDef ParentName="TSEarBase">
 		<defName>DebugEar</defName>
-		<graphicPath>Things/Pawn/Face/Eye1</graphicPath>
+		<graphicPath>Things/Pawn/Face/Ear1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 
 	<TS_Faces.Data.FacePartDef ParentName="TSBrowBase">
 		<defName>DebugBrow</defName>
-		<graphicPath>Things/Pawn/Face/Eye1</graphicPath>
+		<graphicPath>Things/Pawn/Face/Brow1</graphicPath>
+		<shader>TSTransparent</shader>
 	</TS_Faces.Data.FacePartDef>
 
 	

@@ -2,7 +2,7 @@
 <ModMetaData>
 	<name>[TS] Faces</name>
 	<author>Tsuyao</author>
-	<description>FACES</description>
+	<description>Creates dynamic faces for every pawn.</description>
 	<packageId>tsuyao.faces</packageId>
 	<supportedVersions>
 		<li>1.6</li>

@@ -95,25 +95,10 @@ public static class FaceRenderer
 			var head_side_mat = head_graphic.MatAt(rot);
 			Graphics.Blit(head_side_mat.mainTexture, MainRT, head_side_mat);
 
-			var renderables = head_def.faceLayout.CollectAllRenderables(face, rot, def => !def.IsFloating);
-			if (pawn.style?.FaceTattoo is TattooDef tattoo
-				&& !tattoo.noGraphic
-				&& tattoo.GraphicFor(pawn, TattooColor).MatAt(rot).mainTexture is Texture2D texture
-			)
-			{
-				renderables = renderables.Append(new(
-					face,
-					mat: new(TransparentShader),
-					col: TattooColor,
-					offset: default,
-					scale: Vector3.one,
-					rotation: 0,
-					flip_x: false,
-					order: SlotDefOf.SkinDecor.order + 1
-				) {
-					TextureOverride = texture
-				});
-			}
+			var renderables = Enumerable.Empty<FacePartRenderable>()
+				.Concat(head_def.faceLayout.CollectNeededAndExtraRenderables(face, rot, def => !def.IsFloating))
+				.Concat(face.CollectOnFaceRenderables(rot))
+			;
 			// ugly hack because the transforms that are passed are reversed in the west side
 			//   for some reason
 			// TODO: find out why the FUCK this is necessary

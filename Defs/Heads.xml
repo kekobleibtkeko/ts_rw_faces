@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!-- BASE -->
+
+	<TS_Faces.Data.HeadDef Name="TSHeadBase" Abstract="True">
+		<shader>TSSkin</shader>
+	</TS_Faces.Data.HeadDef>
+
+	<TS_Faces.Data.HeadDef Name="TSHumanHeadBase" ParentName="TSHeadBase" Abstract="True">
+		<filters>
+			<!-- Is this really the way ??
+				probably
+			-->
+			<li>
+				<filter>Disallowed</filter>
+				<gene>Furskin</gene>
+			</li>
+			<li>
+				<filter>Needed</filter>
+				<ghoul>false</ghoul>
+			</li>
+		</filters>
+	</TS_Faces.Data.HeadDef>
+	
+	<TS_Faces.Data.HeadDef Name="TSGhoulHeadBase" ParentName="TSHeadBase" Abstract="True">
+		<filters>
+			<li>
+				<filter>Needed</filter>
+				<ghoul>true</ghoul>
+			</li>
+		</filters>
+	</TS_Faces.Data.HeadDef>
+	
+	<TS_Faces.Data.HeadDef Name="TSFurHeadBase" ParentName="TSHeadBase" Abstract="True">
+		<color>Hair</color>
+		<shader>TSTransparent</shader>
+		<filters>
+			<li>
+				<filter>Needed</filter>
+				<gene>Furskin</gene>
+			</li>
+		</filters>
+	</TS_Faces.Data.HeadDef>
+
+	<!-- LONG -->
+	
+	<TS_Faces.Data.HeadDef ParentName="TSHumanHeadBase">
+		<defName>AverageLong</defName>
+		<faceLayout>Long</faceLayout>
+		<graphicPath>Things/Pawn/Head/AverageLong</graphicPath>
+	</TS_Faces.Data.HeadDef>
+
+	<TS_Faces.Data.HeadDef ParentName="TSFurHeadBase">
+		<defName>AverageLongFur</defName>
+		<faceLayout>Long</faceLayout>
+		<graphicPath>Things/Pawn/Head/AverageLong</graphicPath>
+	</TS_Faces.Data.HeadDef>
+	
+	<!-- SHORT -->
+	
+	<!-- <TS_Faces.Data.HeadDef ParentName="TSHumanHeadBase">
+		<defName>AverageShort</defName>
+		<faceLayout>Short</faceLayout>
+		<graphicPath>Things/Pawn/Head/AverageShort</graphicPath>
+	</TS_Faces.Data.HeadDef> -->
+</Defs>

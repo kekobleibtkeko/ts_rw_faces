@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 3409531684
+CRC: 3368316157
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 0f4bc5a8c48150f9349a1225d807a595
+    Hash: 48c6eb363b4325ad570bdde53d3fba13
   TypeTreeHash:
     serializedVersion: 2
     Hash: b90360021f95c293bf3f1bef88434a62
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 0f4bc5a8c48150f9349a1225d807a595
+    Hash: 48c6eb363b4325ad570bdde53d3fba13
 HashAppended: 0
 ClassTypes:
 - Class: 21
@@ -23,6 +23,8 @@ ClassTypes:
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugEye_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Brow1_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Brow1_north.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Average_north.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Empty_north.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Empty_east.png
@@ -35,7 +37,6 @@ Assets:
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Female_Average_Another_Normal_south.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Empty_east.png
 - Assets/Data/tsuyao.faces/Textures/empty.png
-- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Eye1_east.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageShort_south.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Female_Average_Another_Normal_north.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Eye1_south.png
@@ -55,14 +56,16 @@ Assets:
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Nose1_north.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Nose1_south.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageLong_east.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Eye1_east.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/DebugMouth_south.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Iris1_south.png
 - Assets/Data/tsuyao.faces/Materials/EyeTestMat.mat
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Empty_south.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/Female_Average_Another_Normal_east.png
 - Assets/Data/tsuyao.faces/Materials/SkinTestMat.mat
-- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageShort_north.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Brow1_south.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageLong_south.png
+- Assets/Data/tsuyao.faces/Textures/Things/Pawn/Head/AverageShort_north.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Face/Iris1_east.png
 - Assets/Data/tsuyao.faces/Materials/Unlit_TSColorOverride.mat
 - Assets/Data/tsuyao.faces/Materials/TSEye.shader

@@ -74,24 +74,6 @@ public class SlotDef : Def
 
 	public FacePartDef? GetRandomPartFor(Pawn pawn, StringBuilder? reasons = null)
 	{
-		var parts = FacesUtil.RandomParts.Ensure(this);
-		var fitting_parts = parts
-			.Select(part =>
-			{
-				if (part.FilterFits(pawn, out var _, reasons))
-					return (FacePartDef?)part;
-
-				if (reasons is not null)
-				{
-					// TSFacesMod.Logger.Verbose($"Random: part {part} doesn't fit, Reasons:");
-					// TSFacesMod.Logger.Verbose(reasons.ToString());
-				}
-				return null;
-			})
-			.Where(part => part is not null)
-			.Select(part => RandomFacePart.From(part!, pawn))
-		;
-
-		return fitting_parts.GetRandom<RandomFacePart, FacePartDef>();
+		return FacesUtil.RandomParts.Ensure(this).GetRandomFor(pawn, reasons);
 	}
 }

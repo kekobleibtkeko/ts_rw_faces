@@ -67,7 +67,7 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
 		var render_target = new FaceMeshTarget(mesh, matrix, parms);
 		var renderables = face
 			.GetActiveFaceLayout()
-			.CollectAllRenderables(face, parms.facing, def => def.IsFloating)
+			.CollectNeededAndExtraRenderables(face, parms.facing, def => def.IsFloating)
 		;
 		render_target.ApplyAll(renderables);
 

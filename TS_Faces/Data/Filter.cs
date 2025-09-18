@@ -7,6 +7,7 @@ using RimWorld;
 using TS_Faces.Mod;
 using TS_Lib.Util;
 using Verse;
+using static TS_Lib.Util.TSUtil;
 
 namespace TS_Faces.Data;
 
@@ -51,14 +52,14 @@ public class PawnFilterEntry
 		];
 		var defs_str = string.Join(", ", defs.Select(x => x?.label ?? "none"));
 
-		return $"PartFilter(defs={defs_str}, filter={filter}, offset={commonalityOffset})";
+		return $"PartFilter(defs={defs_str}, ghoul={ghoul}, beatuy={beautyRange} filter={filter}, offset={commonalityOffset})";
 	}
 }
 
 public interface IPawnFilterable
 {
 	IEnumerable<PawnFilterEntry> FilterEntries { get; }
-	float Commonality { get; }
+	int Commonality { get; }
 }
 
 public static class PartFilterExtensions
@@ -71,6 +72,15 @@ public static class PartFilterExtensions
 	public const float BEAUTY_BONUS = 1.5f;
 
 	public const float DEFAULT_FIT = 0.001f;
+
+	public readonly struct RandomFilterContainer<T>(T value, Pawn pawn) : IWeightedRandom<T>
+		where
+			T : IPawnFilterable
+	{
+		public int Weight { get; } = value.Commonality + value.FilterEntries.Sum(x => x.CommonalityFor(pawn));
+		public T Value { get; } = value;
+	}
+
 	public static int CommonalityFor(this PawnFilterEntry entry, Pawn pawn)
 	{
 		int res = entry.commonalityOffset;
@@ -228,7 +238,7 @@ public static class PartFilterExtensions
 
 	public static T? GetActiveFromFilters<T>(this IEnumerable<T> parts, Pawn pawn)
 		where
-			T: IPawnFilterable
+			T : IPawnFilterable
 	{
 		T? highest = default;
 		float highest_fit = 0;
@@ -243,5 +253,22 @@ public static class PartFilterExtensions
 		}
 
 		return highest;
+	}
+
+	public static T? GetRandomFor<T>(this IEnumerable<T> defs, Pawn pawn, StringBuilder? reasons = null)
+		where
+			T : IPawnFilterable, IComparable<T>
+	{
+		var fitting = defs
+			.Select(def =>
+			{
+				if (def.FilterFits(pawn, out _, reasons))
+					return (T?)def;
+				return default;
+			})
+			.Where(def => def is not null)
+			.Select(def => new RandomFilterContainer<T>(def!, pawn))
+		;
+		return fitting.GetRandom<RandomFilterContainer<T>, T>();
 	}
 }

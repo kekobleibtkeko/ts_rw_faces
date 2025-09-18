@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 using TS_Faces.Comps;
 using TS_Faces.Data;
+using TS_Lib.Util;
 using UnityEngine;
 using Verse;
 using static Verse.PawnRenderNodeProperties;
@@ -34,7 +35,11 @@ public static class FacesUtil
 	);
 	public static Dictionary<SlotDef, List<FacePartDef>> RandomParts => _RandomParts.Value;
 
-	public static TaggedString ModTranslate(this string str) => $"Faces.{str.Replace(' ', '_')}".Translate();
+	private static readonly Lazy<List<HeadDef>> _Heads = new(() => [.. DefDatabase<HeadDef>.AllDefsListForReading]);
+	public static List<HeadDef> Heads => _Heads.Value;
+
+	public static TaggedString ModTranslate(this string str, params NamedArgument[] args) => $"Faces.{str.Replace(' ', '_')}".Translate(args);
+	public static (TaggedString, TaggedString) ModLabelDesc(this string key, params NamedArgument[] args) => TSUtil.LabelDesc(key, ModTranslate, args);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static FaceSide Mirror(this FaceSide side) => side switch

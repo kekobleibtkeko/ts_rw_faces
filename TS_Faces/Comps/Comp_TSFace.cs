@@ -28,10 +28,19 @@ public class CompProperties_TSFace : CompProperties
 		compClass = typeof(Comp_TSFace);
 	}
 }
-public class SidedTRFaceParts(FacePartDef part, TSTransform4 transform) : IExposable
+public class SidedTRFaceParts(FacePartDef part, TSTransform4 transform) : IExposable, ICreateCopy<SidedTRFaceParts>
 {
 	public List<SidedDef<FacePartDef>> FaceParts = [new(part)];
 	public SidedDeep<TSTransform4> Transform = new(transform);
+
+	public SidedTRFaceParts CreateCopy()
+	{
+		var copy = this.DirtyClone() ?? throw new Exception("unable to clone sided parts?");
+		copy.FaceParts = [.. FaceParts.Select(x => x.CreateCopy<FacePartDef, SidedDef<FacePartDef>>())];
+		copy.Transform = Transform.CreateCopy<TSTransform4, SidedDeep<TSTransform4>>();
+		return copy;
+	}
+
 	public void ExposeData()
 	{
 		Scribe_Collections.Look(ref FaceParts, "parts");
@@ -39,13 +48,14 @@ public class SidedTRFaceParts(FacePartDef part, TSTransform4 transform) : IExpos
 	}
 }
 
-public class ExtraFacePart(FacePartDef def, SlotDef? anchor) : IExposable
+public class ExtraFacePart(FacePartDef def, SlotDef? anchor) : IExposable, ICreateCopy<ExtraFacePart>
 {
 	public const int CACHE_SECONDS = 20;
 	public const int CACHE_TICKS = TSUtil.Ticks.TICKS_PER_SECOND * CACHE_SECONDS;
 	public SlotDef Anchor = anchor ?? SlotDefOf.None;
 	public FaceSide AnchorSide;
 	public bool Mirror;
+	public bool Force;
 
 	public SidedDef<FacePartDef> SidedDef = new(def);
 	public SidedMirror<TSTransform4> SidedTransform = new(new());
@@ -123,6 +133,14 @@ public class ExtraFacePart(FacePartDef def, SlotDef? anchor) : IExposable
 		if (IsMirrored)
 			yield return GetForSide(face, AnchorSide.Mirror());
 	}
+
+	public ExtraFacePart CreateCopy()
+	{
+		var copy = this.DirtyClone() ?? throw new Exception("unable to clone extra face part?");
+		copy.SidedDef = SidedDef.CreateCopy<FacePartDef, SidedDef<FacePartDef>>();
+		copy.SidedTransform = SidedTransform.CreateCopy<TSTransform4, SidedMirror<TSTransform4>>();
+		return copy;
+	}
 }
 
 public struct FacePartWithTransform
@@ -142,20 +160,21 @@ public struct FacePartWithTransform
 
 public class TSFacePersistentData() : IExposable
 {
-	public List<HeadDef> Heads = [HeadDefOf.AverageLong];
+	public List<HeadDef> Heads = [];
 	public Dictionary<SlotDef, SidedTRFaceParts> PartsForSlots = [];
 	public List<ExtraFacePart> ExtraParts = [];
 
-	public Color? EyeLReplaceColor;
-	public Color? EyeRReplaceColor;
-
-	public Color? ScleraLReplaceColor;
-	public Color? ScleraRReplaceColor;
+	public SidedValue<Color?> EyeReplaceColors = new(null);
+	public SidedValue<Color?> ScleraReplaceColors = new(null);
 
 	public TSFacePersistentData CreateCopy()
 	{
 		TSFacePersistentData copy = this.DirtyClone() ?? throw new Exception("unable to clone ts face data?");
-
+		copy.Heads = [.. Heads];
+		copy.PartsForSlots = PartsForSlots.ToDictionary(kv => kv.Key, kv => kv.Value.CreateCopy());
+		copy.ExtraParts = [.. ExtraParts.Select(x => x.CreateCopy())];
+		copy.EyeReplaceColors = EyeReplaceColors.CreateCopy();
+		copy.ScleraReplaceColors = ScleraReplaceColors.CreateCopy();
 		return copy;
 	}
 
@@ -163,10 +182,8 @@ public class TSFacePersistentData() : IExposable
 	{
 		TSSaveUtility.LookDict(ref PartsForSlots, "mainparts");
 		Scribe_Collections.Look(ref ExtraParts, "extraparts");
-		Scribe_Values.Look(ref EyeLReplaceColor, "eyeCL");
-		Scribe_Values.Look(ref EyeRReplaceColor, "eyeCR");
-		Scribe_Values.Look(ref ScleraLReplaceColor, "sclCL");
-		Scribe_Values.Look(ref ScleraRReplaceColor, "sclCR");
+		Scribe_Values.Look(ref EyeReplaceColors!, "eyeclr");
+		Scribe_Values.Look(ref ScleraReplaceColors!, "sclclr");
 	}
 }
 
@@ -190,15 +207,24 @@ public class Comp_TSFace : ThingComp
 	public Graphic_Multi? CachedGraphic;
 	public Color? OverriddenColor;
 
+	public PawnState? PreviousState;
+
+	public HeadDef? GenerateFittingHeadDef(StringBuilder? reasons = null)
+	{
+		return FacesUtil.Heads.GetRandomFor(Pawn, reasons);
+	}
+
 	public HeadDef GetActiveHeadDef()
 	{
 		if (TickCache<Comp_TSFace, HeadDef>.TryGetCached(this, out var def))
 			return def;
+		if (!PersistentData.Heads.Any())
+			PersistentData.Heads.Add(GenerateFittingHeadDef() ?? HeadDefOf.AverageLong);
 		def = PersistentData.Heads.GetActiveFromFilters(Pawn) ?? HeadDefOf.AverageLong;
 		TickCache<Comp_TSFace, HeadDef>.Cache(this, def);
 		return def;
 	}
-	public FaceLayout GetActiveFaceLayout() => GetActiveHeadDef().faceLayout;
+	public FaceLayoutDef GetActiveFaceLayout() => GetActiveHeadDef().faceLayout;
 	public bool IsRegenerationNeeded() => RenderState == ReRenderState.Needed;
 	public void RequestRegeneration() => RenderState = ReRenderState.Needed;
 
@@ -219,15 +245,13 @@ public class Comp_TSFace : ThingComp
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Color GetScleraColor(FaceSide side) => side switch
 	{
-		FaceSide.Left => PersistentData.ScleraLReplaceColor ?? Color.white,
-		FaceSide.Right => PersistentData.ScleraLReplaceColor ?? Color.white,
+		FaceSide.Right or FaceSide.Left => PersistentData.ScleraReplaceColors.ForSide(side) ?? Color.white,
 		FaceSide.None or _ => Color.white,
 	};
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Color GetEyeColor(FaceSide side) => side switch
 	{
-		FaceSide.Left => PersistentData.EyeLReplaceColor ?? GetBaseEyeColor(),
-		FaceSide.Right => PersistentData.EyeRReplaceColor ?? GetBaseEyeColor(),
+		FaceSide.Right or FaceSide.Left => PersistentData.EyeReplaceColors.ForSide(side) ?? GetBaseEyeColor(),
 		FaceSide.None or _ => Color.white,
 	};
 
@@ -258,7 +282,7 @@ public class Comp_TSFace : ThingComp
 		return state;
 	}
 
-	public SidedTRFaceParts GenerateForSlot(SlotDef slot)
+	public SidedTRFaceParts GeneratePartForSlot(SlotDef slot)
 	{
 		var part = slot.GetRandomPartFor(Pawn);
 		if (part is null)
@@ -269,8 +293,9 @@ public class Comp_TSFace : ThingComp
 
 	public FacePartWithTransform? GetPartForSlot(SlotDef slot, FaceSide side)
 	{
+		// TODO: cache
 		// get list of parts for slot or generate a needed part
-		var slot_parts = PersistentData.PartsForSlots.Ensure(slot, GenerateForSlot);
+		var slot_parts = PersistentData.PartsForSlots.Ensure(slot, GeneratePartForSlot);
 		// get active part from selected for slot
 		var def = slot_parts.FaceParts
 			.Select(x => x.ForSide(side))
@@ -314,5 +339,12 @@ public class Comp_TSFace : ThingComp
 
 	public override void CompTickInterval(int delta)
 	{
+		
+		var state = GetPawnState();
+		if (PreviousState.HasValue && PreviousState.Value != state)
+		{
+			RequestRegeneration();
+		}
+		PreviousState = state;
 	}
 }
