@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Anxious</defName>
+		<values>
+			<filter>Needed</filter>
+			<geneInclusion>Any</geneInclusion>
+			<traitDegrees>
+				<li>
+					<def>NaturalMood</def>
+					<degree>-1</degree>
+				</li>
+				<li>
+					<def>NaturalMood</def>
+					<degree>-2</degree>
+				</li>
+			</traitDegrees>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+</Defs>

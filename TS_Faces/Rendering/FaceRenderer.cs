@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using RimWorld;
 using TS_Faces.Comps;
 using TS_Faces.Data;
+using TS_Faces.Mod;
 using TS_Faces.Util;
 using TS_Lib.Util;
 using UnityEngine;
@@ -79,6 +80,8 @@ public static class FaceRenderer
 			face.RenderState = Comp_TSFace.ReRenderState.UpToDate;
 			return;
 		}
+
+		TSFacesMod.Logger.Verbose($"regenerating face for {face.Pawn}, state: {pawn_state}");
 
 		var pawn = face.Pawn;
 

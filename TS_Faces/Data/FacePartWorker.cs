@@ -56,6 +56,7 @@ public class FacePartStateProps : FacePartWorkerProps<FacePartStateProps.Worker>
 public class FacePartHealthProps : FacePartWorkerProps<FacePartHealthProps.Worker>
 {
 	public IFaceSlotPartWorker.PartHealth health;
+	
 	public class Worker(FacePartHealthProps props) : FacePartWorker<FacePartHealthProps>(props)
 	{
 		public override bool IsActive(Comp_TSFace face, FacePartDef def, FaceSide side) => Props.health == def.slot.Worker.GetPartHealth(face.Pawn, side);

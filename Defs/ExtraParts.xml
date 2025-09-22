@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<TS_Faces.Data.ExtraPartDef Name="TSExtraPartBase" Abstract="True">
+	</TS_Faces.Data.ExtraPartDef>
+
+	
+</Defs>

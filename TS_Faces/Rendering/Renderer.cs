@@ -227,6 +227,7 @@ public static class RendererExtensions
 		;
 		var rotation = transform.RotationOffset
 			+ extra_rotation ?? 0
+			+ part_def.rotation
 		;
 
 		res = new(
@@ -252,12 +253,54 @@ public static class RendererExtensions
 				var edit_mat = args_in.Material;
 				// TSFacesMod.Logger.Info($"Drawing an eye for '{pawn}',   side: '{rot.ToStringHuman()}',  part: '{args_in.Part}',   tex: '{edit_mat.mainTexture}'");
 
-				if (face.TryGetPartForSlot(SlotDefOf.Iris, side, out var iris))
+				Vector2 eye_offset = default;
+				Vector2 iris_offset = default;
+				Vector2 hl_offset = iris_offset + args_in.Part?.highlightOffset ?? default;
+				Vector3 rotations = default;
+				rotations.x = args_in.Rotation;
+
+				Vector2 eye_scale = args_in.Scale / (args_in.Part?.drawSize ?? Vector2.one);
+				Vector2 iris_scale = Vector2.one;
+
+				// reset the detail textures so the last ones aren't used
+				edit_mat.SetTexture("_IrisTex", null);
+				edit_mat.SetTexture("_HLTex", null);
+
+				if (face.TryGetPartForSlot(SlotDefOf.Iris, side, out var iris)
+					&& iris.Def.GetGraphicPath(face, side) is string iris_path
+					&& !string.IsNullOrEmpty(iris_path))
 				{
-					var iris_graphic = GraphicDatabase.Get<Graphic_Multi>(iris.Def.graphicPath, ShaderDatabase.Cutout, Vector2.one, Color.white);
+					var iris_graphic = GraphicDatabase.Get<Graphic_Multi>(iris_path, ShaderDatabase.Cutout, Vector2.one, Color.white);
 					var iris_side_mat = iris_graphic.MatAt(rot);
 					edit_mat.SetTexture("_IrisTex", iris_side_mat.mainTexture);
+
+					var iris_tr = iris.Transform.ForRot(rot);
+					iris_offset += iris_tr.Offset.FromUpFacingVec3();
+					iris_scale *= iris_tr.Scale;
+
+					hl_offset += iris.Def.highlightOffset;
+					rotations.y = iris.Def.rotation + iris_tr.RotationOffset;
 				}
+
+				if (face.TryGetPartForSlot(SlotDefOf.Highlight, side, out var hl)
+					&& hl.Def.GetGraphicPath(face, side) is string hl_path
+					&& !string.IsNullOrEmpty(hl_path))
+				{
+					var hl_graphic = GraphicDatabase.Get<Graphic_Multi>(hl_path, ShaderDatabase.Cutout, Vector2.one, Color.white);
+					var hl_side_mat = hl_graphic.MatAt(rot);
+					edit_mat.SetTexture("_HLTex", hl_side_mat.mainTexture);
+
+					var hl_tr = hl.Transform.ForRot(rot);
+					hl_offset += hl_tr.Offset.FromUpFacingVec3();
+					rotations.z = hl.Def.rotation + hl_tr.RotationOffset;
+				}
+
+				edit_mat.SetVector("_EyeOffset", new(eye_offset.x, eye_offset.y));
+				edit_mat.SetVector("_IrisOffset", new(iris_offset.x, iris_offset.y, hl_offset.x, hl_offset.y));
+				Vector4 final_rotations = new(rotations.x, rotations.y, rotations.z, 0);
+				// these hacks are getting stupid... sorry future me
+				edit_mat.SetVector("_Rotations", final_rotations * (flip || rot == Rot4.West ? -1 : 1));
+				edit_mat.SetVector("_Scalses", new(rotations.x, rotations.y, rotations.z));
 
 				edit_mat.SetTexture("_EyeTex", edit_mat.mainTexture);
 
@@ -267,9 +310,15 @@ public static class RendererExtensions
 				edit_mat.SetColor("_IrisColor", face.GetEyeColor(side));
 
 				edit_mat.SetFloat("_Flipped", flip ? 1 : 0);
+				var offset = args_in.Offset.FromUpFacingVec3();
+				offset -= args_in.Part?.offset ?? default;
+
 				return args_in with
 				{
-					FlipX = false, // the shader handles the flipping here
+					// the shader handles flipping and some transforms
+					FlipX = false,
+					Rotation = 0,
+					Offset = offset.ToUpFacingVec3(args_in.Offset.y),
 				};
 			},
 		};
@@ -327,7 +376,7 @@ public static class RendererExtensions
 	)
 	{
 		var fitting_parts = face.PersistentData.ExtraParts
-			.Where(p => p.Force || p.SidedDef.Main.FilterFits(face.Pawn, out _))
+			.Where(p => p.Def.force || p.Def.FilterFits(face.Pawn, out _))
 			.SelectMany(p => p.GetFor(face))
 		;
 		foreach (var part in fitting_parts)

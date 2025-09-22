@@ -32,8 +32,12 @@ public class HeadDef : Def, IPawnFilterable, IComparable<HeadDef>
 
 	public int commonality = 10;
 	public List<PawnFilterEntry> filters = [];
+	public List<PawnFilterDef> filterDefs = [];
 
-	IEnumerable<PawnFilterEntry> IPawnFilterable.FilterEntries => filters;
+	IEnumerable<IPawnFilterEntry> IPawnFilterable.FilterEntries => Enumerable.Empty<IPawnFilterEntry>()
+		.Concat(filters)
+		.Concat(filterDefs)
+	;
 	int IPawnFilterable.Commonality => commonality;
 
 	public int CompareTo(HeadDef other) => string.Compare(defName, other.defName);

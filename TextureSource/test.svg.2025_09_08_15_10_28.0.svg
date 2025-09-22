@@ -24,11 +24,11 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="1"
-     inkscape:cx="204.5"
-     inkscape:cy="82.5"
-     inkscape:window-width="2516"
-     inkscape:window-height="671"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="1053.2356"
+     inkscape:cy="-303.34881"
+     inkscape:window-width="2560"
+     inkscape:window-height="1440"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -245,10 +245,10 @@
        gradientUnits="userSpaceOnUse" />
     <filter
        style="color-interpolation-filters:sRGB;"
-       height="1.0856711"
-       width="1.0606135"
-       y="-0.042835541"
-       x="-0.030306747"
+       height="1.0586268"
+       width="1.0595439"
+       y="-0.04362653"
+       x="-0.023571524"
        inkscape:label="Outline"
        id="filter14">
       <feGaussianBlur
@@ -357,7 +357,6 @@
        inkscape:label="Layer 1"
        inkscape:groupmode="layer"
        id="layer1"
-       style="filter:url(#filter14)"
        transform="translate(22.740928,-43.4145)">
       <path
          style="fill:#b8b8b8;fill-opacity:1"
@@ -378,6 +377,11 @@
          style="fill:#b8b8b8;stroke-width:1.1"
          d="m 108.49509,294.51879 c 64.08807,-5.51296 63.39895,-64.77719 66.15543,2.06735 2.75647,66.84455 2.06735,71.66838 -41.34715,86.829 -43.414491,15.16062 -57.196881,55.81864 -50.994801,-2.75647 6.20207,-58.57512 -6.89119,-84.76165 26.186521,-86.13988 z"
          id="path6" />
+      <path
+         id="path3"
+         style="fill:#ebe0d7;fill-rule:nonzero;stroke:#000000;stroke-width:3.4;stroke-opacity:1"
+         d="m 1011.7181,-681.66753 c -27.48599,-0.006 -58.91214,33.22265 -94.45903,139.08203 -40,163 -330,319 -275,426 55,107 262.99997,414 359.00003,318 96,-96 232,-297 204,-398 -28,-101 -53,-372 -93,-392 -24.375,-12.1875 -57.663,-93.07325 -100.541,-93.08203 z m -5.7637,205.06445 c -37.4269,0.17198 -79.586,91.18945 -102.6953,186.01758 -29,119 -82,23 37,204 141,121 95,-49 103,-48 8,1 15.5514,-20.11436 41,-119 25.5407,-99.24356 153.3826,219.610334 -27.6213,88.10869 -12.7176,-9.2395 -41.1432,-311.17011 -50.6834,-311.12627 z"
+         sodipodi:nodetypes="scssssssscssss" />
     </g>
     <g
        inkscape:groupmode="layer"

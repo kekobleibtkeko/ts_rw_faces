@@ -27,9 +27,9 @@ public class FacesSettings : ModSettings
 
 	public override void ExposeData()
 	{
-		Scribe_Values.Look(ref CompUpdateInterval, "compinterval");
-		Scribe_Values.Look(ref StrictGender, "strictgender");
-		Scribe_Values.Look(ref StrictBeauty, "strictbeauty");
+		Scribe_Values.Look(ref CompUpdateInterval, "compinterval", COMP_UPDATE_INTERVAL);
+		Scribe_Values.Look(ref StrictGender, "strictgender", false);
+		Scribe_Values.Look(ref StrictBeauty, "strictbeauty", false);
 		Scribe_Collections.Look(ref ForcedFloatingSlots, "forcedfloat");
 	}
 
@@ -45,7 +45,7 @@ public class FacesSettings : ModSettings
 			1, 300,
 			EditBuffers,
 			tt: update_desc,
-			resetval: CompUpdateInterval
+			resetval: COMP_UPDATE_INTERVAL
 		);
 
 		var (gender_lab, gender_desc) = "strict gender".ModLabelDesc();
@@ -62,6 +62,15 @@ public class FacesSettings : ModSettings
 				ForcedFloatingSlots.Add(SlotDefOf.Brow);
 			else
 				ForcedFloatingSlots.Remove(SlotDefOf.Brow);
+		}
+
+		{ // handle eye floating
+			var floating = ForcedFloatingSlots.Contains(SlotDefOf.Eye);
+			list.Listing.CheckboxLabeled("float eye".ModTranslate(), ref floating);
+			if (floating)
+				ForcedFloatingSlots.Add(SlotDefOf.Eye);
+			else
+				ForcedFloatingSlots.Remove(SlotDefOf.Eye);
 		}
 	}
 }

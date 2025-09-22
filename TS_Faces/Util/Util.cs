@@ -35,6 +35,35 @@ public static class FacesUtil
 	);
 	public static Dictionary<SlotDef, List<FacePartDef>> RandomParts => _RandomParts.Value;
 
+	private static readonly Lazy<Dictionary<SlotDef, List<FacePartModifierDef>>> _PartModifiers = new(()
+		=> DefDatabase<FacePartModifierDef>.AllDefsListForReading
+			.GroupBy(def => def.slot)
+			.ToDictionary(
+				group => group.Key,
+				group => group.ToList()
+			)
+	);
+	public static Dictionary<SlotDef, List<FacePartModifierDef>> PartModifiers => _PartModifiers.Value;
+
+	private static readonly Lazy<Dictionary<ExtraPartDef.PartDetail, List<ExtraPartDef>>> _ExtraParts = new(()
+		=> DefDatabase<ExtraPartDef>.AllDefsListForReading
+			.GroupBy(def => def.detail)
+			.ToDictionary(
+				group => group.Key,
+				group => group.ToList()
+			)
+	);
+	public static Dictionary<ExtraPartDef.PartDetail, List<ExtraPartDef>> ExtraParts => _ExtraParts.Value;
+
+	private static readonly Lazy<Dictionary<ExtraPartDef.PartDetail, List<ExtraPartDef>>> _RandomExtraParts = new(()
+		=> ExtraParts
+			.ToDictionary(
+				kv => kv.Key,
+				kv => kv.Value.Where(x => x.commonality > 0).ToList()
+			)
+	);
+	public static Dictionary<ExtraPartDef.PartDetail, List<ExtraPartDef>> RandomExtraParts => _RandomExtraParts.Value;
+
 	private static readonly Lazy<List<HeadDef>> _Heads = new(() => [.. DefDatabase<HeadDef>.AllDefsListForReading]);
 	public static List<HeadDef> Heads => _Heads.Value;
 

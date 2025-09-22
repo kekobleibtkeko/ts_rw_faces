@@ -18,10 +18,10 @@ public static class FacePartDefOf
 {
 	public static FacePartDef Empty = default!;
 
-	public static FacePartDef DebugEye = default!;
-	public static FacePartDef DebugIris = default!;
-	public static FacePartDef DebugMouth = default!;
-	public static FacePartDef DebugNose = default!;
+	// public static FacePartDef Eye1 = default!;
+	// public static FacePartDef Iris1 = default!;
+	// public static FacePartDef Mouth1 = default!;
+	// public static FacePartDef NoseShiny = default!;
 
 	static FacePartDefOf()
 	{
@@ -47,13 +47,21 @@ public class FacePartDef : Def,
 	public bool noMirror = false;
 	public Vector2 drawSize = Vector2.one;
 	public Vector2 offset = Vector2.zero;
+	public float rotation;
 	public float layerOffset = 0;
 	public bool undoSlotOffset = false;
 
+	// only for eye + iris
+	public Vector2 highlightOffset = Vector2.zero;
+
 	public int commonality = 10;
 	public List<PawnFilterEntry> filters = [];
+	public List<PawnFilterDef> filterDefs = [];
 
-	IEnumerable<PawnFilterEntry> IPawnFilterable.FilterEntries => filters;
+	IEnumerable<IPawnFilterEntry> IPawnFilterable.FilterEntries => Enumerable.Empty<IPawnFilterEntry>()
+		.Concat(filters)
+		.Concat(filterDefs)
+	;
 	int IPawnFilterable.Commonality => commonality;
 
 	private Lazy<List<IFacePartStateWorker>> _Workers = default!;
@@ -82,7 +90,7 @@ public class FacePartDef : Def,
 		foreach (var er in base.ConfigErrors())
 			yield return er;
 
-		foreach (var er in filters.SelectMany(x => x.GetConfigErrors()))
+		foreach (var er in filters.SelectMany(x => x.ConfigErrors()))
 			yield return er;
 	}
 
@@ -93,6 +101,11 @@ public class FacePartDef : Def,
 			.OrderByDescending(x => x.Properties.priority)
 			.FirstOrDefault()
 		;
+
+		// if (worker is not null)
+		// {
+		// 	Log.Message($"worker {worker}({worker.GetType()}) active for {this} for pawn {face.Pawn}, path={worker.Properties.path}, hide={worker.Properties.hide}");
+		// }
 
 		if (worker?.Properties.hide == true)
 			return null;

@@ -11,6 +11,14 @@
 	<TS_Faces.Data.FacePartDef Name="TSHighlightBase" ParentName="TSFacePartBase" Abstract="True">
 		<slot>Highlight</slot>
 		<shader>TSTransparent</shader>
+		<noMirror>true</noMirror>
+		<stateProps>
+			<li Class="TS_Faces.Data.FacePartStateProps">
+				<state>Dead</state>
+				<hide>true</hide>
+				<priority>-100</priority>
+			</li>
+		</stateProps>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSIrisBase" ParentName="TSFacePartBase" Abstract="True">
@@ -20,13 +28,14 @@
 	
 	<TS_Faces.Data.FacePartDef Name="TSEyeBase" ParentName="TSFacePartBase" Abstract="True">
 		<slot>Eye</slot>
+		<!-- Red: Sclera, Blue: Skin, Green: Hair -->
 		<shader>TSEye</shader>
 		<color>None</color>
 		<drawSize>(0.29, 0.29)</drawSize>
 		<stateProps>
 			<li Class="TS_Faces.Data.FacePartHealthProps">
 				<health>Missing</health>
-				<path>Things/Pawn/Empty</path>
+				<hide>true</hide>
 				<priority>-100</priority>
 			</li>
 		</stateProps>
@@ -35,11 +44,13 @@
 	<TS_Faces.Data.FacePartDef Name="TSMouthBase" ParentName="TSFacePartBase" Abstract="True">
 		<slot>Mouth</slot>
 		<color>Skin</color>
+		<drawSize>(0.13, 0.13)</drawSize>
 	</TS_Faces.Data.FacePartDef>
 	
 	<TS_Faces.Data.FacePartDef Name="TSNoseBase" ParentName="TSFacePartBase" Abstract="True">
 		<slot>Nose</slot>
 		<color>Skin</color>
+		<drawSize>(0.11, 0.11)</drawSize>
 	</TS_Faces.Data.FacePartDef>
 
 	<TS_Faces.Data.FacePartDef Name="TSEarBase" ParentName="TSFacePartBase" Abstract="True">
@@ -51,46 +62,165 @@
 	<TS_Faces.Data.FacePartDef Name="TSBrowBase" ParentName="TSFacePartBase" Abstract="True">
 		<slot>Brow</slot>
 		<color>Hair</color>
+		<shader>TSTransparent</shader>
 	</TS_Faces.Data.FacePartDef>
 
-	<!-- PARTS -->
+	<!-- SPECIES PARTS -->
+
+	<TS_Faces.Data.FacePartDef Name="TSHumanEarBase" ParentName="TSEarBase" Abstract="True">
+		<filters>
+			<li>
+				<filter>Disallowed</filter>
+				<setGenesAreExcempt>true</setGenesAreExcempt>
+				<gene>Ears_Human</gene>
+				<geneTags>
+					<li>Ears</li>
+				</geneTags>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef Name="TSHumanNoseBase" ParentName="TSNoseBase" Abstract="True">
+		<filters>
+			<li>
+				<filter>Disallowed</filter>
+				<setGenesAreExcempt>true</setGenesAreExcempt>
+				<gene>Nose_Human</gene>
+				<geneTags>
+					<li>Nose</li>
+				</geneTags>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartDef>
+
+	<!-- 	===========================================
+				PARTS
+			=========================================== --> 
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSFacePartBase">
 		<defName>Empty</defName>
 		<graphicPath>Things/Pawn/Empty</graphicPath>
 	</TS_Faces.Data.FacePartDef>
-	
-	<TS_Faces.Data.FacePartDef ParentName="TSIrisBase">
-		<defName>DebugIris</defName>
-		<graphicPath>Things/Pawn/Face/Iris1</graphicPath>
-	</TS_Faces.Data.FacePartDef>
+
+	<!-- MOUTH ===========================================-->
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
-		<defName>DebugMouth</defName>
-		<graphicPath>Things/Pawn/Face/DebugMouth</graphicPath>
+		<defName>Mouth1</defName>
+		<graphicPath>Things/Pawn/Face/Mouth1</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>Mouth2</defName>
+		<graphicPath>Things/Pawn/Face/Mouth2</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>Mouth3</defName>
+		<graphicPath>Things/Pawn/Face/Mouth3</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>Mouth4</defName>
+		<graphicPath>Things/Pawn/Face/Mouth4</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>Mouth5</defName>
+		<graphicPath>Things/Pawn/Face/Mouth5</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>Mouth6</defName>
+		<graphicPath>Things/Pawn/Face/Mouth6</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 	
+	<!-- EYE =========================================== -->
+
 	<TS_Faces.Data.FacePartDef ParentName="TSEyeBase">
-		<defName>DebugEye</defName>
+		<defName>Cat</defName>
 		<graphicPath>Things/Pawn/Face/Eye1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSEyeBase">
+		<defName>Lashy</defName>
+		<graphicPath>Things/Pawn/Face/Eye2</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSEyeBase">
+		<defName>Sharp</defName>
+		<highlightOffset>(0, -0.02)</highlightOffset>
+		<graphicPath>Things/Pawn/Face/Eye3</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+		<!-- Iris -->
+	<TS_Faces.Data.FacePartDef ParentName="TSIrisBase">
+		<defName>Iris1</defName>
+		<graphicPath>Things/Pawn/Face/Iris1</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+		<!-- Highlight -->
+	<TS_Faces.Data.FacePartDef ParentName="TSHighlightBase">
+		<defName>NoHighlight</defName>
+		<commonality>1</commonality>
+		<graphicPath>Things/Pawn/Empty</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef Name="TSHighlightStandard" ParentName="TSHighlightBase" Abstract="True">
+		<commonality>100</commonality>
+		<filters>
+			<li>
+				<filter>Disallowed</filter>
+				<traits>
+					<li>Psychopath</li>
+				</traits>
+				<hediffs>
+					<li>Inhumanized</li>
+					<li>VoidTouched</li>
+					<li>Blindness</li>
+				</hediffs>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSHighlightStandard">
+		<defName>DotLeft</defName>
+		<graphicPath>Things/Pawn/Face/Highlight1</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSHighlightStandard">
+		<defName>LineLeft</defName>
+		<graphicPath>Things/Pawn/Face/Highlight2</graphicPath>
+	</TS_Faces.Data.FacePartDef>
 	
-	<TS_Faces.Data.FacePartDef ParentName="TSNoseBase">
-		<defName>DebugNose</defName>
-		<drawSize>(0.4, 0.4)</drawSize>
+	<!-- NOSE ========================================== -->
+
+	<TS_Faces.Data.FacePartDef ParentName="TSHumanNoseBase">
+		<defName>NoseShiny</defName>
 		<graphicPath>Things/Pawn/Face/Nose1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 
-	<TS_Faces.Data.FacePartDef ParentName="TSEarBase">
-		<defName>DebugEar</defName>
+	<TS_Faces.Data.FacePartDef ParentName="TSHumanNoseBase">
+		<defName>NoseShadowed</defName>
+		<graphicPath>Things/Pawn/Face/Nose2</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<!-- EAR =========================================== -->
+
+	<TS_Faces.Data.FacePartDef ParentName="TSHumanEarBase">
+		<defName>Ear1</defName>
 		<graphicPath>Things/Pawn/Face/Ear1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 
+	<!-- BROW ========================================== -->
+
 	<TS_Faces.Data.FacePartDef ParentName="TSBrowBase">
-		<defName>DebugBrow</defName>
+		<defName>Brow1</defName>
 		<graphicPath>Things/Pawn/Face/Brow1</graphicPath>
-		<shader>TSTransparent</shader>
 	</TS_Faces.Data.FacePartDef>
 
+	<TS_Faces.Data.FacePartDef ParentName="TSBrowBase">
+		<defName>Brow2</defName>
+		<graphicPath>Things/Pawn/Face/Brow2</graphicPath>
+	</TS_Faces.Data.FacePartDef>
 	
 </Defs>

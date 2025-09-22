@@ -19,6 +19,9 @@ public abstract class Sided<T>(T main) : IExposable
 	public T Main = main;
 	public T? Other;
 
+	protected virtual T CreateOther() => Main.DirtyClone() ?? throw new Exception("unable to create clone for sided");
+	public virtual T EnsureOther() => Other ??= CreateOther();
+
 	public virtual T ForSide(SidedSide side) => side switch
 	{
 		SidedSide.Other => Other ?? Main,
@@ -37,6 +40,7 @@ public class SidedDef<T>(T main) : Sided<T>(main)
 	where
 		T : Def, new()
 {
+	protected override T CreateOther() => Main;
 	public override void ExposeData() => this.SaveDef();
 }
 
@@ -51,6 +55,7 @@ public class SidedMirror<T>(T main) : SidedDeep<T>(main)
 	where
 		T: IExposable, IMirrorable<T>
 {
+	protected override T CreateOther() => Main.Mirror();
 	public override T ForSide(SidedSide side) => side switch
 	{
 		SidedSide.Other => Other ?? Main.Mirror(),
@@ -63,6 +68,21 @@ public class SidedValue<T>(T main) : Sided<T>(main), ICreateCopy<SidedValue<T>>
 	public SidedValue<T> CreateCopy() => this.CreateCopyValue<T, SidedValue<T>>();
 
 	public override void ExposeData() => this.SaveValue();
+}
+
+public class SidedTransform(TSTransform4 main) : SidedMirror<TSTransform4>(main)
+{
+	public void ApplyTransform(TSTransform4 tr, bool mirror = true, bool mult_scale = true)
+	{
+		// apply to other if needed
+		if (!mirror || Other is not null)
+		{
+			var other_tr = mirror ? tr.Mirror() : tr;
+			Other = TSTransform4.Add(EnsureOther(), other_tr, mult_scale);
+		}
+		// apply to main
+		Main = TSTransform4.Add(Main, tr, mult_scale);
+	}
 }
 
 public static class SidedExtensions

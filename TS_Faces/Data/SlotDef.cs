@@ -32,7 +32,7 @@ public static class SlotDefOf
 	}
 }
 
-public struct RandomFacePart : IWeightedRandom<FacePartDef>
+public readonly struct RandomFacePart : IWeightedRandom<FacePartDef>
 {
 	public readonly int Weight { get; }
 	public readonly FacePartDef Value { get; }
@@ -74,6 +74,6 @@ public class SlotDef : Def
 
 	public FacePartDef? GetRandomPartFor(Pawn pawn, StringBuilder? reasons = null)
 	{
-		return FacesUtil.RandomParts.Ensure(this).GetRandomFor(pawn, reasons);
+		return FacesUtil.RandomParts.Ensure(this).GetRandomFilterableFor(pawn, reasons);
 	}
 }

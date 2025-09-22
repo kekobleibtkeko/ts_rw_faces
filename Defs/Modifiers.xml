@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<TS_Faces.Data.FacePartModifierDef Name="TSBaseModifier" Abstract="True">
+		<transforms>
+			<mirror>Mirrored</mirror>
+		</transforms>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- <TS_Faces.Data.FacePartModifierDef ParentName="TSBaseModifier">
+		<defName>EyebrowFallback</defName>
+		<commonality>1</commonality>
+		<slot>Brow</slot>
+		<transforms>
+			<south>
+				<rotation>-10</rotation>
+				<rotationMax>10</rotationMax>
+				<offset>(0, -0.02)</offset>
+				<offsetMax>(0, 0.02)</offsetMax>
+			</south>
+			<east>
+				<rotation>-10</rotation>
+				<rotationMax>10</rotationMax>
+				<offset>(0, -0.02)</offset>
+				<offsetMax>(0, 0.02)</offsetMax>
+			</east>
+		</transforms>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef ParentName="TSBaseModifier">
+		<defName>EyeFallback</defName>
+		<commonality>1</commonality>
+		<slot>Eye</slot>
+		<transforms>
+			<south>
+				<rotation>-5</rotation>
+				<rotationMax>5</rotationMax>
+				<scale>(0.95, 0.95)</scale>
+				<scaleMax>(1.05, 1.05)</scaleMax>
+			</south>
+			<east>
+				<rotation>-5</rotation>
+				<rotationMax>5</rotationMax>
+				<scale>(0.95, 0.95)</scale>
+				<scaleMax>(1.05, 1.05)</scaleMax>
+			</east>
+		</transforms>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef ParentName="TSBaseModifier">
+		<defName>IrisFallback</defName>
+		<commonality>1</commonality>
+		<slot>Iris</slot>
+		<transforms>
+			<south>
+				<scale>(1, 1)</scale>
+				<scaleMax>(1.05, 1.1)</scaleMax>
+			</south>
+			<east>
+				<scale>(1, 1)</scale>
+				<scaleMax>(1.05, 1.1)</scaleMax>
+			</east>
+		</transforms>
+	</TS_Faces.Data.FacePartModifierDef> -->
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>AnxiousBrow</defName>
+		<slot>Brow</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(-0.02, 0)</offset>
+				<offsetMax>(-0.05, 0.05)</offsetMax>
+			</south>
+			<east>
+				<offset>(0.02, 0)</offset>
+				<offsetMax>(0.05, 0.05)</offsetMax>
+			</east>
+		</transforms>
+		<filters>
+			<li>
+				<filter>Needed</filter>
+				<geneInclusion>Any</geneInclusion>
+				<traitDegrees>
+					<li>
+						<def>NaturalMood</def>
+						<degree>-1</degree>
+					</li>
+					<li>
+						<def>NaturalMood</def>
+						<degree>-2</degree>
+					</li>
+				</traitDegrees>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>AnxiousIris</defName>
+		<slot>Iris</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(-0.02, 0)</offset>
+				<offsetMax>(-0.05, 0.05)</offsetMax>
+			</south>
+			<east>
+				<offset>(0.02, 0)</offset>
+				<offsetMax>(0.05, 0.05)</offsetMax>
+			</east>
+		</transforms>
+		<filters>
+			<li>
+				<filter>Needed</filter>
+				<geneInclusion>Any</geneInclusion>
+				<traitDegrees>
+					<li>
+						<def>NaturalMood</def>
+						<degree>-1</degree>
+					</li>
+					<li>
+						<def>NaturalMood</def>
+						<degree>-2</degree>
+					</li>
+				</traitDegrees>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- 
+	Depressive  	NaturalMood -2
+	Iron-willed		Nerves +2
+	Kind			!
+	Lazy			Industriousness -1
+	Nervous			Nerves -1
+	Optimist		NaturalMood +1
+	Pessimist		NaturalMood -1
+	Sanguine		NaturalMood +2
+	Slothful		Industriousness -2
+	Steadfast		Nerves +1
+	Volatile		Nerves -2
+	Abraisive		!
+	Ascetic			!
+	CreepyBreathing	!
+	Greedy			!
+	Jealous			!
+	(very) 			Neurotic 1/2
+	NightOwl		!
+	Psycopath		!
+	Recluse			!biotech
+	Sickly			Immunity -1
+	TooSmart		!
+	Wimp			!
+	Bloodlust		!
+	TorturedArtist	!
+	Joyous			!anomaly
+	Inhumanized		!anomaly
+	VoidFascination !anomaly
+	Masochist		!
+	Brave
+	Absent-minded
+	Acedemian
+	Snob
+	Insatiable
+	Coward
+	Fun-loving
+	Prude
+	Couch potato
+	Desensitized
+	Dunce
+	Eccentric
+	Insomniac
+	Mad surgeon
+	Perfectionist
+	(Prodigy)
+	Slob
+	Stoner
+	Submissive
+	World weary
+	Schizoid
+	Distractable
+	Distressed
+	Disturbing
+	Flirty
+	Impulsive
+	Mood swings
+	Anxious
+	Clumsy
+	Cat person => :3
+	-->
+</Defs>

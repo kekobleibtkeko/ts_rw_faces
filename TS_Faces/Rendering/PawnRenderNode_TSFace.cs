@@ -52,6 +52,8 @@ public class PawnRenderNodeWorker_TSFace : PawnRenderNodeWorker
     public static float ts_face_tweak = 0;
 	[TweakValue("TS", 1f, 2f)]
 	public static float ts_face_project_bonus = 1.5f;
+	[TweakValue("TS", 1f, 6f)]
+	public static float ts_face_eye_offset_mult = 3.5f;
     public static Shader DefaultShader => ShaderDatabase.Cutout;
     public override void PostDraw(PawnRenderNode node, PawnDrawParms parms, Mesh mesh, Matrix4x4 matrix)
     {
