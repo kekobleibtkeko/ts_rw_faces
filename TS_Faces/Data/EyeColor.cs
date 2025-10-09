@@ -10,5 +10,6 @@ namespace TS_Faces.Data;
 
 public class GeneEyeColor : DefModExtension
 {
-    public Color eyeColor;
+	public Color eyeColor;
+	public Color? scleraColor;
 }

@@ -53,19 +53,26 @@ public class ExtraFacePart : IExposable, ICreateCopy<ExtraFacePart>
 {
 	public const int CACHE_SECONDS = 20;
 	public const int CACHE_TICKS = TSUtil.Ticks.TICKS_PER_SECOND * CACHE_SECONDS;
-	public ExtraPartDef Def;
+	public ExtraPartDef Def = default!;
 	public SlotDef? Anchor;
 
-	public SidedMirror<TSTransform4> SidedTransform = new(new());
+	public SidedTransform SidedTransform = new(new());
 	private FaceSide? AnchorSide;
 
-	public bool IsMirrored =>
-			GetAnchorSide() != FaceSide.None
-			&& (Def.mirror || GetAnchor() != SlotDefOf.None);
+	public bool IsMirrored
+		=> GetAnchorSide() != FaceSide.None
+		&& (Def.mirror || GetAnchor() != SlotDefOf.None);
 
+	[Obsolete("don't use directly, only for de/serialization", true)]
+	public ExtraFacePart() { }
 	public ExtraFacePart(ExtraPartDef def)
 	{
 		Def = def;
+		SidedTransform.ApplyTransform(
+			def.transforms.Collapse(Verse.Rand.Int).ToTransform(),
+			def.mirror
+		);
+		TSFacesMod.Logger.Verbose($"Created extra part for '{Def}', transform: '{SidedTransform}'");
 	}
 
 	public void ExposeData()
@@ -104,23 +111,28 @@ public class ExtraFacePart : IExposable, ICreateCopy<ExtraFacePart>
 			return cached;
 
 		TSTransform4 tr = SidedTransform.ForSide(side).CreateCopy();
-		if (GetAnchor() != SlotDefOf.None)
+		var anchor = GetAnchor();
+		if (anchor != SlotDefOf.None)
 		{
 			Rot4.AllRotations.Do(rot =>
 			{
 				var face_layout = face.GetActiveFaceLayout();
-				var part = face_layout.ForRot(rot).Parts.FirstOrDefault(layout => layout.side == side && layout.slot == Anchor);
-
+				var part = face_layout.ForRot(rot).Parts.FirstOrDefault(layout => layout.side == side && layout.slot == anchor);
 				var side_tr = tr.ForRot(rot);
-				side_tr.Scale = part is null
-					? Vector2.zero
-					: side_tr.Scale
-				;
-				side_tr.Offset += (part?.pos ?? Vector2.zero).ToUpFacingVec3();
-				side_tr.RotationOffset += part?.rotation ?? 0;
+				if (part is null)
+				{
+					// TSFacesMod.Logger.Warning($"unable to find anchor for extra part {Def} for {face.Pawn}, slot={anchor}, side={side}");
+					// make part functionally invisible if anchor is not found
+					side_tr.Scale = Vector2.zero;
+					return;
+				}
+
+				side_tr.Offset += part.pos.ToUpFacingVec3();
+				side_tr.RotationOffset += part.rotation;
 			});
 		}
 		
+		TSFacesMod.Logger.Verbose($"Extra part for '{Def}' final transform: '{tr}'");
 		TickCache<(ExtraFacePart, FaceSide), TSTransform4>.Cache(cache_key, tr, CACHE_TICKS);
 		return tr;
 	}
@@ -144,7 +156,7 @@ public class ExtraFacePart : IExposable, ICreateCopy<ExtraFacePart>
 	public ExtraFacePart CreateCopy()
 	{
 		var copy = this.DirtyClone() ?? throw new Exception("unable to clone extra face part?");
-		copy.SidedTransform = SidedTransform.CreateCopy<TSTransform4, SidedMirror<TSTransform4>>();
+		copy.SidedTransform = SidedTransform.CreateCopy<TSTransform4, SidedTransform>();
 		return copy;
 	}
 }
@@ -191,8 +203,8 @@ public class TSFacePersistentData() : IExposable
 		TSSaveUtility.LookDict(ref PartsForSlots, "mainparts");
 		Scribe_Collections.Look(ref ExtraParts, "extraparts");
 		TSSaveUtility.LookDict(ref AppliedModifiers, "mods");
-		Scribe_Values.Look(ref EyeReplaceColors!, "eyeclr");
-		Scribe_Values.Look(ref ScleraReplaceColors!, "sclclr");
+		Scribe_Deep.Look(ref EyeReplaceColors!, "eyeclr");
+		Scribe_Deep.Look(ref ScleraReplaceColors!, "sclclr");
 	}
 }
 
@@ -226,12 +238,16 @@ public class Comp_TSFace : ThingComp
 	{
 		foreach (var detail in TSUtil.GetEnumValues<ExtraPartDef.PartDetail>())
 		{
+			reasons?.AppendLine($"Trying to collect extra part for detail level {detail} for {Pawn}");
 			var def = FacesUtil.RandomExtraParts.Ensure(detail).GetRandomFilterableFor(Pawn, reasons);
-			if (def is null)
+			if (def is null || def.skip)
+			{
+				reasons?.AppendReason("no part found");
 				continue;
+			}
 
+			reasons?.AppendLine($"found def {def}, adding...");
 			var part = new ExtraFacePart(def);
-
 			PersistentData.ExtraParts.Add(part);
 		}
 	}
@@ -249,7 +265,10 @@ public class Comp_TSFace : ThingComp
 		{
 			PersistentData.Heads.Add(GenerateFittingHeadDef() ?? HeadDefOf.AverageLong);
 			// assume that pawn has not generated extra parts yet in this case
-			GenerateExtraParts();
+			var parts_reasons = new StringBuilder();
+			GenerateExtraParts(parts_reasons);
+
+			// TSFacesMod.Logger.Verbose(parts_reasons.ToString());
 		}
 		def = PersistentData.Heads.GetActiveFromFilters(Pawn) ?? HeadDefOf.AverageLong;
 		TickCache<Comp_TSFace, HeadDef>.Cache(this, def);
@@ -264,8 +283,17 @@ public class Comp_TSFace : ThingComp
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public Color GetBaseEyeColor()
+	public Color GetEyeColorInner(FaceSide side)
 	{
+		foreach (var hediff in Pawn.health.hediffSet.hediffs)
+		{
+			if (side != FaceSide.None && !hediff.part.def.label.ContainsLowerInvariant(side))
+				continue;
+			GeneEyeColor? color = hediff.def.GetModExtension<GeneEyeColor>();
+			if (color is null)
+				continue;
+			return color.eyeColor;
+		}
 		foreach (var gene in Pawn.genes.GenesListForReading)
 		{
 			if (!gene.Active)
@@ -278,15 +306,43 @@ public class Comp_TSFace : ThingComp
 		return Color.gray;
 	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private Color? GetScleraColorReplacement(FaceSide side)
+	{
+		foreach (var hediff in Pawn.health?.hediffSet?.hediffs ?? [])
+		{
+			if (side != FaceSide.None && hediff.part?.def?.label?.ContainsLowerInvariant(side) == false)
+				continue;
+			GeneEyeColor? color = hediff.def.GetModExtension<GeneEyeColor>();
+			if (color is null || !color.scleraColor.HasValue)
+				continue;
+			return color.scleraColor.Value;
+		}
+		foreach (var gene in Pawn.genes.GenesListForReading)
+		{
+			if (!gene.Active)
+				continue;
+			GeneEyeColor? color = gene.def.GetModExtension<GeneEyeColor>();
+			if (color is null)
+				continue;
+			return color.eyeColor;
+		}
+		return null;
+	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Color GetScleraColor(FaceSide side) => side switch
 	{
-		FaceSide.Right or FaceSide.Left => PersistentData.ScleraReplaceColors.ForSide(side) ?? Color.white,
+		FaceSide.Right or FaceSide.Left
+			=> PersistentData.ScleraReplaceColors.ForSide(side)
+			?? GetScleraColorReplacement(side)
+			?? Color.white,
 		FaceSide.None or _ => Color.white,
 	};
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Color GetEyeColor(FaceSide side) => side switch
 	{
-		FaceSide.Right or FaceSide.Left => PersistentData.EyeReplaceColors.ForSide(side) ?? GetBaseEyeColor(),
+		FaceSide.Right or FaceSide.Left
+			=> PersistentData.EyeReplaceColors.ForSide(side)
+			?? GetEyeColorInner(side),
 		FaceSide.None or _ => Color.white,
 	};
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -353,6 +409,7 @@ public class Comp_TSFace : ThingComp
 
 		var sided = new SidedTRFaceParts(part, tr);
 		GenerateModifiersForSlot(slot, sided, reasons);
+		// TSFacesMod.Logger.Verbose($"modifier res: {reasons}");
 		return sided;
 	}
 
@@ -426,6 +483,12 @@ public class Comp_TSFace : ThingComp
 		)];
 	}
 
+	public void ResetAll()
+	{
+		PersistentData = new();
+		RequestRegeneration();
+	}
+
 	public override void PostExposeData()
 	{
 		Scribe_Deep.Look(ref PersistentData, "tsfacedata");
@@ -454,9 +517,22 @@ public class Comp_TSFace : ThingComp
 		var state = GetPawnState();
 		if (PreviousState.HasValue && PreviousState.Value != state)
 		{
-			Log.Message($"regenerating face for {Pawn}");
+			// Log.Message($"regenerating face for {Pawn}");
 			RequestRegeneration();
 		}
 		PreviousState = state;
+	}
+
+	public override IEnumerable<Gizmo> CompGetGizmosExtra()
+	{
+		var gizmos = base.CompGetGizmosExtra();
+		if (TSUtil.ShowDebugGizmos)
+		{
+			gizmos = gizmos.Append(new Command_Action() {
+				defaultLabel = "reset face",
+				action = ResetAll,
+			});
+		}
+		return gizmos;
 	}
 }

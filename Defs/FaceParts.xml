@@ -35,7 +35,7 @@
 		<stateProps>
 			<li Class="TS_Faces.Data.FacePartHealthProps">
 				<health>Missing</health>
-				<hide>true</hide>
+				<path>Things/Pawn/Face/EyeBroken1</path>
 				<priority>-100</priority>
 			</li>
 		</stateProps>
@@ -105,33 +105,161 @@
 	<!-- MOUTH ===========================================-->
 	
 	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
-		<defName>Mouth1</defName>
+		<defName>Neutral</defName>
 		<graphicPath>Things/Pawn/Face/Mouth1</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 
 	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
-		<defName>Mouth2</defName>
+		<defName>VSmile</defName>
 		<graphicPath>Things/Pawn/Face/Mouth2</graphicPath>
+		<commonality>10</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>-7</commonalityOffset>
+				<defImports>
+					<li>SadOrNegative</li>
+				</defImports>
+			</li>
+			<li>
+				<commonalityOffset>4</commonalityOffset>
+				<defImports>
+					<li>Happy</li>
+				</defImports>
+			</li>
+		</filters>
 	</TS_Faces.Data.FacePartDef>
 
 	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
-		<defName>Mouth3</defName>
+		<defName>Smile</defName>
 		<graphicPath>Things/Pawn/Face/Mouth3</graphicPath>
+		<commonality>10</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>-7</commonalityOffset>
+				<defImports>
+					<li>SadOrNegative</li>
+				</defImports>
+			</li>
+			<li>
+				<commonalityOffset>4</commonalityOffset>
+				<defImports>
+					<li>Happy</li>
+				</defImports>
+			</li>
+		</filters>
 	</TS_Faces.Data.FacePartDef>
 
 	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
-		<defName>Mouth4</defName>
+		<defName>Frown</defName>
 		<graphicPath>Things/Pawn/Face/Mouth4</graphicPath>
+		<commonality>10</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>-5</commonalityOffset>
+				<defImports>
+					<li>Happy</li>
+				</defImports>
+			</li>
+		</filters>
 	</TS_Faces.Data.FacePartDef>
 
 	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
-		<defName>Mouth5</defName>
+		<defName>WideCat</defName>
 		<graphicPath>Things/Pawn/Face/Mouth5</graphicPath>
+		<commonality>10</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>-7</commonalityOffset>
+				<defImports>
+					<li>SadOrNegative</li>
+				</defImports>
+			</li>
+			<li>
+				<commonalityOffset>4</commonalityOffset>
+				<defImports>
+					<li>Happy</li>
+				</defImports>
+			</li>
+		</filters>
 	</TS_Faces.Data.FacePartDef>
 
 	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
-		<defName>Mouth6</defName>
+		<defName>NeutralPositive</defName>
 		<graphicPath>Things/Pawn/Face/Mouth6</graphicPath>
+		<commonality>10</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>-3</commonalityOffset>
+				<defImports>
+					<li>SadOrNegative</li>
+				</defImports>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>SmallPout</defName>
+		<graphicPath>Things/Pawn/Face/Mouth7</graphicPath>
+		<commonality>10</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>-2</commonalityOffset>
+				<defImports>
+					<li>Happy</li>
+				</defImports>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>SmallCat</defName>
+		<graphicPath>Things/Pawn/Face/Mouth8</graphicPath>
+		<drawSize>(0.22, 0.22)</drawSize>
+		<commonality>10</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>-7</commonalityOffset>
+				<defImports>
+					<li>SadOrNegative</li>
+				</defImports>
+			</li>
+			<li>
+				<commonalityOffset>4</commonalityOffset>
+				<defImports>
+					<li>Happy</li>
+				</defImports>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSMouthBase">
+		<defName>Smirk</defName>
+		<graphicPath>Things/Pawn/Face/Mouth9</graphicPath>
+		<drawSize>(0.3, 0.3)</drawSize>
+		<commonality>5</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>7</commonalityOffset>
+				<traitInclusion>Any</traitInclusion>
+				<traits>
+					<li>TooSmart</li>
+					<li>Abrasive</li>
+				</traits>
+				<traitDegrees>
+					<li>
+						<!-- Iron-Willed -->
+						<def>Nerves</def>
+						<degree>2</degree>
+					</li>
+				</traitDegrees>
+			</li>
+			<li>
+				<commonalityOffset>-2</commonalityOffset>
+				<defImports>
+					<li>SadOrNegative</li>
+				</defImports>
+			</li>
+		</filters>
 	</TS_Faces.Data.FacePartDef>
 	
 	<!-- EYE =========================================== -->
@@ -150,12 +278,44 @@
 		<defName>Sharp</defName>
 		<highlightOffset>(0, -0.02)</highlightOffset>
 		<graphicPath>Things/Pawn/Face/Eye3</graphicPath>
+		<commonality>10</commonality>
+		<filters>
+			<li>
+				<commonalityOffset>-4</commonalityOffset>
+				<defImports>
+					<li>Happy</li>
+				</defImports>
+			</li>
+		</filters>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSEyeBase">
+		<defName>Alert</defName>
+		<!-- <highlightOffset>(0, 0)</highlightOffset> -->
+		<graphicPath>Things/Pawn/Face/Eye4</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSEyeBase">
+		<defName>Droopy</defName>
+		<!-- <highlightOffset>(0, 0)</highlightOffset> -->
+		<graphicPath>Things/Pawn/Face/Eye5</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSEyeBase">
+		<defName>Bratty</defName>
+		<!-- <highlightOffset>(0, 0)</highlightOffset> -->
+		<graphicPath>Things/Pawn/Face/Eye6</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 
 		<!-- Iris -->
 	<TS_Faces.Data.FacePartDef ParentName="TSIrisBase">
-		<defName>Iris1</defName>
+		<defName>Full</defName>
 		<graphicPath>Things/Pawn/Face/Iris1</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSIrisBase">
+		<defName>Holey</defName>
+		<graphicPath>Things/Pawn/Face/Iris2</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 
 		<!-- Highlight -->
@@ -221,6 +381,11 @@
 	<TS_Faces.Data.FacePartDef ParentName="TSBrowBase">
 		<defName>Brow2</defName>
 		<graphicPath>Things/Pawn/Face/Brow2</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSBrowBase">
+		<defName>Worm</defName>
+		<graphicPath>Things/Pawn/Face/Brow3</graphicPath>
 	</TS_Faces.Data.FacePartDef>
 	
 </Defs>

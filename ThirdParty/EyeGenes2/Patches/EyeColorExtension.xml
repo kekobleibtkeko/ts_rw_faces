@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Patch>
+
+	<!-- Add mod extension for all eye genes -->
 	<Operation Class="PatchOperationAddModExtension">
 		<xpath>Defs/GeneDef[defName="Eyes_Gray"]</xpath>
 		<value>

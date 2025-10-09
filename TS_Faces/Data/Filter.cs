@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using RimWorld;
 using TS_Faces.Mod;
 using TS_Lib.Util;
+using UnityEngine;
 using Verse;
 using static TS_Lib.Util.TSUtil;
 
@@ -44,6 +45,7 @@ public interface IPawnFilterEntry
 	int CommonalityOffset { get; }
 	FilterLevel Filter { get; }
 
+	ListInclusionType DefInclusion { get; }
 	IEnumerable<GeneDef> AllGenes { get; }
 	ListInclusionType GeneInclusion { get; }
 	IEnumerable<TraitEntry> AllTraits { get; }
@@ -73,9 +75,12 @@ public class PawnFilterEntry : IPawnFilterEntry
 	public FloatRange? beautyRange;
 	public bool? ghoul;
 
+	public List<PawnFilterDef> defImports = [];
+
 	public int commonalityOffset = default;
 	public IPawnFilterEntry.FilterLevel filter = IPawnFilterEntry.FilterLevel.None;
 
+	public ListInclusionType defInclusion = ListInclusionType.Any;
 	public Lazy<List<GeneDef>> Genes;
 	public ListInclusionType geneInclusion;
 	public Lazy<List<IPawnFilterEntry.TraitEntry>> Traits;
@@ -99,6 +104,7 @@ public class PawnFilterEntry : IPawnFilterEntry
 
 	IEnumerable<HediffDef> IPawnFilterEntry.AllHediffs => Hediffs.Value;
 	ListInclusionType IPawnFilterEntry.HediffInclusion => hediffInclusion;
+	ListInclusionType IPawnFilterEntry.DefInclusion => defInclusion;
 
 	public PawnFilterEntry()
 	{
@@ -112,15 +118,16 @@ public class PawnFilterEntry : IPawnFilterEntry
 		}
 
 
-		Genes = new(() => _get_list(genes, gene));
+		Genes = new(() => [.._get_list(genes, gene).Concat(defImports.SelectMany(x => x.AllGenes))]);
 		Traits = new(()
 			=> [.._get_list(traitDegrees, traitDegree)
 				.Concat(_get_list(traits, trait)
 					.Select(x => new IPawnFilterEntry.TraitEntry() { def = x })
 				)
+				.Concat(defImports.SelectMany(x => x.AllTraits))
 			]
 		);
-		Hediffs = new(() => _get_list(hediffs, hediff));
+		Hediffs = new(() => [.._get_list(hediffs, hediff).Concat(defImports.SelectMany(x => x.AllHediffs))]);
 	}
 
 	public IEnumerable<string> ConfigErrors()
@@ -133,15 +140,14 @@ public class PawnFilterEntry : IPawnFilterEntry
 
 	public override string ToString()
 	{
-		// Def?[] defs = [
-		// 	gene,
-		// 	trait,
-		// 	hediff
-		// ];
-		// var defs_str = string.Join(", ", defs.Select(x => x?.label ?? "none"));
-		var defs_str = ""; // TODO: fix this
+		IPawnFilterEntry entry = this;
+		List<Def> defs = [..entry.AllGenes.Cast<Def>()
+			.Concat(entry.AllHediffs)
+			.Concat(entry.AllTraits.Select(x => x.def))
+		];
+		var defs_str = string.Join(",  ", defs.Select(x => $"{x.GetType().Name} {(string.IsNullOrEmpty(x.label) ? x.defName : x.label)}"));
 
-		return $"PartFilter(defs={defs_str}, ghoul={ghoul}, beatuy={beautyRange} filter={filter}, offset={commonalityOffset})";
+		return $"PartFilter(defs='{defs_str}', tags='{string.Join(", ", geneTags)}' exempt='{setGenesAreExcempt}' ghoul='{ghoul}', beatuy='{beautyRange}' filter='{filter}', offset='{commonalityOffset}')";
 	}
 }
 
@@ -193,7 +199,7 @@ public static class PartFilterExtensions
 
 		return res;
 	}
-	public static float FilterValueFor(this IPawnFilterEntry entry, Pawn pawn, StringBuilder? reason_builder = null)
+	public static float FilterValueFor(this IPawnFilterEntry entry, Pawn pawn, out bool unacceptable, StringBuilder? reason_builder = null)
 	{
 		reason_builder?.AppendLine($"{entry}:");
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -242,8 +248,9 @@ public static class PartFilterExtensions
 
 		float res = 0;
 		bool specific = entry.Filter != IPawnFilterEntry.FilterLevel.None;
-		bool unacceptable;
-		if (FacesSettings.Instance.StrictBeauty && entry.BeautyRange.HasValue)
+		unacceptable = false;
+		bool _unacceptable;
+		if (entry.BeautyRange.HasValue)
 		{
 			var beauty = pawn.GetStatValue(StatDefOf.PawnBeauty, cacheStaleAfterTicks: 1);
 			if (entry.BeautyRange.Value.Includes(beauty))
@@ -256,6 +263,11 @@ public static class PartFilterExtensions
 				var malus = entry.BeautyRange.Value.DistanceFrom(beauty);
 				reason_builder?.AppendReason($"beatuy not in range range -> - {malus}");
 				res -= malus;
+				if (FacesSettings.Instance.StrictBeauty)
+				{
+					unacceptable = true;
+					return res;
+				}
 			}
 		}
 
@@ -294,42 +306,46 @@ public static class PartFilterExtensions
 				}
 			}
 
+			var def_res = new List<bool>();
+
 			var trait_incl_func = entry.TraitInclusion.GetFuncFor(entry.AllTraits);
-			unacceptable = !trait_incl_func(trait =>
+			var trait_res = !trait_incl_func(trait =>
 			{
 				res += get_accept_val(
 					"trait",
 					trait.ValidForPawn(pawn),
-					out unacceptable
+					out _unacceptable
 				);
-				if (unacceptable)
+				if (_unacceptable)
 				{
 					_reason_need($"trait {trait.def}, degree: {trait.degree}");
 					return false;
 				}
 				return true;
 			});
+			def_res.Add(trait_res);
 
 			var hediff_incl_func = entry.HediffInclusion.GetFuncFor(entry.AllHediffs);
-			unacceptable = !hediff_incl_func(hediff =>
+			var hediff_res = !hediff_incl_func(hediff =>
 			{
 				res += get_accept_val(
 					"hediff",
 					pawn.health.hediffSet.HasHediff(hediff),
-					out unacceptable
+					out _unacceptable
 				);
-				if (unacceptable)
+				if (_unacceptable)
 				{
 					_reason_need($"hediff {hediff}");
 					return false;
 				}
 				return true;
 			});
+			def_res.Add(hediff_res);
 
 			if (ModsConfig.BiotechActive)
 			{
 				var gene_incl_func = entry.GeneInclusion.GetFuncFor(entry.AllGenes);
-				unacceptable = !gene_incl_func(gene =>
+				var gene_res = !gene_incl_func(gene =>
 				{
 					var has_gene = pawn.genes.HasActiveGene(gene);
 					if (entry.SetGenesAreExcempt && has_gene)
@@ -337,22 +353,24 @@ public static class PartFilterExtensions
 					res += get_accept_val(
 						"gene",
 						has_gene,
-						out unacceptable
+						out _unacceptable
 					);
-					if (unacceptable)
+					if (_unacceptable)
 					{
 						_reason_need($"gene {gene}");
 						return false;
 					}
 					return true;
 				});
+				def_res.Add(gene_res);
 			}
 
+			unacceptable = entry.DefInclusion.GetFuncFor(def_res)(x => x);
 			if (unacceptable)
 				return res;
 		}
 
-		if (res <= 0)
+		if (res < 0)
 		{
 			reason_builder?.AppendLine($"score too low ({res} < 0)");
 		}
@@ -366,7 +384,10 @@ public static class PartFilterExtensions
 		fit_val = DEFAULT_FIT;
 		foreach (var filter in filterable.FilterEntries)
 		{
-			fit_val += filter.FilterValueFor(pawn, reason_builder);
+			var res = filter.FilterValueFor(pawn, out var unacceptable, reason_builder);
+			if (unacceptable)
+				res = Mathf.Min(res, -(DEFAULT_FIT * 2));
+			fit_val += res;
 		}
 		return fit_val > 0;
 	}
@@ -397,6 +418,7 @@ public static class PartFilterExtensions
 		var fitting = defs
 			.Select(def =>
 			{
+				// reasons?.AppendLine($"Filtering for item {def}");
 				if (def.FilterFits(pawn, out _, reasons))
 					return (T?)def;
 				return default;
@@ -404,6 +426,10 @@ public static class PartFilterExtensions
 			.Where(def => def is not null)
 			.Select(def => new RandomFilterContainer<T>(def!, pawn))
 		;
+		// if (reasons is not null)
+		// {
+		// 	TSFacesMod.Logger.Verbose($"Filterable res for {pawn}: {reasons}");
+		// }
 		return fitting.GetRandom<RandomFilterContainer<T>, T>();
 	}
 }

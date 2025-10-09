@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<!-- Remove eye hediff visuals -->
+	<Operation Class="PatchOperationRemove">
+		<xpath>Defs/HediffDef[defName="BionicEye"]/renderNodeProperties</xpath>
+	</Operation>
+	<Operation Class="PatchOperationRemove">
+		<xpath>Defs/HediffDef[defName="ArchotechEye"]/renderNodeProperties</xpath>
+	</Operation>
+
+	<!-- Remove ugly eye missing scars -->
+	<Operation Class="PatchOperationRemove">
+		<xpath>Defs/FleshTypeDef[defName="Normal"]/hediffWounds/li[hediff="MissingBodyPart"]/wounds/li[missingBodyPartFresh="false"]</xpath>
+		<!-- -->
+	</Operation>
+</Patch>

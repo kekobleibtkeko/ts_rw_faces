@@ -1,10 +1,71 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 	<TS_Faces.Data.PawnFilterDef>
+		<defName>SadOrNegative</defName>
+		<values>
+			<defImports>
+				<li>Jealous</li>
+				<li>Anxious</li>
+				<li>Depressed</li>
+			</defImports>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Positive</defName>
+		<values>
+			<defImports>
+				<li>Happy</li>
+				<li>Kind</li>
+			</defImports>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Happy</defName>
+		<values>
+			<defImports>
+				<li>Kind</li>
+			</defImports>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Tired</defName>
+		<values>
+			<defImports>
+				<li>Depressed</li>
+				<li>Lazy</li>
+			</defImports>
+			<traits>
+				<li>NightOwl</li>
+			</traits>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
 		<defName>Anxious</defName>
 		<values>
 			<filter>Needed</filter>
-			<geneInclusion>Any</geneInclusion>
+			<traitInclusion>Any</traitInclusion>
+			<traitDegrees>
+				<li>
+					<def>Nerves</def>
+					<degree>-1</degree>
+				</li>
+				<li>
+					<def>Nerves</def>
+					<degree>-2</degree>
+				</li>
+			</traitDegrees>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Depressed</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
 			<traitDegrees>
 				<li>
 					<def>NaturalMood</def>
@@ -12,6 +73,151 @@
 				</li>
 				<li>
 					<def>NaturalMood</def>
+					<degree>-2</degree>
+				</li>
+			</traitDegrees>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Wimp</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
+			<traits>
+				<li>Wimp</li>
+			</traits>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Kind</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
+			<traits>
+				<li>Kind</li>
+				<li MayRequire="ludeon.rimworld.anomaly">Joyous</li>
+			</traits>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Abrasive</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
+			<traits>
+				<li>Abrasive</li>
+			</traits>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Jealous</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
+			<traits>
+				<li>Jealous</li>
+			</traits>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Lazy</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
+			<traitDegrees>
+				<li>
+					<def>Industriousness</def>
+					<degree>-1</degree>
+				</li>
+				<li>
+					<def>Industriousness</def>
+					<degree>-2</degree>
+				</li>
+			</traitDegrees>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Willed</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
+			<traitDegrees>
+				<li>
+					<def>Nerves</def>
+					<degree>1</degree>
+				</li>
+				<li>
+					<def>Nerves</def>
+					<degree>2</degree>
+				</li>
+			</traitDegrees>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>GoodLooking</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
+			<traitDegrees>
+				<li>
+					<def>Beauty</def>
+					<degree>1</degree>
+				</li>
+				<li>
+					<def>Beauty</def>
+					<degree>2</degree>
+				</li>
+			</traitDegrees>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Beautiful</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>All</traitInclusion>
+			<traitDegrees>
+				<li>
+					<def>Beauty</def>
+					<degree>2</degree>
+				</li>
+			</traitDegrees>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>BadLooking</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>Any</traitInclusion>
+			<traitDegrees>
+				<li>
+					<def>Beauty</def>
+					<degree>-1</degree>
+				</li>
+				<li>
+					<def>Beauty</def>
+					<degree>-2</degree>
+				</li>
+			</traitDegrees>
+		</values>
+	</TS_Faces.Data.PawnFilterDef>
+
+	<TS_Faces.Data.PawnFilterDef>
+		<defName>Ugly</defName>
+		<values>
+			<filter>Needed</filter>
+			<traitInclusion>All</traitInclusion>
+			<traitDegrees>
+				<li>
+					<def>Beauty</def>
 					<degree>-2</degree>
 				</li>
 			</traitDegrees>

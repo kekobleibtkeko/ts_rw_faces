@@ -6,7 +6,9 @@
 		</transforms>
 	</TS_Faces.Data.FacePartModifierDef>
 
-	<!-- <TS_Faces.Data.FacePartModifierDef ParentName="TSBaseModifier">
+	<!-- Fallbacks -->
+
+	<TS_Faces.Data.FacePartModifierDef ParentName="TSBaseModifier">
 		<defName>EyebrowFallback</defName>
 		<commonality>1</commonality>
 		<slot>Brow</slot>
@@ -14,14 +16,14 @@
 			<south>
 				<rotation>-10</rotation>
 				<rotationMax>10</rotationMax>
-				<offset>(0, -0.02)</offset>
-				<offsetMax>(0, 0.02)</offsetMax>
+				<offset>(0, -0.01)</offset>
+				<offsetMax>(0, 0.01)</offsetMax>
 			</south>
 			<east>
 				<rotation>-10</rotation>
 				<rotationMax>10</rotationMax>
-				<offset>(0, -0.02)</offset>
-				<offsetMax>(0, 0.02)</offsetMax>
+				<offset>(0, -0.01)</offset>
+				<offsetMax>(0, 0.01)</offsetMax>
 			</east>
 		</transforms>
 	</TS_Faces.Data.FacePartModifierDef>
@@ -60,7 +62,9 @@
 				<scaleMax>(1.05, 1.1)</scaleMax>
 			</east>
 		</transforms>
-	</TS_Faces.Data.FacePartModifierDef> -->
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- Anxious -->
 
 	<TS_Faces.Data.FacePartModifierDef>
 		<defName>AnxiousBrow</defName>
@@ -68,30 +72,20 @@
 		<commonality>10</commonality>
 		<transforms>
 			<south>
-				<offset>(-0.02, 0)</offset>
-				<offsetMax>(-0.05, 0.05)</offsetMax>
+				<offset>(0, 0)</offset>
+				<offsetMax>(-0.02, 0.05)</offsetMax>
+				<rotation>20</rotation>
 			</south>
 			<east>
-				<offset>(0.02, 0)</offset>
-				<offsetMax>(0.05, 0.05)</offsetMax>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0.01, 0.06)</offsetMax>
+				<rotation>5</rotation>
+				<rotationMax>15</rotationMax>
 			</east>
 		</transforms>
-		<filters>
-			<li>
-				<filter>Needed</filter>
-				<geneInclusion>Any</geneInclusion>
-				<traitDegrees>
-					<li>
-						<def>NaturalMood</def>
-						<degree>-1</degree>
-					</li>
-					<li>
-						<def>NaturalMood</def>
-						<degree>-2</degree>
-					</li>
-				</traitDegrees>
-			</li>
-		</filters>
+		<filterDefs>
+			<li>Anxious</li>
+		</filterDefs>
 	</TS_Faces.Data.FacePartModifierDef>
 
 	<TS_Faces.Data.FacePartModifierDef>
@@ -100,30 +94,379 @@
 		<commonality>10</commonality>
 		<transforms>
 			<south>
-				<offset>(-0.02, 0)</offset>
-				<offsetMax>(-0.05, 0.05)</offsetMax>
+				<offset>(0, 0)</offset>
+				<offsetMax>(-0.02, -0.05)</offsetMax>
 			</south>
 			<east>
-				<offset>(0.02, 0)</offset>
-				<offsetMax>(0.05, 0.05)</offsetMax>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0.02, -0.05)</offsetMax>
 			</east>
 		</transforms>
-		<filters>
-			<li>
-				<filter>Needed</filter>
-				<geneInclusion>Any</geneInclusion>
-				<traitDegrees>
-					<li>
-						<def>NaturalMood</def>
-						<degree>-1</degree>
-					</li>
-					<li>
-						<def>NaturalMood</def>
-						<degree>-2</degree>
-					</li>
-				</traitDegrees>
-			</li>
-		</filters>
+		<filterDefs>
+			<li>Anxious</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- Depressed -->
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>DepressedEyes</defName>
+		<slot>Eye</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<scale>(1, 1)</scale>
+				<scaleMax>(1, 0.8)</scaleMax>
+				<rotation>0</rotation>
+				<rotationMax>10</rotationMax>
+			</south>
+			<east>
+				<scale>(1, 1)</scale>
+				<scaleMax>(1, 0.8)</scaleMax>
+				<rotation>0</rotation>
+				<rotationMax>8</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Depressed</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>DepressedBrows</defName>
+		<slot>Brow</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(0, -0.015)</offset>
+				<offsetMax>(0, -0.03)</offsetMax>
+			</south>
+			<east>
+				<offset>(0, -0.0125)</offset>
+				<offsetMax>(0, -0.025)</offsetMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Depressed</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>DepressedIris</defName>
+		<slot>Iris</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<mirror>None</mirror>
+			<south>
+				<offset>(-0.03, 0)</offset>
+				<offsetMax>(0.03, -0.02)</offsetMax>
+			</south>
+			<east>
+				<offset>(-0.03, 0)</offset>
+				<offsetMax>(0.03, -0.02)</offsetMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Depressed</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- Wimp -->
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>WimpBrows</defName>
+		<slot>Brow</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(0, 0.005)</offset>
+				<offsetMax>(0, 0.02)</offsetMax>
+				<rotation>3</rotation>
+				<rotationMax>14</rotationMax>
+			</south>
+			<east>
+				<offset>(0, 0.005)</offset>
+				<offsetMax>(0, 0.02)</offsetMax>
+				<rotation>3</rotation>
+				<rotationMax>14</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Wimp</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>WimpEyes</defName>
+		<slot>Eye</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<scale>(1, 1.035)</scale>
+				<scaleMax>(1, 1.15)</scaleMax>
+			</south>
+			<east>
+				<scale>(1, 1.035)</scale>
+				<scaleMax>(1, 1.15)</scaleMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Wimp</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>WimpIris</defName>
+		<slot>Iris</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<scale>(0.75, 0.7)</scale>
+				<scaleMax>(0.9, 0.9)</scaleMax>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0, -0.03)</offsetMax>
+			</south>
+			<east>
+				<scale>(0.75, 0.7)</scale>
+				<scaleMax>(0.9, 0.9)</scaleMax>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0, -0.03)</offsetMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Wimp</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- Kind -->
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>KindEyes</defName>
+		<slot>Eye</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<scale>(1, 1)</scale>
+				<scaleMax>(1, 1.15)</scaleMax>
+				<rotation>0</rotation>
+				<rotationMax>5</rotationMax>
+			</south>
+			<east>
+				<scale>(1, 1)</scale>
+				<scaleMax>(1, 1.15)</scaleMax>
+				<rotation>0</rotation>
+				<rotationMax>5</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Kind</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>KindBrows</defName>
+		<slot>Brow</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(0, 0)</offset>
+				<offsetMax>(-0.02, 0.03)</offsetMax>
+				<rotation>2</rotation>
+				<rotationMax>9</rotationMax>
+			</south>
+			<east>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0.01, 0.04)</offsetMax>
+				<rotation>2</rotation>
+				<rotationMax>7</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Kind</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- Abrasive -->
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>AbrasiveBrows</defName>
+		<slot>Brow</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(0, 0)</offset>
+				<offsetMax>(-0.02, -0.03)</offsetMax>
+				<rotation>-2</rotation>
+				<rotationMax>-15</rotationMax>
+			</south>
+			<east>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0.02, -0.03)</offsetMax>
+				<rotation>-2</rotation>
+				<rotationMax>-15</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Abrasive</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- Jealous -->
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>JealousBrows</defName>
+		<slot>Brow</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<mirror>Random</mirror>
+			<south>
+				<rotation>10</rotation>
+				<rotationMax>10</rotationMax>
+			</south>
+			<east>
+				<rotation>10</rotation>
+				<rotationMax>10</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Jealous</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>JealousEye</defName>
+		<slot>Eye</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<scale>(1, 0.85)</scale>
+				<scaleMax>(1, 0.95)</scaleMax>
+			</south>
+			<east>
+				<scale>(1, 0.85)</scale>
+				<scaleMax>(1, 0.95)</scaleMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Jealous</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>JealousIris</defName>
+		<slot>Iris</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<mirror>None</mirror>
+			<south>
+				<offset>(-0.04, 0)</offset>
+				<offsetMax>(0.04, -0.02)</offsetMax>
+			</south>
+			<east>
+				<offset>(-0.04, 0)</offset>
+				<offsetMax>(0.04, -0.02)</offsetMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Lazy</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- Lazy -->
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>LazyBrows</defName>
+		<slot>Brow</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0, -0.03)</offsetMax>
+				<rotation>0</rotation>
+				<rotationMax>4</rotationMax>
+			</south>
+			<east>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0, -0.025)</offsetMax>
+				<rotation>0</rotation>
+				<rotationMax>4</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Lazy</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>LazyEyes</defName>
+		<slot>Eye</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0, -0.01)</offsetMax>
+				<scale>(1, 0.7)</scale>
+				<scaleMax>(1, 0.95)</scaleMax>
+				<rotation>0</rotation>
+				<rotationMax>6</rotationMax>
+			</south>
+			<east>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0, -0.01)</offsetMax>
+				<scale>(1, 0.7)</scale>
+				<scaleMax>(1, 0.95)</scaleMax>
+				<rotation>0</rotation>
+				<rotationMax>6</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Lazy</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>LazyIris</defName>
+		<slot>Iris</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<mirror>None</mirror>
+			<south>
+				<offset>(-0.04, 0)</offset>
+				<offsetMax>(0.04, -0.02)</offsetMax>
+			</south>
+			<east>
+				<offset>(-0.04, 0)</offset>
+				<offsetMax>(0.04, -0.02)</offsetMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Lazy</li>
+		</filterDefs>
+	</TS_Faces.Data.FacePartModifierDef>
+
+	<!-- Willed -->
+
+	<TS_Faces.Data.FacePartModifierDef>
+		<defName>WilledBrows</defName>
+		<slot>Brow</slot>
+		<commonality>10</commonality>
+		<transforms>
+			<south>
+				<offset>(0, 0)</offset>
+				<offsetMax>(-0.02, -0.03)</offsetMax>
+				<rotation>0</rotation>
+				<rotationMax>-5</rotationMax>
+			</south>
+			<east>
+				<offset>(0, 0)</offset>
+				<offsetMax>(0.02, -0.02)</offsetMax>
+				<rotation>0</rotation>
+				<rotationMax>-5</rotationMax>
+			</east>
+		</transforms>
+		<filterDefs>
+			<li>Willed</li>
+		</filterDefs>
 	</TS_Faces.Data.FacePartModifierDef>
 
 	<!-- 
@@ -138,7 +481,7 @@
 	Slothful		Industriousness -2
 	Steadfast		Nerves +1
 	Volatile		Nerves -2
-	Abraisive		!
+	Abrasive		!
 	Ascetic			!
 	CreepyBreathing	!
 	Greedy			!

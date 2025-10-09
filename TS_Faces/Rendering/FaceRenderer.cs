@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using HarmonyLib;
 using RimWorld;
 using TS_Faces.Comps;
 using TS_Faces.Data;
@@ -23,11 +24,13 @@ public static class FaceRenderer
 {
 	public const int RT_SIZE = 512;
 	public static RenderTexture MainRT = new(RT_SIZE, RT_SIZE, 1);
+	public static RenderTexture SecRT = new(RT_SIZE, RT_SIZE, 1);
 
 	public static Shader SkinShader;
 	public static Shader EyeShader;
 	public static Shader TransparentShader;
 	public static Shader ColorOverrideShader;
+	public static Shader MaskShader;
 	public static Color TattooColor;
 	static FaceRenderer()
 	{
@@ -36,6 +39,7 @@ public static class FaceRenderer
 		EyeShader = ShaderDatabase.LoadShader("TSEye");
 		TransparentShader = ShaderDatabase.LoadShader("TSTransparent");
 		ColorOverrideShader = ShaderDatabase.LoadShader("TSColorOverride");
+		MaskShader = ShaderDatabase.LoadShader("TSOutlineMask");
 		TattooColor = Color.white;
 		TattooColor.a *= 0.8f;
 	}
@@ -88,15 +92,23 @@ public static class FaceRenderer
 		var head_def = face.GetActiveHeadDef();
 		var head_shader = RendererExtensions.GetShader(head_def.shader);
 		var head_color = RendererExtensions.GetColorFor(head_def.color, face);
-		var head_graphic = GraphicDatabase.Get<Graphic_Multi>(head_def.graphicPath, head_shader, Vector2.one, head_color);
+		var head_graphic = GraphicDatabase.Get<Graphic_Multi>(head_def.graphicPath, MaskShader, Vector2.one, head_color);
 		var new_graphic = new Graphic_Multi();
+
+		var head_mat = new Material(head_shader)
+		{
+			color = head_color,
+		};
+
+		var old_graphic = face.CachedGraphic;
 
 		var render_target = new FaceRTTarget(MainRT);
 		foreach (var rot in Rot4.AllRotations)
 		{
 			MainRT.Clear();
+			SecRT.Clear();
 			var head_side_mat = head_graphic.MatAt(rot);
-			Graphics.Blit(head_side_mat.mainTexture, MainRT, head_side_mat);
+			Graphics.Blit(head_side_mat.mainTexture, MainRT, head_mat);
 
 			var renderables = Enumerable.Empty<FacePartRenderable>()
 				.Concat(head_def.faceLayout.CollectNeededAndExtraRenderables(face, rot, def => !def.IsFloating))
@@ -108,10 +120,25 @@ public static class FaceRenderer
 			render_target.ReverseX = rot == Rot4.West;
 			render_target.ApplyAll(renderables);
 
+			// remove things outside of mask area
+			Graphics.Blit(MainRT, SecRT, head_side_mat);
+
 			new_graphic.mats[rot.AsInt] = new Material(ShaderDatabase.Cutout)
 			{
-				mainTexture = MainRT.CreateTexture2D(),
+				mainTexture = SecRT.CreateTexture2D(),
 			};
+		}
+
+		if (old_graphic is not null)
+		{
+			try
+			{
+				Rot4.AllRotations.Do(x => UnityEngine.Object.DestroyImmediate(old_graphic.mats[x.AsInt].mainTexture));
+			}
+			catch (Exception e)
+			{
+				TSFacesMod.Logger.Warning($"unable to destroy old face texture: '{e}'");
+			}
 		}
 
 		face.CachedGraphic = new_graphic;

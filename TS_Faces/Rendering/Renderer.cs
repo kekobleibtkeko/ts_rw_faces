@@ -258,8 +258,8 @@ public static class RendererExtensions
 				Vector2 hl_offset = iris_offset + args_in.Part?.highlightOffset ?? default;
 				Vector3 rotations = default;
 				rotations.x = args_in.Rotation;
-
-				Vector2 eye_scale = args_in.Scale / (args_in.Part?.drawSize ?? Vector2.one);
+				Vector2 eye_scale = args_in.Scale.FromUpFacingVec3() / (args_in.Part?.drawSize ?? Vector2.one);
+				// TSFacesMod.Logger.Verbose($"eye scale: start={args_in.Scale}, div={args_in.Part?.drawSize ?? Vector2.one}, res={eye_scale}");
 				Vector2 iris_scale = Vector2.one;
 
 				// reset the detail textures so the last ones aren't used
@@ -296,11 +296,26 @@ public static class RendererExtensions
 				}
 
 				edit_mat.SetVector("_EyeOffset", new(eye_offset.x, eye_offset.y));
-				edit_mat.SetVector("_IrisOffset", new(iris_offset.x, iris_offset.y, hl_offset.x, hl_offset.y));
+				
 				Vector4 final_rotations = new(rotations.x, rotations.y, rotations.z, 0);
 				// these hacks are getting stupid... sorry future me
-				edit_mat.SetVector("_Rotations", final_rotations * (flip || rot == Rot4.West ? -1 : 1));
-				edit_mat.SetVector("_Scalses", new(rotations.x, rotations.y, rotations.z));
+				if (flip || rot == Rot4.West)
+				{
+					final_rotations *= -1;
+				}
+				if (rot == Rot4.West)
+				{
+					iris_offset.x *= -1;
+					hl_offset.x *= -1;
+				}
+
+				// change scales from world scales to shader sample scales
+				eye_scale = Vector2.one / eye_scale;
+				iris_scale = Vector2.one / iris_scale;
+
+				edit_mat.SetVector("_Rotations", final_rotations);
+				edit_mat.SetVector("_IrisOffset", new(iris_offset.x, iris_offset.y, hl_offset.x, hl_offset.y));
+				edit_mat.SetVector("_Scales", new(eye_scale.x, eye_scale.y, iris_scale.x, iris_scale.y));
 
 				edit_mat.SetTexture("_EyeTex", edit_mat.mainTexture);
 

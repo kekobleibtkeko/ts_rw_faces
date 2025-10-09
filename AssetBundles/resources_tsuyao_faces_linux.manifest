@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 3325587862
+CRC: 4102456223
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 326cf1a0b57942596c223effa80c592f
+    Hash: 0678bc1401d9135e4a0bf5bd2da2bbe5
   TypeTreeHash:
     serializedVersion: 2
     Hash: b90360021f95c293bf3f1bef88434a62
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 326cf1a0b57942596c223effa80c592f
+    Hash: 0678bc1401d9135e4a0bf5bd2da2bbe5
 HashAppended: 0
 ClassTypes:
 - Class: 21
@@ -22,11 +22,13 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
+- Assets/Data/tsuyao.faces/Materials/Unlit_TSOutlineMask.mat
 - Assets/Data/tsuyao.faces/Materials/TSSkin.shader
 - Assets/Data/tsuyao.faces/Materials/TSTransparent.shader
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Empty_north.png
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Empty_east.png
 - Assets/Data/tsuyao.faces/Materials/EyeTestMat.mat
+- Assets/Data/tsuyao.faces/Materials/TSOutlineMask.shader
 - Assets/Data/tsuyao.faces/Materials/SkinTestMat.mat
 - Assets/Data/tsuyao.faces/Textures/Things/Pawn/Empty_south.png
 - Assets/Data/tsuyao.faces/Materials/TSColorOverride.shader

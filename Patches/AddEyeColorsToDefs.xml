@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/HediffDef[defName="BionicEye"]</xpath>
+		<value>
+			<li Class="TS_Faces.Data.GeneEyeColor">
+				<eyeColor>RGB(252,217,75)</eyeColor>
+				<scleraColor>RGB(56,56,56)</scleraColor>
+			</li>
+		</value>
+	</Operation>
+</Patch>

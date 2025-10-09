@@ -21,9 +21,16 @@ public class PawnFilterDef : Def, IPawnFilterEntry
 	public TSUtil.ListInclusionType TraitInclusion => ((IPawnFilterEntry)values).TraitInclusion;
 	public IEnumerable<HediffDef> AllHediffs => ((IPawnFilterEntry)values).AllHediffs;
 	public TSUtil.ListInclusionType HediffInclusion => ((IPawnFilterEntry)values).HediffInclusion;
+	public TSUtil.ListInclusionType DefInclusion => ((IPawnFilterEntry)values).DefInclusion;
 
 	public override IEnumerable<string> ConfigErrors()
 	{
 		return base.ConfigErrors();
+	}
+
+	public override void ResolveReferences()
+	{
+		base.ResolveReferences();
+		values ??= new();
 	}
 }

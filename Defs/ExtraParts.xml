@@ -3,5 +3,109 @@
 	<TS_Faces.Data.ExtraPartDef Name="TSExtraPartBase" Abstract="True">
 	</TS_Faces.Data.ExtraPartDef>
 
-	
+	<!-- Face Parts -->
+
+	<TS_Faces.Data.FacePartDef Name="TSSkinDecorBase" ParentName="TSFacePartBase" Abstract="True">
+		<slot>SkinDecor</slot>
+		<color>Skin</color>
+		<commonality>0</commonality>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSSkinDecorBase">
+		<defName>BlushSmall</defName>
+		<drawSize>(0.25, 0.25)</drawSize>
+		<graphicPath>Things/Pawn/Face/Blush1</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<TS_Faces.Data.FacePartDef ParentName="TSSkinDecorBase">
+		<defName>EyeBags</defName>
+		<drawSize>(0.25, 0.25)</drawSize>
+		<graphicPath>Things/Pawn/Face/EyeBag1</graphicPath>
+	</TS_Faces.Data.FacePartDef>
+
+	<!-- SKIPS/PLACEHOLDERS -->
+
+	<TS_Faces.Data.ExtraPartDef>
+		<defName>SecondarySkip</defName>
+		<detail>Secondary</detail>
+		<skip>true</skip>
+		<commonality>1</commonality>
+	</TS_Faces.Data.ExtraPartDef>
+
+	<!-- Extra Defs -->
+
+	<TS_Faces.Data.ExtraPartDef>
+		<defName>BlushSmall_Extra</defName>
+		<def>BlushSmall</def>
+		<detail>Secondary</detail>
+		<anchor>Eye</anchor>
+		<side>Left</side>
+		<mirror>true</mirror>
+		<commonality>20</commonality>
+		<transforms>
+			<south>
+				<rotation>2</rotation>
+				<rotationMax>-5</rotationMax>
+				<offset>(0.01, -0.05)</offset>
+			</south>
+			<east>
+				<rotation>2</rotation>
+				<rotationMax>-5</rotationMax>
+				<offset>(-0.02, -0.05)</offset>
+				<scale>(0.9, 1)</scale>
+			</east>
+		</transforms>
+		<filters>
+			<li>
+				<commonalityOffset>10</commonalityOffset>
+				<defImports>
+					<li>Positive</li>
+					<li>Jealous</li>
+				</defImports>
+			</li>
+			<li>
+				<commonalityOffset>-18</commonalityOffset>
+				<defImports>
+					<li>Anxious</li>
+					<li>Depressed</li>
+				</defImports>
+			</li>
+			<li>
+				<gender>Male</gender>
+				<commonalityOffset>-18</commonalityOffset>
+			</li>
+		</filters>
+	</TS_Faces.Data.ExtraPartDef>
+
+	<TS_Faces.Data.ExtraPartDef>
+		<defName>EyeBags_Extra</defName>
+		<def>EyeBags</def>
+		<detail>Secondary</detail>
+		<anchor>Eye</anchor>
+		<side>Left</side>
+		<mirror>true</mirror>
+		<commonality>20</commonality>
+		<transforms>
+			<south>
+				<rotation>2</rotation>
+				<rotationMax>-5</rotationMax>
+				<offset>(0.01, -0.02)</offset>
+			</south>
+			<east>
+				<rotation>2</rotation>
+				<rotationMax>-2</rotationMax>
+				<offset>(-0.02, -0.02)</offset>
+				<scale>(0.9, 1)</scale>
+			</east>
+		</transforms>
+		<filters>
+			<li>
+				<filter>Needed</filter>
+				<commonalityOffset>10</commonalityOffset>
+				<defImports>
+					<li>Tired</li>
+				</defImports>
+			</li>
+		</filters>
+	</TS_Faces.Data.ExtraPartDef>
 </Defs>

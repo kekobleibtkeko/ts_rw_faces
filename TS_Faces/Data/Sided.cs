@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Text;
 using RimWorld;
 using TS_Faces.Util;
 using TS_Lib.Transforms;
@@ -34,6 +35,18 @@ public abstract class Sided<T>(T main) : IExposable
 	});
 
 	public abstract void ExposeData();
+
+	public override string ToString()
+	{
+		var sb = new StringBuilder($"{GetType().Name}( ");
+
+		sb.Append($"Main: {Main}");
+		if (Other is not null)
+			sb.Append($", Other: {Other}");
+
+		sb.Append(" )");
+		return sb.ToString();
+	}
 }
 
 public class SidedDef<T>(T main) : Sided<T>(main)

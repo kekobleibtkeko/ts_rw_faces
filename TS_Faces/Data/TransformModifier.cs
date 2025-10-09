@@ -91,10 +91,15 @@ public class TransformModifier : IMirrorable<TransformModifier>, ICreateCopy<Tra
 		TSTransform4 res = new();
 		foreach (var rot in Rot4.AllRotations)
 		{
+			// really no clue why this is necessary why ahhhhhhhhhh
+			var flip = rot.IsHorizontal;
 			var side = ForRot(rot);
 			var tr = res.ForRot(rot);
 
-			tr.Offset = side.offset;
+			var offset = side.offset;
+			if (flip)
+				offset.x *= -1;
+			tr.Offset = offset.ToUpFacingVec3();
 			tr.RotationOffset = side.rotation;
 			tr.Scale = side.scale;
 		}
@@ -126,9 +131,19 @@ public class TransformModifierSide : IMirrorable<TransformModifierSide>, ICreate
 
 	public void ApplyTo(TSTransform transform)
 	{
-		transform.Offset += offset.ToUpFacingVec3();
-		transform.Scale *= scale;
+		// really no clue why this is necessary
+		if (transform.Rotation.IsHorizontal)
+		{
+			transform.Offset -= offset.ToUpFacingVec3();
+			// transform.RotationOffset -= rotation;
+		}
+		else
+		{
+			transform.Offset += offset.ToUpFacingVec3();
+			// transform.RotationOffset += rotation;
+		}
 		transform.RotationOffset += rotation;
+		transform.Scale *= scale;
 	}
 
 	public TransformModifierSide Collapse(int? seed = null)

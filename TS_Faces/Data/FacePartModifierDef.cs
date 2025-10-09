@@ -35,6 +35,7 @@ public class FacePartModifierDef : Def, IPawnFilterable, IComparable<FacePartMod
 		ApplyTo(sided, seed);
 	}
 
+	[Obsolete("needs rework")]
 	public void ApplyTo(TSTransform4 tr, int? seed)
 	{
 		transforms.Collapse(seed).ApplyTo(tr);

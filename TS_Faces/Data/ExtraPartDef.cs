@@ -22,9 +22,10 @@ public class ExtraPartDef : Def, IPawnFilterable, IComparable<ExtraPartDef>
 	public FaceSide side = FaceSide.None;
 	public bool mirror = false;
 	public bool force = false;
+	public bool skip = false;
 
 	public int commonality = 10;
-	public List<IPawnFilterEntry> filters = [];
+	public List<PawnFilterEntry> filters = [];
 	public List<PawnFilterDef> filterDefs = [];
 
 	IEnumerable<IPawnFilterEntry> IPawnFilterable.FilterEntries => Enumerable.Empty<IPawnFilterEntry>()
@@ -38,7 +39,7 @@ public class ExtraPartDef : Def, IPawnFilterable, IComparable<ExtraPartDef>
 	{
 		base.ResolveReferences();
 		def ??= FacePartDefOf.Empty;
-			anchor ??= SlotDefOf.None;
+		anchor ??= SlotDefOf.None;
 	}
 
 	public int CompareTo(ExtraPartDef other) => defName.CompareTo(other.defName);

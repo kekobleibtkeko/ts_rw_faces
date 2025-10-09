@@ -58,9 +58,15 @@
 	
 	<!-- SHORT -->
 	
-	<!-- <TS_Faces.Data.HeadDef ParentName="TSHumanHeadBase">
+	<TS_Faces.Data.HeadDef ParentName="TSHumanHeadBase">
 		<defName>AverageShort</defName>
 		<faceLayout>Short</faceLayout>
 		<graphicPath>Things/Pawn/Head/AverageShort</graphicPath>
-	</TS_Faces.Data.HeadDef> -->
+	</TS_Faces.Data.HeadDef>
+
+	<TS_Faces.Data.HeadDef ParentName="TSFurHeadBase">
+		<defName>AverageShortFur</defName>
+		<faceLayout>Short</faceLayout>
+		<graphicPath>Things/Pawn/Head/AverageShort</graphicPath>
+	</TS_Faces.Data.HeadDef>
 </Defs>

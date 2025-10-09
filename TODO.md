@@ -1,0 +1,24 @@
+# TODO
+- multiple head shapes + variations
+	- fur heads
+	- heavy jaw
+	- gaunt head (waster)
+- ear variation
+- cosmetic parts
+	- pig ears
+	- cat ears
+	- pig nose
+	- floppy ears
+	- pointy ears
+- iris variation
+- beauty-relevant parts (ugly parts)
+- extra parts
+	- makeup
+	- face shadow
+	- eyebags
+	- freckles
+	- blush
+	- scars?
+	- heavy brow
+	- ridges (starjack)
+- dynamically added/changed parts over time
